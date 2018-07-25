@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<server>
+    <game_server>
+        <!--第几组 从1开始-->
+        <id>1</id>
+        <!--game_server类型 0默认 1跨服-->
+        <type>1</type>
+    </game_server>
+</server>

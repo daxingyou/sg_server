@@ -1,0 +1,619 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<div class="layui-tab layui-tab-card">
+  <ul class="layui-tab-title">
+    <li class="layui-this">服务器操作</li>
+    <li>操作记录</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+      <!-- 分页数据 -->
+      <div class="layui-fluid"> 
+      <form class="layui-form" action="">
+      
+        <div class="layui-row">
+            <div class="layui-col-lg1">
+                <label class="layui-form-label">游戏</label>
+            </div>
+            <div class="layui-col-lg4">
+                <select name="choose_game">
+                  <option value="">请选择游戏</option>
+                  <option value="0">少年逆命师</option>
+                </select>
+            </div>
+
+            <div class="layui-col-lg1">
+                <label class="layui-form-label">服务器组</label>
+            </div>
+
+            <div class="layui-col-lg4">
+                <select name="choose_server" id='group'>
+                  <option value="">请选择服务器</option>
+                </select>
+            </div>
+
+            <div class="layui-col-lg1 layui-col-md-offset1">
+              <button class="layui-btn" lay-submit lay-filter='filter'>筛选</button> 
+            </div>
+        </div>
+        <div class="layui-row">
+          <div class="layui-input-block"></div>
+        </div>
+        <div class="layui-row">
+      
+          <div class="layui-col-lg3 layui-col-md-offset1">
+            <input type="radio" name="operation" value='1' title='开启服务器'>
+          </div>
+          <div class="layui-col-lg3">
+            <input type="radio" name="operation" value='2' title="关闭服务器">
+          </div>
+          <div class="layui-col-lg3">
+            <input type="radio" name="operation" value='3' title="重启服务器">
+          </div>
+        
+          <div class="layui-col-lg1 layui-col-md-offset1">
+            <button class="layui-btn" lay-submit lay-filter='exec'>执行</button> 
+          </div>           
+        </div>
+      </form>
+      <table class="layui-table">
+        <colgroup>
+          <col width="150">
+          <col width="200">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>
+              <button class="layui-btn">全选</button>
+            </th>
+            <th>服务器组</th>
+            <th>服务器名称</th>
+            <th>服务器ID</th>
+            <th>服务器IP</th>
+            <th>当前状态</th>
+          </tr> 
+        </thead>
+        <tbody id='main'>
+          
+        </tbody>
+      </table>
+    </div>
+    </div>
+    <div class="layui-tab-item">
+      <div class="layui-fluid"> 
+        <form class="layui-form" action="">
+          <div class="layui-row">
+            <div class="layui-col-lg1">
+              <input type="radio" name="query_choice" value="group" title="服务器组">
+            </div>
+            <div class="layui-col-lg3">
+              <select name="oper_choose_server_group" id='operation_group' lay-filter='operation_group'>
+                <option value="">请选择服务器组</option>
+              </select>
+            </div>
+            <div class="layui-col-lg1  layui-col-md-offset1">
+              <input type="radio" name="query_choice" value="single" title="服务器名称">
+            </div>
+            <div class="layui-col-lg3">
+              <select name="oper_choose_server" id='operation_server'>
+                <option value="">请选择服务器</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-row">
+          </div>
+        
+
+          <div class="layui-row">
+            <div class="layui-col-lg1 layui-col-md-offset2">
+                  <label class="layui-form-label">日期范围</label>
+              </div>
+            <div class="layui-col-lg3">
+              <input type="text" class="layui-input" id="date">
+            </div>
+            
+            <div class="layui-col-lg1 layui-col-md-offset2">
+              <div class="layui-form-item">
+              <button class="layui-btn" lay-submit id='query' lay-filter='query'>查询</button> 
+              </div>
+            </div> 
+          </div>
+        </form>
+        <table class="layui-table">
+        <colgroup>
+          <col width="150">
+          <col width="200">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>服务器组</th>
+            <th>服务器名称</th>
+            <th>操作类型</th>
+            <th>操作用户</th>
+            <th>操作时间</th>
+          </tr> 
+        </thead>
+        <tbody id='log-table'>
+        </tbody>
+      </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+
+<script>
+//需要检测状态的server_id
+var effect_server_id = [];
+//最近一次的服务器行为
+var last_server_action = {};
+//服务器状态
+var all_server_states = {};
+//选中的服务器
+var server_checked = {};
+//服务器组数据
+var server_group_data = {};
+//当前选择的时间范围
+var period_select = {};
+
+var CHECK_INTERVAL = 5000;  //ms
+var LOCAL_SERVER = ['db_server', 'gm_server', 'log_server', 'game_server', 'center_server', 'chat_server', 'gate_server', 'login_server'];
+var GLOBAL_SERVER = ['account_server', 'glog_server', 'area_server', 'transfer_server', 'cross_server'];
+var NOT_WORKING_DESCRIPTION = 'has been stopped';
+var WORKING_DESCRIPTION = 'is running';
+
+var OPERATION_TYPE = {
+  1 : '开启服务器',
+  2 : '关闭服务器',
+  3 : '重启服务器',
+}
+
+var SERVER_STATE = {
+  UNKNOWN : '未知',
+  RUNNING : '运行中',
+  CLOSED : '关闭',
+};
+
+var SHOW_STATE = {
+  CLOSED : '关闭',
+  SHUTTING : '关闭中',
+  RUNNING : '开启',
+  STARTING : '开启中',
+  RESTART_SHUTTING : '重启:关闭中',
+  RESTART_STARTING : '重启:开启中',
+  RESTART_CLOSED : '重启:已关闭',
+  DOWN : '宕机',
+  CANTBECLOSED : '无法关闭',
+  ABNORMAL : '异常',
+  NO_DATA : '检测中',
+};
+
+var ACTION = {
+  SHUT_BEGIN : 1,
+  SHUT_END : 2,
+  START_BEGIN : 3,
+  START_END : 4,
+  RESTART_SHUT_BEGIN : 5,
+  RESTART_SHUT_END : 6,
+  RESTART_START_BEGIN : 7,
+  RESTART_START_END : 8,
+};
+
+function match_whole_word(src_str, search_str, begin_index = 0, ignore_front = false, ignore_back = false){                            
+    var not_match = true, not_match_front = true, not_match_back = true;                                                               
+    var now_idx = begin_index, next_search_idx = begin_index;                                                                          
+    do{
+        now_idx = src_str.indexOf(search_str, next_search_idx);
+        if(now_idx == -1){
+            break;
+        }
+        next_search_idx = now_idx + 1;
+        if(!ignore_front){
+            if(now_idx == 0){
+                not_match_front = false;
+            }
+            else if(now_idx > 0){
+                var letter = src_str[now_idx - 1];
+                if(letter.search(/[a-zA-Z0-9]/) == -1){
+                    not_match_front = false;
+                }
+            }
+        }
+        else{
+            not_match_front = false;
+        }
+        if(!ignore_back){
+            var end_idx = now_idx + search_str.length;
+            if(end_idx >= src_str.length){
+                not_match_back = false;
+            }
+            else{
+                var letter = src_str[end_idx];
+                if(letter.search(/[a-zA-Z0-9]/) == -1){
+                    not_match_back = false;
+                }
+            }
+        }
+        else{
+            not_match_back = false;
+        }
+        if(!not_match_back && !not_match_front){
+            not_match = false;
+        }
+        //console.log(now_idx, next_search_idx);
+    }while(not_match)
+    return now_idx;
+}
+ 
+function reset_select_from_of_operation_server(){
+  $('#operation_server').empty();
+  $('#operation_server').append('<option value="">请选择服务器</option>');
+}
+
+//过滤颜色字符
+function filter_color_char(str){
+  return str.replace(/\033\S*?m/g, '');
+}
+
+
+function timer_function(){
+  for(idx in effect_server_id){
+    get_new_state_and_refresh_display(effect_server_id[idx]);
+  }
+}
+
+function get_new_state_and_refresh_display(server_id){
+  gen_server_states(server_id, refresh_server_display);
+}
+
+function refresh_server_display(server_id){
+  var new_state = get_display_state(server_id);
+  console.log(all_server_states[server_id]);
+  console.log(server_id + ':' + new_state);
+  $('#state' + server_id).text(new_state);
+  renderForm();
+}
+
+function gen_server_states(server_id, callback){
+  send_msg_to_server(3, server_id, function(res){
+    // console.log(typeof(res));
+    // console.log(res);
+    res = filter_color_char(res);
+    console.log(res);
+    var server_states = {};
+    for(idx in LOCAL_SERVER){
+      var server_name = LOCAL_SERVER[idx];
+      //var offset = res.search(server_name);
+      var offset = match_whole_word(res, server_name, 0, false, true);
+      if(offset == -1){
+        server_states[server_name] = SERVER_STATE.UNKNOWN;
+        continue;
+      }
+      var linefeed_offset = res.indexOf('\n', offset);
+      var slice_str = res.slice(offset, linefeed_offset);
+      if(slice_str.indexOf(WORKING_DESCRIPTION) != -1){
+        server_states[server_name] = SERVER_STATE.RUNNING;
+      }
+      else if(slice_str.indexOf(NOT_WORKING_DESCRIPTION) != -1){
+        server_states[server_name] = SERVER_STATE.CLOSED;
+      }
+    }
+    all_server_states[server_id] = server_states;
+    if(callback !== undefined)
+      callback(server_id);
+  });
+}
+
+function refresh_last_server_action(server_id){
+
+}
+
+/*
+ * @return SHOW_STATE
+ */
+function get_display_state(server_id){
+  var action = Number(last_server_action[server_id]);
+  switch(action){
+    case ACTION.START_BEGIN:
+      return SHOW_STATE.STARTING;
+    case ACTION.SHUT_BEGIN:
+      return SHOW_STATE.SHUTTING;
+    case ACTION.RESTART_SHUT_BEGIN:
+      return SHOW_STATE.RESTART_SHUTTING;
+    case ACTION.RESTART_START_BEGIN:
+      return SHOW_STATE.RESTART_STARTING;
+    case ACTION.START_END:
+    case ACTION.RESTART_START_END:
+      {
+        var server_states = all_server_states[server_id];
+        for(server_name in server_states){
+          if(server_states[server_name] != SERVER_STATE.RUNNING){
+            return SHOW_STATE.DOWN;
+          }
+        }
+        return SHOW_STATE.RUNNING;
+      }
+      break;
+    case ACTION.SHUT_END:
+    case ACTION.RESTART_SHUT_END:
+      {
+        var server_states = all_server_states[server_id];
+        for(server_name in server_states){
+          if(server_states[server_name] != SERVER_STATE.CLOSED){
+            return SHOW_STATE.CANTBECLOSED;
+          }
+        }
+        return SHOW_STATE.CLOSED;
+      }
+      break;
+    default:
+      return SHOW_STATE.NO_DATA;
+  }
+}
+
+function start_interval_check(){
+  var timer_id = setInterval(timer_function, CHECK_INTERVAL);
+  timer_function();
+}
+
+function stop_interval_check(server_id){
+  clearInterval();
+}
+
+/*
+* 执行操作：开启、关闭、重启服务器
+*
+*
+*/
+function do_server_operation(m_server_checked, oper){
+  var send_data = {
+      'oper' : oper,
+      'server' : m_server_checked,
+      'user' : 'admin',
+    };
+  send_msg_to_server(2, send_data, function(resdata){
+      console.log('exec');
+      console.log(resdata);
+      for(idx in m_server_checked){
+        switch(oper){
+          case '1':
+            last_server_action[idx] = ACTION.START_END;
+          break;
+          case '2':
+            last_server_action[idx] = ACTION.SHUT_END;
+          break;
+          case '3':
+            last_server_action[idx] = ACTION.RESTART_SHUT_END;
+          break;
+        }
+      }
+  });
+  //立即更新状态
+  for(idx in m_server_checked){
+    switch(oper){
+      case '1':
+        last_server_action[idx] = ACTION.START_BEGIN;
+      break;
+      case '2':
+        last_server_action[idx] = ACTION.SHUT_BEGIN;
+      break;
+      case '3':
+        last_server_action[idx] = ACTION.RESTART_SHUT_BEGIN;
+      break;
+    }
+    refresh_server_display(idx);
+  }
+}
+
+layui.use(['form', 'layedit','element','table', 'laydate', 'layer'], function(){
+  var laydate = layui.laydate;
+  var form = layui.form;
+  var layer = layui.layer;
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#date',
+    type: 'datetime',
+    range: '~',
+    done: function(value, date, endDate){
+      period_select['start'] = date;
+      period_select['end'] = endDate;
+      // console.log(value); //得到日期生成的值，如：2017-08-18
+      // console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+      // console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+    },
+  });
+
+  //监听【执行】按钮
+  form.on('submit(exec)', function(data){
+    console.log(data);
+    console.log(server_checked);
+    do_server_operation(server_checked, data.field.operation);
+    return false;
+  });
+
+  //监听【筛选】按钮
+  form.on('submit(filter)', function(data){
+    console.log(data);
+    console.log(server_group_data);
+    stop_interval_check();
+    var group_name = data.field.choose_server;
+    var start_id = server_group_data[group_name]['group_start_id'];
+    var end_id = server_group_data[group_name]['group_end_id'];
+    var send_data = {
+      'start_id' : start_id,
+      'end_id' : end_id
+    };
+    send_msg_to_server(1, send_data, function(res){
+      console.log(res);
+      $('#main').empty();
+      for(idx in res){
+        var tr_xml = '<tr id=' + res[idx]['server_id'] + '>';
+        $('#main').append(tr_xml);
+        
+        var button_xml = '<td><form class="layui-form" action=""><div class="layui-form-item"><input type="checkbox"';
+        if(res[idx]['ip'] === null){
+          button_xml += ' disabled';
+        }
+        else{
+          effect_server_id.push(res[idx]['server_id']);
+          console.log(res[idx]['last_server_action']);
+          last_server_action[res[idx]['server_id']] = res[idx]['last_server_action'];
+        }
+        button_xml += ' value="' + res[idx]['server_id'] + '"';
+        button_xml += '></div></form></td>';
+        $('#main').append(button_xml);
+        $('#main').append('<td>' + group_name + '</td>');
+        $('#main').append('<td>' + res[idx]['server_name'] + '</td>');
+        $('#main').append('<td>' + res[idx]['server_id'] + '</td>');
+        $('#main').append('<td>' + res[idx]['ip'] + '</td>');
+        $('#main').append('<td id=state' + res[idx]['server_id'] + '>' + '检测中' + '</td>');
+        $('#main').append('</tr>');
+      }
+      renderForm();
+      start_interval_check();
+    });
+    return false;
+  });
+
+  //监听【查询】按钮
+  form.on('submit(query)', function(data){
+    var date = $('#date').val();
+    console.log(date);
+    console.log('query');
+    console.log(data);
+    var send_data = {
+      server_group : data.field.oper_choose_server_group,
+      server_group_data : server_group_data,
+      server_id : data.field.oper_choose_server,
+      query_type : data.field.query_choice,
+      start_date : period_select['start'],
+      end_date : period_select['end'],
+      date : date,
+    }
+    console.log(send_data);
+    send_msg_to_server(5, send_data, function(result){
+      console.log(result);
+      var res = result['data'];
+      var group_name = result['group'];
+      $('#log-table').empty();
+      for(idx in res){
+        var tr_xml = '<tr id=' + res[idx]['server_id'] + '>';
+        $('#log-table').append(tr_xml);
+        $('#log-table').append('<td>' + group_name + '</td>');
+        $('#log-table').append('<td>' + res[idx]['server_name'] + '</td>');
+        $('#log-table').append('<td>' + OPERATION_TYPE[res[idx]['operation_type']] + '</td>');
+        $('#log-table').append('<td>' + res[idx]['operation_user'] + '</td>');
+        $('#log-table').append('<td>' + res[idx]['operation_date'] + '</td>');
+        $('#log-table').append('</tr>');
+      }
+      renderForm();
+    });
+    return false;
+  });
+
+  //监听checkbox
+  form.on('checkbox()', function(data){
+    console.log(data);
+    if(data.elem.checked){
+      server_checked[data.value] = 1;
+    }
+    else{
+      delete server_checked[data.value];
+    }
+  });
+
+  //监听select事件
+  form.on('select(operation_group)', function(data){
+    console.log(data);
+    var start_id = server_group_data[data.value]['group_start_id'];
+    var end_id = server_group_data[data.value]['group_end_id'];
+    var send_data = {
+      'start_id' : start_id,
+      'end_id' : end_id
+    };
+    send_msg_to_server(1, send_data, function(res){
+      console.log(res);
+      reset_select_from_of_operation_server();
+      for(idx in res){
+        if(res[idx]['ip'] !== null){
+          $('#operation_server').append("<option value='" + res[idx]['server_id'] + "'>"+res[idx]['server_name']+"</option>");
+        }
+      }
+      renderForm();
+    });
+  });
+});
+
+//页面预加载
+$(document).ready(function(){
+  var data = [{
+    'table_name':'server_group',
+  }];
+  get_need_info_and_callback_it('sg_gm', data, function(res){
+    console.log(res);
+    for(idx in res){
+      $('#group').append("<option value='" + res[idx]['group_name'] + "'>"+res[idx]['group_name']+"</option>");
+      $('#operation_group').append("<option value='" + res[idx]['group_name'] + "'>"+res[idx]['group_name']+"</option>");
+      server_group_data[res[idx]['group_name']] = res[idx];
+    }
+    renderForm();
+  });
+
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>配置热更新</title>
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+</head>
+<body>
+
+<form class="layui-form" action="">
+	<div class="layui-form-item">
+		<label class="layui-form-label">选择服务器</label>
+		<div class="layui-input-block">
+			<select name="choose" lay-verify="required" lay-search id="idchoose" lay-filter="choose">
+	    		<option value=""></option>'
+			</select>
+		</div>
+	</div>
+</form>
+
+<script>
+$(document).ready(function(){
+  get_server_list_with_callback(function(list){
+    for(var i = 0; i < list.length; i++)
+    {
+      $("#idchoose").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+    }
+    renderForm();
+  });
+});
+
+layui.use('form', function(){
+  var form = layui.form;
+  
+  //监听提交
+  form.on('select(choose)', function(data_){
+    layer.msg(data_.value);
+    $.ajax({
+          type: "POST",
+          url: '../php/php/show_config_html.php',
+          dataType: "json",
+          data: {"server_id" : data_.value},
+          error: function (json) {
+              console.log(json);
+              //renderForm();
+              document.write(json.responseText);
+              //layer.msg("成功", { icon: 6, time: 2000 });
+          },
+        });
+    return false;
+  });
+});
+
+</script>
+
+</body>
+

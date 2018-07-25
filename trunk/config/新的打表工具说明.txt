@@ -1,0 +1,47 @@
+1、design\Data\excel目录中目前还在使用的excel复制到design\Data\excel\new_excel
+按照表头两行的类型以及字段在代码中的名称填写对应的xml
+类型对应
+int对应新的uint
+float对应新的float
+其余的数字类型不使用
+数组的和字符串的全部使用varstring
+
+
+2、填写xml完成后，拖动xml到ExcelTable.exe
+拷贝code文件夹中生成的头文件到我们项目的trunk\config\tblh，修改这个头文件，把一些字符串解析成C++容器
+拷贝out文件夹中后缀为tbls64的文件到我们项目的trunk\config\tbl
+
+
+3、在相应server的config/config_manager.cpp中加载相应的表即可
+if (!TaskManager::getInstance().loadBinary())
+{
+	log_error("fail to load task config file");
+	return false;
+}
+
+
+4、读取配置
+见task.cpp中的
+auto pConf = GET_CONF(Task, id);或者
+Task* pConf = GET_CONF(Task, id);
+读取全部（遍历）：
+std::unordered_map<uint32_t, Task*> confs;
+GET_ALL_CONF(Task, confs);
+或者
+见task.cpp中
+TaskManager::getInstance().execEveryData(exec);
+
+5、xml填写规则：
+file_name就是对应的excel名称
+sheet_name就是excel中的sheet名称
+
+<output key="任务ID" type="tbls" code_name="Task">
+key="任务ID" 该表的键字段
+type="tbls" 这个类型代表服务器表
+code_name="Task" 就是代码中对应的Hades::Data::后面的名字
+
+
+<field column_name="任务ID" type="uint" code_name="id"/>
+column_name="任务ID" excel中的列名
+type="uint" 代表uint32_t
+code_name="id" 代码中该列的变量名

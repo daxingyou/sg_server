@@ -1,0 +1,134 @@
+#pragma once
+
+#include <vector>
+#include "macros.hpp"
+
+// 存储set主键
+static const std::string SAVE_SET_NAME = "SAVE_DB_SET";
+// 所有数据主键
+static const std::string PRIMARY_KEY = "rk";
+// 所有数据失效键
+static const std::string INVALID_KEY = "invalid";
+// 最大数据数据
+static const size_t CACHE_VALUEX_LEN_MA = 1024 * 256; // 256K
+// db启动状态字段
+static const std::string REDIS_DB_STATE = "REDIS_STATE";
+
+enum redis_server_state : uint32_t
+{
+	redis_server_none		= 0,	// redis 未初始化状态
+	redis_server_init		= 1,	// redis 正在初始化状态
+	redis_server_runing		= 2,	// redis 正在运行
+	redis_server_closing	= 3,	// redis 正在关闭
+};
+
+enum DB_TYPE : uint32_t
+{
+	DB_NONE,		/**< 未定义类型 */
+	DB_DWORD,		/**< DWORD类型 4字节长度 */
+	DB_QWORD,		/**< QWORD类型 8字节长度 */
+	DB_FLOAT,		/**< FLOAT类型 8字节长度 */
+	DB_STR,			/**< 字符串类型 */
+	DB_BIN,			/**< 二进制数据类型 */
+};
+
+typedef struct
+{
+	const char *table;		/**< 数据库表名 */
+	bool is_load;			/**< 是否起服加载数据 */
+	const char *where;		/**< 对于起服不加载的数据加载方式 */
+	const char *fields;		/**< 建立索引字段 */
+} sql_table;
+
+// redis db
+static const sql_table all_db_table [] =
+{
+	{ "role", false, "rk=%lu", NULL},
+	{ "role_ex", false, "rk=%lu", NULL },
+	{ "role_money", false, "rk=%lu", NULL },
+	{ "role_fight", false, "rk=%lu", NULL },
+	{ "role_tower", false, "rk=%lu", NULL },
+	{ "country_bounty", false, "rk=%lu", NULL },
+	{ "expedition", false, "rk=%lu", NULL },
+	{ "item", false, "role_uid=%lu", "role_uid" },
+	{ "task", false, "rk=%lu", NULL },
+	{ "heroes", false, "role_uid=%lu", "role_uid" },
+	{ "role_mount", false, "role_uid=%lu", "role_uid" },
+	{ "role_trade_item", false, "role_uid=%lu", "role_uid" },
+	{ "arena_role_data", false, "rk=%lu", NULL },
+	{ "achieve", false, "rk=%lu", NULL },
+	{ "role_dungeon", false, "role_uid=%lu", "role_uid" },
+	{ "role_dungeon_times", false, "rk=%lu", NULL },
+	{ "active_reward", false, "rk=%lu", NULL },
+	{ "random_shop", false, "role_uid=%lu", "role_uid" },
+	{ "liandan", false, "rk=%lu", NULL },
+	{ "family_skill", false, "rk=%lu", NULL },
+	{ "activity", false, "rk=%lu", NULL },
+	{ "equip_plan", false, "rk=%lu", NULL },
+	{ "patrol_hire", false, "rk=%lu", NULL },
+	{ "luckydraw", false, "rk=%lu", NULL },
+	{ "business_act", false, "rk=%lu", NULL },
+	{ "recharge", false, "rk=%lu", NULL },
+	{ "office", false, "rk=%lu", NULL },
+
+	{ "global_user", true, NULL, "name:did" },
+	{ "global_server_data", true, NULL, NULL },
+	{ "city", true, NULL, NULL },
+	{ "country", true, NULL, NULL },
+	{ "country_office", true, NULL, "country_id" },
+	{ "family", true, NULL, "name" },
+	{ "family_member", true, "family_id<>0", "family_id" },
+	{ "family_build", true, NULL, "id" },
+	{ "family_war", true, NULL, "week" },
+	{ "item_limit", true, NULL, NULL },
+	{ "friend", true, NULL, "role_uid" },
+	{ "friend_related", true, NULL, NULL },
+	{ "mail", false, "to_uid=%lu", "to_uid" },
+	{ "global_mail", true, NULL, NULL },
+	{ "shop_goods", true, NULL, NULL },
+	{ "user_goods", true, NULL, "role_uid" },
+	{ "king_war_apply", true, NULL, "king_war_id" },
+	{ "levelsort", true, NULL, NULL },
+	{ "towersort", true, NULL, NULL },
+	{ "criminalsort", true, NULL, NULL },
+	{ "achievesort", true, NULL, NULL },
+	{ "familysort", true, NULL, NULL },
+	{ "goods", true, NULL, NULL },
+	{ "general_info", true, NULL, NULL },
+	{ "goods_care", true, NULL, NULL },
+	{ "rarity_price", true, NULL, NULL },
+	{ "arena_fight_data", true, NULL, NULL },
+	{ "offline_role_data", true, NULL, NULL },
+	{ "redbag", true, NULL, NULL },
+	{ "role_simple_data", true, NULL, NULL },
+	{ "offline_arena", true, NULL, NULL },
+	{ "challenge", true, NULL, "challenger_uid:target_uid:challenge_time" },
+	{ "general_status", true, NULL, NULL },
+	{ "general_target_first_name", true, NULL, NULL },
+	{ "charmsort", true, NULL, NULL },
+	{ "recruitsort", true, NULL, NULL },
+	{ "coppersort", true, NULL, NULL },
+	{ "goldsort", true, NULL, NULL },
+	{ "powersort", true, NULL, NULL },
+	{ NULL, false, NULL, NULL }
+};
+
+// redis area
+static const sql_table all_area_table[] =
+{
+	{ "arena_score_rank", true, NULL, NULL },
+	// { "arena_score_rank_history", true, NULL, "num" },
+	{ NULL, false, NULL, NULL }
+};
+
+
+// redis gm
+static const sql_table all_gm_table[] =
+{
+	{ "role", false, "rk=%lu", NULL },
+	{ "role_ex", false, "rk=%lu", NULL },
+	{ "role_money", false, "rk=%lu", NULL },
+	{ "global_user", true, NULL, "name:did" },
+
+	{ NULL, false, NULL, NULL }
+};

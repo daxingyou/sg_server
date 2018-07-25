@@ -1,0 +1,49 @@
+#pragma once
+
+#include "redis.hpp"
+
+class redis_cli_t : public redis_base_t
+{
+public:
+	redis_cli_t();
+	virtual ~redis_cli_t();
+
+public:
+	// 初始化
+	bool init(const char* host, // redis ip
+		int32_t port,			// redis port
+		const char* passwd,		// redis auth
+		int32_t db,				// redis select
+		const sql_table *db_table); // 需要加载的字段
+
+	// 关闭
+	void close();
+
+public:
+	void do_batch_start();
+	void do_batch_end();
+
+protected:
+	// 保存到redis操作
+	virtual bool save_to_hash_redis(const char* table, const std::string& key, const char* field, const char* value, uint32_t length, const bool binary = false);
+	// 删除redis操作
+	virtual bool remove_redis_key(const char* table, const std::string& key);
+	// 从redis读取操作
+	virtual bool load_from_hash_redis(const char* table, const std::string& key, const char* field, std::string& result);
+
+protected:
+	typedef std::set<std::string> mapping_field_list;
+	typedef std::map<std::string, mapping_field_list> table_mapping_field;
+
+protected:
+	// 建立表结构
+	bool init_table_field(const sql_table *db_table);
+
+protected:
+	table_mapping_field m_table_mapping_field;
+
+	// 批量操作
+	bool m_is_batch = false;
+	uint32_t m_batch_cmd = 0;
+	std::set<std::pair<std::string, std::string>> m_batch_save;
+};

@@ -1,0 +1,22 @@
+#ifndef __TASK_DATA_MANAGER__
+#define __TASK_DATA_MANAGER__
+
+#include "common/macros.hpp"
+#include "protos_fwd.hpp"
+
+class task_data_manager
+{
+public:
+	task_data_manager();
+	~task_data_manager();
+
+	static bool load_task_data_from_redis(uint64_t uid, proto::common::task_data* data);
+	static bool save_shilian_data_to_redis(uint64_t uid, const proto::common::task_data& data);
+
+	static bool save_cur_task_data_to_redis(uint64_t uid, const proto::common::cur_task_date& data);
+	static bool save_comp_task_data_to_redis(uint64_t uid, const proto::common::comp_task_date& data);
+	static bool save_task_event_data_to_redis(uint64_t uid, const proto::common::task_event& data);
+
+};
+
+#endif//__TASK_DATA_MANAGER__

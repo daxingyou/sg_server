@@ -1,0 +1,542 @@
+import "common.proto";
+package proto.log;
+
+message no_batch_save_logs_notify
+{
+    repeated save_to_log logs    = 1;
+}
+
+message go_batch_save_logs_notify
+{
+    repeated save_to_log logs    = 1;
+}
+
+message eo_batch_save_logs_notify
+{
+    repeated save_to_log logs    = 1;
+}
+
+message save_to_log
+{
+    required uint32 cmd     = 1;
+    required bytes data     = 2;
+}
+
+// 设备日志
+message no_mobile_log_notify
+{
+	optional string uuid                    = 1;
+	optional string device_model            = 2;
+	optional string device_sys_version      = 3;
+	optional string cpu_type                = 4;
+	optional int32 cpu_count                = 5;
+	optional int32 memory_size              = 6;
+	optional string grph_device_name        = 7;
+    optional uint32 log_time        		= 8;
+}
+
+// 账户日志
+message no_account_log_notify
+{
+    optional uint64 account_uid        		= 1;
+    optional uint32 channel_id       		= 2;
+    optional uint64 role_uid     			= 3;
+    optional string mobile_uuid    			= 4;
+    optional uint32 source_type     		= 5;
+    optional uint32 log_time        		= 6;
+}
+
+// 创建角色日志
+message do_create_role_log_notify
+{
+    required uint64 role_uid  				= 1;
+    required string nickname  				= 2;
+	required common.mobile_info mobile 		= 3;
+    required uint32 log_time  				= 4;
+}
+
+// 登录日志
+message go_role_login_log_notify
+{
+    required uint64 role_uid        		= 1;
+    required uint32 gate_id         		= 2;
+    required uint32 game_id         		= 3;
+	optional common.mobile_info mobile 		= 4;
+    required uint32 log_time        		= 5;
+}
+
+// 下线日志
+message go_role_logout_log_notify
+{
+    required uint64 role_uid        		= 1;
+    required uint32 online_time     		= 2;
+    required uint32 gate_id         		= 3;
+    required uint32 game_id         		= 4;
+    required uint32 kick_reason     		= 5;
+	optional common.mobile_info mobile 		= 6;
+    required uint32 log_time        		= 7;
+}
+
+// 物品日志
+message go_item_log_notify
+{
+    required uint64 role_uid        			= 1;
+	required uint32 role_level					= 2;
+    required uint64 item_uid        			= 3;
+    required uint32 item_tid        			= 4;
+    optional uint32 old_num         			= 5;
+    optional uint32 up_num          			= 6;
+    optional uint32 new_num         			= 7;
+    required uint32 op_type         			= 8;
+    required uint32 source_type     			= 9;
+    optional uint32 source_param    			= 10;
+    required uint32 log_time        			= 11;
+}
+
+// 钱币日志
+message go_money_log_notify
+{
+	required uint64 role_uid					= 1;
+	required uint32 role_level					= 2;
+	optional uint32 old_num						= 3;
+	optional uint32 up_num						= 4;
+	optional uint32 new_num						= 5;
+	required uint32 money_type 					= 6;
+	optional uint32 op_type						= 7;
+	required uint32 source_type					= 8;
+	optional uint32 source_param				= 9;
+    required uint32 log_time        			= 10;
+}
+
+// 红包日志
+message go_luck_gift_log_notify
+{
+	required uint64 src_role_uid				= 1;
+	optional uint64 grab_role_uid				= 2;
+	required uint64 luck_gift_uid				= 3;
+	optional uint32 old_num						= 4;
+	optional uint32 up_num						= 5;
+	optional uint32 new_num						= 6;
+    required uint32 log_time        			= 7;
+}
+
+// 武将日志
+message go_hero_log_notify
+{
+    required uint64 role_uid        			= 1;
+	required uint32 role_level					= 2;
+    required uint64 hero_uid        			= 3;
+    required uint32 hero_tid        			= 4;
+    required uint32 op_type         			= 5;
+    required uint32 source_type     			= 6;
+    required uint32 log_time        			= 7;
+	optional uint32 old_num						= 8;
+	optional uint32 up_num						= 9;
+	optional uint32 new_num						= 10;
+	optional uint32 source_param				= 11;
+}
+
+// 任务日志
+message go_task_log_notify
+{
+    required uint64 role_uid        			= 1;
+    required uint32 task_id        				= 2;
+    required uint32 task_state        			= 3;
+	required string task_progress				= 4;
+	required uint32 accept_time        			= 5;
+	required uint32 op_type						= 6;
+    required uint32 log_time        			= 7;
+	required uint32 task_type					= 8;
+}
+
+// 经验日志
+message go_exp_log_notify
+{
+    required uint64 role_uid					= 1;
+	required uint32 old_level					= 2;
+	required uint32 old_exp						= 3;
+	required uint32 up_exp						= 4;
+	required uint32 new_level					= 5;
+	required uint32 new_exp						= 6;
+	required uint32 source_type					= 7;
+	optional uint32 source_param				= 8;
+    required uint32 log_time        			= 9;
+}
+
+// 声望日志
+message go_prestige_log_notify
+{
+    required uint64 role_uid					= 1;
+	required uint32 role_level					= 2;
+	required uint32 old_prestige				= 3;
+	required uint32 old_prestige_total			= 4;
+	required uint32 old_prestige_level			= 5;
+	required uint32 up_prestige					= 6;
+	required uint32 new_prestige				= 7;
+	required uint32 new_prestige_total			= 8;
+	required uint32 new_prestige_level			= 9;
+	required uint32 op_type						= 10;
+	required uint32 source_type					= 11;
+	optional uint32 source_param				= 12;
+    required uint32 log_time        			= 13;
+}
+
+// 玩家次数\消耗类 枚举
+message go_user_times_log_notify
+{
+	required uint64 role_uid						= 1;
+	required uint32 role_level						= 2;
+	optional uint32 old_num							= 3;
+	optional uint32 up_num							= 4;
+	optional uint32 new_num							= 5;
+	required uint32 event_id						= 6;
+	required uint32 sec_event_id					= 7;
+	optional uint32 op_type							= 8;
+	required uint32 source_type						= 9;
+	optional uint32 source_param					= 10;
+    required uint32 log_time        				= 11;
+}
+
+//country log
+message eo_country_log_notify
+{
+	optional uint32 country_id = 1;
+	optional uint32 source_type = 2;
+	optional uint64 source_param = 3;
+	optional uint32 source_param2 = 4;
+	optional uint32 source_param3 = 5;
+	optional uint32 log_time = 6;
+}
+
+//family log
+message eo_family_log_notify
+{
+	optional uint64 family_uid = 1;
+	optional uint64 role_uid = 2;
+	optional uint64 target_uid = 3;
+	optional uint32 source_type = 4;
+	optional uint32 source_param = 5;
+	optional uint32 source_param2 = 6;
+	optional uint32 log_time = 7;
+}
+
+//friend log
+message eo_friend_log_notify
+{
+	optional uint64 role_uid = 1;
+	optional uint64 friend_uid = 2;
+	optional uint32 old_type = 3;
+	optional uint32 new_type = 4;
+	optional uint32 source_type = 5;
+	optional uint32 source_param = 6;
+	optional uint32 log_time = 7;
+}
+
+// mail log
+message eo_mail_log_notify
+{
+	optional uint64 role_uid 		= 1;
+	optional uint64 mail_id 		= 2;
+	optional uint32 mail_type 		= 3;
+	optional uint32 item_type 		= 4;
+	optional string items 			= 5;
+	optional uint32 item_state 		= 6;
+	optional uint32 source_type 	= 7;
+	optional uint32 source_param 	= 8;
+	optional uint32 log_time 		= 9;
+}
+
+// PK日志
+message go_pk_log_notify
+{
+	required uint64 role_uid					= 1;
+	required uint32 role_level					= 2;
+	optional uint32 old_num						= 3;
+	optional uint32 up_num						= 4;
+	optional uint32 new_num						= 5;
+	optional uint32 value_type					= 6;
+	optional uint32 op_type						= 7;
+	optional uint32 source_type					= 8;
+	optional uint32 source_param				= 9;
+    optional uint32 log_time        			= 10;
+}
+
+// 用户商店日志
+message go_shop_log_notify
+{
+    required uint64 role_uid        			= 1;
+	optional uint32 goods_tid					= 2;
+    optional uint32 goods_num        			= 3;
+    optional uint32 cost_type        			= 4;
+    optional uint32 cost_value         			= 5;
+    optional uint32 item_id          			= 6;
+    optional uint32 item_num         			= 7;
+    optional uint32 source_type     			= 8;
+    optional uint32 source_param    			= 9;
+    optional uint32 log_time        			= 10;
+}
+
+// 用户随机商店日志
+message go_random_shop_log_notify
+{
+	optional uint64 role_uid 					= 1;
+	optional uint32 shop_tid 					= 2;
+	optional uint32 goods_tid 					= 3;
+	optional uint32 cost_type        			= 4;
+    optional uint32 cost_value         			= 5;
+	optional uint32 cost_item        			= 6;
+    optional uint32 cost_item_value         	= 7;
+	optional uint32 old_num        				= 8;
+    optional uint32 new_num         			= 9;
+	optional uint32 source_type     			= 10;
+    optional uint32 log_time        			= 11;
+}
+
+// 装备日志
+message go_equip_log_notify
+{
+    required uint64 role_uid        			= 1;
+	required uint32 role_level					= 2;
+    required uint64 item_uid        			= 3;
+    required uint32 item_tid        			= 4;
+	optional uint64 hero_uid					= 5;		//已穿戴为所属武将uid，没穿戴为0
+	repeated common.equip_attr attr				= 6;		//基础属性
+	repeated uint32 exattr						= 7;		//判词（附加属性）策划表id
+	repeated uint32 remake_exattr				= 8;		//判词重铸
+    required uint32 op_type         			= 9;
+    required uint32 source_type     			= 11;
+    optional uint32 source_param    			= 12;
+    required uint32 log_time        			= 13;
+}
+
+// 成就行为日志
+message go_achieve_log_notify
+{
+    required uint64 role_uid					= 1;
+	required uint32 achieve_id					= 2;
+	required uint32 old_level					= 3;
+	required uint32 up_level					= 4;
+	required uint32 new_level					= 5;
+	required uint32 old_count					= 6;
+	required uint32 up_count					= 7;
+	required uint32 new_count					= 8;
+	required uint32 old_achieve_point			= 9;
+	required uint32 add_achieve_point			= 10;
+	required uint32 new_achieve_point			= 11;
+	required uint32 old_achieve_level			= 12;
+	required uint32 up_achieve_level			= 13;
+	required uint32 new_achieve_level			= 14;
+	required uint32 old_reward_get_level		= 15;
+	required uint32 new_reward_get_level		= 16;
+	required uint32 source_type					= 17;
+	optional uint32 source_param				= 18;
+    required uint32 log_time        			= 19;
+	optional string sourec_type_str        		= 20;
+}
+
+// 命力日志
+message go_lifeforce_log_notify
+{
+    required uint64 role_uid					= 1;
+	required uint32 old_lifestate_level			= 2;
+	required uint32 old_lifestar_level			= 3;
+	required uint32 up_lifestate				= 4;
+	required uint32 up_lifestar					= 5;
+	required uint32 new_lifestate_level			= 6;
+	required uint32 new_lifestar_level			= 7;
+	optional uint32 source_type					= 8;
+	optional uint32 source_param				= 9;			//根据操作类型 传 消耗的命力值/完成的突破任务ID
+    required uint32 log_time        			= 10;
+}
+
+// 副本日志
+message go_dungeon_log_notify
+{
+	required uint64 role_uid					= 1;
+	optional uint32 dungeon_id     				= 2;
+	optional uint32 create_type     			= 3;
+	optional uint64 create_id     				= 4;
+	optional uint32 source_type     			= 5;
+    optional uint32 source_param    			= 6;
+    optional uint32 log_time        			= 7;
+}
+
+// 角色非战斗buff日志
+message go_role_buff_log_notify
+{
+	required uint64 role_uid					= 1;
+	optional uint32 buff_id     				= 2;
+	optional uint32 op_type         			= 3;
+    optional uint32 speed     					= 4;		//真实速度
+	optional uint32 source_type     			= 5;
+    optional uint32 source_param    			= 6;
+    optional uint32 log_time        			= 7;
+}
+
+// 寄售行日志
+message eo_goods_log_notify
+{
+    optional uint64 role_uid        			= 1;
+	optional string role_name					= 2;
+    optional uint64 goods_uid        			= 3;
+    optional uint32 item_tid        			= 4;
+    optional uint32 item_num         			= 5;
+    optional uint32 price          				= 6;
+    optional uint32 selled_num         			= 7;
+    optional uint32 profit         				= 8;
+	optional uint32 state         				= 9;
+    optional uint32 source_type     			= 11;
+    optional uint32 log_time        			= 13;
+}
+
+// 角色新手指导日志
+message go_role_new_guide_log_notify
+{
+	required uint64 role_uid					= 1;
+	optional uint32 new_guide_id   				= 2;
+	optional uint32 source_type     			= 3;
+    optional uint32 source_param    			= 4;
+    optional uint32 log_time        			= 5;
+}
+
+// 角色跑商日志
+message go_role_trade_log_notify
+{
+	required uint64 role_uid					= 1;
+	optional uint32 item_tid	 				= 2;
+	optional uint32 price		 				= 3;
+	optional uint32 num		 					= 4;
+	optional uint32 tax			 				= 5;
+	optional uint32 total_num	 				= 6;
+	optional uint32 total_cost		 			= 7;
+	optional uint32 gain		 				= 8;
+	optional uint32 trade_id		 			= 9;
+	optional uint32 op_type         			= 10;		// 1:buy  2:sell
+	optional uint32 source_type     			= 11;
+    optional uint32 log_time        			= 12;
+}
+
+
+// 充值日志
+message go_role_recharge_log_notify
+{
+	required uint64 role_uid					= 1;
+	optional string order_id	 				= 2;
+	optional uint32 recharge_tid		 		= 3;
+	optional uint32 recharge_rmb		 		= 4;
+	optional uint32 channel_id		 			= 5;
+    optional uint32 log_time        			= 6;
+}
+
+// 人民币日志
+message go_rmb_log_notify
+{
+	optional uint64 role_uid					= 1;
+	optional uint32 role_level					= 2;
+	optional uint32 old_num						= 3;
+	optional uint32 up_num						= 4;
+	optional uint32 new_num						= 5;
+	optional uint32 op_type						= 6;
+	optional uint32 source_type					= 7;
+	optional uint32 source_param				= 8;
+    optional uint32 log_time        			= 9;
+}
+
+// 远征日志
+message go_expedition_log_notify
+{
+    required uint64 role_uid        			= 1;
+	required uint32 role_level					= 2;
+    required uint32 source_type     			= 3;
+    required uint32 source_param     			= 4; 
+    required uint32 log_time        			= 5;
+}
+
+// 场景日志
+message eo_scene_log_notify
+{
+	optional uint64 role_uid					= 1;
+	optional uint32 old_map_tid					= 2;
+	optional uint32 new_map_tid					= 3;
+	optional uint32 source_type     			= 4;
+    optional uint32 log_time        			= 5;
+}
+
+// 战斗日志
+message go_combat_log_notify
+{
+	optional uint64 role_uid				= 1;
+	optional uint32 role_level				= 2;
+	optional uint32 fight_type				= 3;
+	optional uint32 combat_type				= 4;
+	repeated uint64 team_members			= 5;
+	repeated uint64 targets					= 6;
+	optional uint64 fight_uid				= 7;
+	optional uint32 is_win					= 8;
+	optional uint32 start_time				= 9;
+	optional uint32 fight_time				= 10;		// 战斗时长
+	optional uint32 finish_time				= 11;
+    optional uint32 log_time        		= 12;
+}
+
+// 武将经验日志
+message go_hero_exp_log_notify
+{
+    required uint64 role_uid					= 1;
+	required uint32 role_level					= 2;
+	required uint64 hero_uid					= 3;
+	required uint32 hero_tid					= 4;
+	required uint32 old_level					= 5;
+	required uint32 old_exp						= 6;
+	required uint32 up_exp						= 7;
+	required uint32 new_level					= 8;
+	required uint32 new_exp						= 9;
+	required uint32 source_type					= 10;
+	optional uint32 source_param				= 11;
+    required uint32 log_time        			= 12;
+}
+
+// 红包日志
+message eo_redbag_log_notify
+{
+    optional uint64 role_uid        			= 1;
+	optional string role_name					= 2;
+    optional uint64 redbag_uid        			= 3;
+    optional uint32 total_count        			= 4;
+    optional uint32 total_money         		= 5;
+	optional uint32 draw_money         			= 6;
+    optional uint32 rest_count          		= 7;
+    optional uint32 rest_money         			= 8;
+    optional uint32 source_type     			= 9;
+    optional uint32 log_time        			= 10;
+}
+
+
+// 雇佣巡逻日志
+message go_patrol_hire_log_notify
+{
+    optional uint64 role_uid        			= 1;
+	optional uint32 begin_time					= 2;
+    optional uint32 end_time        			= 3;
+    optional uint32 count        				= 4;
+    optional uint32 total_exp         			= 5;
+	optional uint32 use_multi_point         	= 6;
+    optional uint32 map_id          			= 7;
+    optional uint32 source_type         		= 8;
+    optional uint32 log_time        			= 9;
+}
+
+
+// 离线竞技排名日志
+message eo_offline_arena_rank_log_notify
+{
+    optional uint64 role_uid        			= 1;
+	optional string role_name					= 2;
+    optional uint32 role_level        			= 3;
+    optional uint32 op_type        				= 4;
+    optional uint32 old_class         			= 5;
+	optional uint32 old_rank         			= 6;
+    optional uint32 new_class          			= 7;
+    optional uint32 new_rank         			= 8;
+    optional uint32 log_time        			= 9;
+}

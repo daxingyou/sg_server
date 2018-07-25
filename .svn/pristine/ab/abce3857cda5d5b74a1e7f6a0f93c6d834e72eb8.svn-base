@@ -1,0 +1,16 @@
+需要安装：php >=5.3.3
+1、ssh2
+yum -y install libssh2 libssh2-devel
+yum -y install php-pear php-devel
+pecl install ssh2
+
+2、配置
+vi /etc/php.ini
+extension=/usr/lib64/php/modules/ssh2.so
+
+3、测试
+php
+
+4、其他
+下面的直接yum安装（如果php也是yum安装的)
+php -m | grep mysql

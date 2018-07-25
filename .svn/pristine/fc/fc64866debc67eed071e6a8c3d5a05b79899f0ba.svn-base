@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> GM工具 <span class="c-gray en">&gt;</span> 玩家传送 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+
+        <!-- <blockquote class="layui-elem-quote layui-quote-nm">
+            服务器在线人数：<b id="cur_role_number" ></b>
+            <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit="" lay-filter="query">查询</button>
+        </blockquote> -->
+        <form class="layui-form" id="oper_transfer">
+            <div class="layui-form-item proSelect">
+                 <label class="layui-form-label">服务器列表</label>
+                  <div class="layui-input-block editWidth">
+                      <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                          <option value="0" selected=""></option>
+                      </select>
+                  </div>
+             </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">地图ID</label>
+                <div class="layui-input-block">
+                  <input type="text" name="map_id" lay-verify="map_id" autocomplete="off" placeholder="请输入地图ID" class="layui-input" id="map_id" value="" layui-disabled="">
+                </div>
+              </div>
+
+               <div class="layui-form-item">
+                <label class="layui-form-label">玩家DID</label>
+                <div class="layui-input-block">
+                  <input type="text" name="role_did" lay-verify="role_did" autocomplete="off" placeholder="请输入玩家DID" class="layui-input" id="role_did" value="" layui-disabled="">
+                </div>
+              </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block"> 
+                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="send">发送</button>
+                <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+            </div>
+        </div>
+      </form>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+<script type="text/javascript">
+
+//重新渲染表单
+
+ $(function () {
+    //clear_localStorage();
+    $(document).ready(function () {
+      init_online_check_login_status();
+       var list = reload_select_list();
+       console.log(list);
+        for(var i = 0; i < list.length; i++)
+        {
+          $("#zcySelect").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+        }
+        renderForm();
+    });        
+  });
+
+layui.use(['layer','form', 'layedit', 'laydate','element'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,laytab = layui.element;
+
+  //自定义验证规则
+  form.verify({
+    zcySelect: function(value){
+      if (value == 0) {
+        return "请选择服务器"
+      }
+    }, map_id: function(value){
+      var is_number = regex_number(value);
+      if(is_number == null){
+        return '请输入正确的地图ID'
+      }
+    }
+    ,role_did: function(value){
+        var is_number = regex_number(value);
+        if (is_number == null) {
+          return "请输入正确的玩家DID";
+        }
+    }
+  });
+
+    form.on('submit(send)', function(data){
+        if(data.field.role_did == "" || data.field.map_id == ""){
+            return false;
+        }
+        var server_id_list = $('#zcySelect').val();
+        var send = new Object();
+        send.sid = new Array(server_id_list);
+        send.id = data.field.role_did;
+        send.scene_id = data.field.map_id;
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/transport.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              console.log(json);
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        $('#oper_transfer')[0].reset();
+        return false;
+    });
+
+
+});
+</script> 
+</body>
+</html>

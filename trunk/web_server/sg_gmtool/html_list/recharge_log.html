@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 运营工具 <span class="c-gray en">&gt;</span> 充值查询 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+            <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 1px;height: 20px;">
+              <legend>玩家充值与消费记录</legend>
+            </fieldset>
+                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                  <ul class="layui-tab-title">
+                    <li class="layui-this">玩家充值记录</li>
+                    <li>玩家消费记录</li>
+                  </ul>
+                  <div class="layui-tab-content" style="height: 10px;">
+                    <div class="layui-tab-item layui-show">
+                      <form class="layui-form">
+                         <!-- <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel">
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList" lay-filter="zcySelect" id="zcySelect">
+                              </select>
+                          </div>
+                        </div> -->
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})" id="logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                                  -
+                                <input type="text" lay-verify="date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})" id="logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;" >
+                            </div>
+                        </div>
+                        
+
+                        <div class="layui-form-item proSelect">
+                              <label class="layui-form-label">IP地址</label>
+                              <div class="layui-input-inline" style="width: 300px;">
+                                <select name="IP_recharge_list" lay-verify="IP_recharge_list" lay-filter="IP_recharge_list" id="IP_recharge_list">
+                                    <option value="1" selected="">内网主干服</option>
+                                    <option value="2" selected="">策划服</option>
+                                    <option value="3" selected="">外网主干服</option>
+                                </select>
+                              </div>
+
+                              <label class="layui-form-label">UID</label>
+                              <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="role_uid" lay-verify="role_uid" autocomplete="off" placeholder="请输入玩家UID" class="layui-input" id="role_uid" layui-disabled="" >
+                              </div>
+
+                              <div class="layui-input-inline"> 
+                                  <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_recharge">查询</button>
+                              </div>
+                        </div>
+
+                        <table class="layui-hide" id="recharge_record_table"></table>
+                      </form>
+                    </div>
+                    <div class="layui-tab-item">
+                      <form class="layui-form">
+                         <!-- <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel_1">
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList_1" lay-filter="zcySelect_1" id="zcySelect_1">
+                              </select>
+                          </div>
+                        </div> -->
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="date_verify_min_1" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'logmax_1\')||\'%y-%M-%d\'}'})" id="logmin_1" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                                  -
+                                <input type="text" lay-verify="date_verify_max_1" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin_1\')}',maxDate:'#F{\'%y-%M-%d\'}'})" id="logmax_1" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;" >
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item proSelect">
+                              <label class="layui-form-label">IP地址</label>
+                              <div class="layui-input-inline" style="width: 300px;">
+                                <select name="IP_consume_list" lay-verify="IP_consume_list" lay-filter="IP_consume_list" id="IP_consume_list">
+                                  <option value="1" selected="">内网主干服</option>
+                                  <option value="2" selected="">策划服</option>
+                                  <option value="3" selected="">外网主干服</option>
+                                </select>
+                              </div>
+
+                              <label class="layui-form-label">UID</label>
+                              <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="role_uid_1" lay-verify="role_uid_1" autocomplete="off" placeholder="请输入玩家UID" class="layui-input" id="role_uid_1" layui-disabled="" >
+                              </div>
+
+                              <div class="layui-input-inline"> 
+                                  <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_consume">查询</button>
+                              </div>
+                        </div>
+                        <table class="layui-hide" id="consume_record_table"></table>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+<script type="text/javascript">
+
+//重新渲染表单
+ $(function () {
+    //clear_localStorage();
+    $(document).ready(function () {
+      init_online_check_login_status();
+       // var list = reload_select_list(zcySelect);
+       //  for(var i = 0; i < list.length; i++)
+       //  {
+       //    $("#zcySelect").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+       //  }
+       //  for(var i = 0; i < list.length; i++)
+       //  {
+       //    $("#zcySelect_1").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+       //  }
+        renderForm();
+    });        
+  });
+
+function page(json,type){
+    layui.use('table',function(){
+        var table = layui.table;
+        if (1 == type) {
+           table.render({
+            elem:"#recharge_record_table",
+            height: 500,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'id', title: '<font size="3" face="楷体">玩家UID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'order_id', title: '<font size="3" face="楷体">订单号</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'recharge_tid', title: '<font size="3" face="楷体">充值id</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'recharge_rmb', title: '<font size="3" face="楷体">充值金额</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'channel_id', title: '<font size="3" face="楷体">充值渠道ID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'create_time', title: '<font size="3" face="楷体">充值时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: true, //是否显示分页
+        limit: 10 //每页默认显示的数量
+        });
+        } else {
+           table.render({
+            elem:"#consume_record_table",
+            height: 500,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'id', title: '<font size="3" face="楷体">玩家UID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'role_level', title: '<font size="3" face="楷体">角色等级</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'up_num', title: '<font size="3" face="楷体">消费金额</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'source_type_desc', title: '<font size="3" face="楷体">来源描述</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'create_time', title: '<font size="3" face="楷体">消费时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: true, //是否显示分页
+        limit: 10 //每页默认显示的数量
+        });
+        }
+       
+    });    
+}
+
+
+layui.use(['form', 'layedit','element','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laytab = layui.element
+  ,table = layui.table;
+
+form.verify({
+    date_verify_min: function(value){
+      var time_min = document.getElementById('logmin').value;
+      var time_max = document.getElementById('logmax').value;
+      if(time_max != ''){
+        if (time_min == '') {
+          return '请选择时间';
+        }
+      }
+    }
+    ,date_verify_min_1: function(value){
+      var time_min = document.getElementById('logmin_1').value;
+      var time_max = document.getElementById('logmax_1').value;
+      if(time_max != ''){
+          if(time_min == '') {
+            return '请选择时间';
+          }
+      }
+    }
+    ,date_verify_max: function(value){
+      var time_min = document.getElementById('logmin').value;
+      var time_max = document.getElementById('logmax').value;
+      if(time_min != ''){
+          if(time_max == '') {
+            return '请选择时间';
+          }
+      }
+    }
+    ,date_verify_max_1: function(value){
+      var time_min = document.getElementById('logmin_1').value;
+      var time_max = document.getElementById('logmax_1').value;
+      if(time_min != ''){
+          if(time_max == '') {
+            return '请选择时间';
+          }
+      }
+    }
+    ,role_uid: function(value){
+      if(value != ""){
+        var is_number = regex_number(value);
+         if (is_number == null) {
+              return "请输入正确的玩家UID";
+        }
+      }
+    }
+    ,role_uid_1: function(value){
+      if(value != ""){
+        var is_number = regex_number(value);
+         if (is_number == null) {
+              return "请输入正确的玩家UID";
+        }
+      }
+    }
+  });
+
+  
+  // form.on('select(zcySelect)', function(data){
+  //   document.getElementById('zcySelect_1').value = data.value;
+  //   renderForm();
+  // });
+
+  // form.on('select(zcySelect_1)', function(data){
+  //   document.getElementById('zcySelect').value = data.value;
+  //   renderForm();
+  // });
+
+
+  form.on('submit(query_recharge)', function(data){
+        //var server_id_list = $('#zcySelect').val();
+        var send = new Object();
+        //send.sid = new Array(server_id_list);
+         if (data.field.role_uid != "") {
+          send.id = data.field.role_uid;  
+        } 
+
+        var time_min = document.getElementById('logmin').value;
+        var time_max = document.getElementById('logmax').value;
+        if (time_min != '' && time_max != '') {
+            send.start_time = get_msec_to_sec(time_min);
+            send.end_time = get_msec_to_sec(time_max);
+        }
+
+        //var id = $('#IP_recharge_list').val();
+        //console.log(id);
+        //var info = get_db_info(id);
+        //console.log(info);
+        send.db_type = $('#IP_recharge_list').val();
+        console.log(send);
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/select_recharge.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              console.log(json);
+              page(data_mod(json,'recharge_log'),1);
+              table.render();
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              renderForm();
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    });
+
+
+  form.on('submit(query_consume)', function(data){
+        //var server_id_list = $('#zcySelect_1').val();
+        var send = new Object();
+        //send.sid = new Array(server_id_list);
+         if (data.field.role_uid != "") {
+          send.id = data.field.role_uid;  
+        }
+
+        var time_min = document.getElementById('logmin_1').value;
+        var time_max = document.getElementById('logmax_1').value;
+        if (time_min != '' && time_max != '') {
+            send.start_time = get_msec_to_sec(time_min);
+            send.end_time = get_msec_to_sec(time_max);
+        }
+
+        send.db_type = $('#IP_consume_list').val();
+        console.log(send);
+        //var info = get_db_info($('#IP_consume_list').val())
+        //send.log_host = info.log_host;
+        //send.log_pwd = info.log_pwd;
+        //send.log_user = info.log_user;
+        //send.log_db = info.log_db;
+
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/select_rmb.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              console.log(json);
+              page(data_mod(json,'recharge_log'),2);
+              table.render();
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              renderForm();
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    });
+});
+</script> 
+</body>
+</html>

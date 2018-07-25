@@ -1,0 +1,3 @@
+$cfile "script/game_script_func.h"
+$cfile "script/script_robot.h"
+

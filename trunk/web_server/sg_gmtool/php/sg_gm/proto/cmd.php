@@ -1,0 +1,14 @@
+<?php
+	$tm_send_mail_request=3302;
+	$tm_get_user_ol_num_request=3303;
+	$tm_send_notice_request=3304;
+	$tm_transport_request=3305;
+	$tm_set_user_create_limit_request=3306;
+	$tm_refresh_login_list=3307;
+  $tm_manage_role_request=3308;
+  $tm_manage_role_byname_request=3309;
+  $tm_search_role_byid_request=3310;
+  $tm_search_role_byname_request=3311;
+  $tm_reload_config_request=3312;
+  $tm_reload_server_config_request=3313;
+?>

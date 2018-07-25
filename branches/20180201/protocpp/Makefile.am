@@ -1,0 +1,51 @@
+INCLUDES= -I$(top_srcdir)/protocpp 
+
+CXXFLAGS = -std=c++11
+if IS_BUILD_DEBUG
+    CXXFLAGS += -D_DEBUG -O0
+    CXXFLAGS += -ggdb -gdwarf-2
+    CXXFLAGS += -Werror
+    CXXFLAGS += -Wall -Wextra -Wunreachable-code -Wsign-compare -Wfloat-equal -Wcast-align -Winline -Wcast-qual -Wundef -Wredundant-decls
+    CXXFLAGS += -Wno-reorder -Wno-unused-parameter -Wno-ignored-qualifiers
+    CXXFLAGS += -fsanitize=address -fno-omit-frame-pointer
+endif
+if IS_BUILD_VALGRIND
+    CXXFLAGS += -D_DEBUG -O0
+    CXXFLAGS += -ggdb -gdwarf-2
+    CXXFLAGS += -Werror
+    CXXFLAGS += -Wall -Wextra -Wunreachable-code -Wsign-compare -Wfloat-equal -Wcast-align -Winline -Wcast-qual -Wundef -Wredundant-decls
+    CXXFLAGS += -Wno-reorder -Wno-unused-parameter -Wno-ignored-qualifiers
+endif
+if IS_BUILD_GPROF
+    CXXFLAGS += -D_DEBUG -O0
+    CXXFLAGS += -ggdb -gdwarf-2
+    CXXFLAGS += -Werror
+    CXXFLAGS += -Wall -Wextra -Wunreachable-code -Wsign-compare -Wfloat-equal -Wcast-align -Winline -Wcast-qual -Wundef -Wredundant-decls
+    CXXFLAGS += -Wno-reorder -Wno-unused-parameter -Wno-ignored-qualifiers
+    CXXFLAGS += -pg
+endif
+if IS_BUILD_RELEASE
+    CXXFLAGS += -DNDEBUG -O2
+    CXXFLAGS += -ggdb -gdwarf-2
+endif
+if IS_BUILD_ONLINE                  
+    CXXFLAGS += -DNDEBUG -O2
+    CXXFLAGS += -s
+endif
+
+noinst_LIBRARIES = libproto.a
+
+libproto_a_LIBFLAGS = -L/usr/local/lib
+
+libproto_a_LIBDADD = -lprotobuf
+                        
+                        
+libproto_a_SOURCES =    client.pb.cc \
+                        common.pb.cc\
+                        gm.pb.cc \
+                        gm_common.pb.cc \
+                        log.pb.cc \
+                        server.pb.cc \
+                        cmd_desc.cpp \
+                        Garrison.pb.cc \
+                        GarrisonCitylist.pb.cc

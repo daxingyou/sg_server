@@ -1,0 +1,55 @@
+[robot]
+
+#线程数
+network = 4
+
+#连接account_server的ip:port
+#多个用;隔开
+account_server_ip = 139.196.41.108;139.196.41.108
+account_server_port = 36000;36003
+#account_server_ip = 47.100.130.174;47.100.130.174
+#account_server_port = 10000;10003
+
+#服务器组ID
+#1:wangsiyuan 2:zhaowenxue 3:wangshanyue 4:qianhaijiang 7:fangjian 
+#11:nei_trunk 12:nei_branches 13:nei_design
+#21:wai_trunk 22:wai_branches 
+#31:jiuyou
+server_group_id = 11
+#server_group_id = 31
+
+#服务器组列表
+server_list_type = INNER_EDITOR
+#server_list_type = OUT_BRANCH_ANDROID_JIUYOU
+
+#渠道类型
+channel = 0
+
+#机器人名字
+robot_name = robot
+
+#每N毫秒登陆一个robot
+login_interval = 50
+
+#脚本是否开启
+lua_open = 1
+
+#机器人行为动作间隔(毫秒) 默认200等于移动一次的间隔
+lua_heart = 200
+
+#机器人组数
+#用来把机器人平均到每个时间段，分散每个时间段处理的压力
+#分的越大对cpu的利用越高,处理的延迟越低
+heart_group = 10
+
+#脚本路径
+script_path = ./script_config
+
+#GM等级权限 0:无权限 1:普通gm 2:超级gm
+gm_level = 1
+
+[log]
+info = 1
+trace = 1
+debug = 1
+msg_count = 0

@@ -1,0 +1,1867 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+        <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+    <title>后台监控</title>
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页
+        <span class="c-gray en">&gt;</span> 运营工具
+        <span class="c-gray en">&gt;</span> 服务器标签
+        <a class="btn btn-primary radius r" onclick="removeIframe()" style="line-height:1.6em;margin:4px;" title="关闭">
+            <i class="Hui-iconfont">&#xe6a6;</a>
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 1px;height: 20px;">
+            <legend>标签</legend>
+        </fieldset>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">标签增加查询与修改</li>
+                <li>标签url相关查询与修改</li>
+                <li>标签账号服增加查询与修改</li>
+                <li>标签登录服增加查询与修改</li>
+            </ul>
+            <div class="layui-tab-content" style="margin-top: 10px;">
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_mark">查询</button>
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_open">增加</button>
+                            </div>
+                        </div>
+
+                        <table class="layui-hide" id="mark_table" lay-filter="mark_table"></table>
+                        <script type="text/html" id="mark_table_edit">
+                            <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                        </script>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_mark_url">查询</button>
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_url_open">增加</button>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <table class="layui-hide" id="mark_bbs_url_table" lay-filter="mark_bbs_url_table"></table>
+                            <script type="text/html" id="mark_bbs_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script>
+
+                            <table class="layui-hide" id="mark_plist_url_table" lay-filter="mark_plist_url_table"></table>
+                            <script type="text/html" id="mark_plist_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script>
+
+                            <table class="layui-hide" id="mark_notice_url_table" lay-filter="mark_notice_url_table"></table>
+                            <script type="text/html" id="mark_notice_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script>
+
+                            <table class="layui-hide" id="mark_res_url_table" lay-filter="mark_res_url_table"></table>
+                            <script type="text/html" id="mark_res_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script>
+
+                            <table class="layui-hide" id="mark_version_url_table" lay-filter="mark_version_url_table"></table>
+                            <script type="text/html" id="mark_version_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script> 
+
+                            <table class="layui-hide" id="mark_combat_url_table" lay-filter="mark_combat_url_table"></table>
+                            <script type="text/html" id="mark_combat_url_table_edit">
+                                <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                            </script>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_mark_account">查询</button>
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_account_open">增加</button>
+                            </div>
+                        </div>
+
+                        <table class="layui-hide" id="mark_account_table" lay-filter="mark_account_table"></table>
+                        <script type="text/html" id="mark_account_table_edit">
+                            <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                        </script>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_mark_login">查询</button>
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_login_open">增加</button>
+                            </div>
+                        </div>
+
+                        <table class="layui-hide" id="mark_login_server_table" lay-filter="mark_login_server_table"></table>
+                        <script type="text/html" id="mark_login_server_table_edit">
+                            <a class="layui-btn layui-btn-sm" lay-event="edit">修改</a>
+                        </script>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_add_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type" lay-verify="mark_type" autocomplete="off" placeholder="请输入渠道类型标记" class="layui-input"
+                                    id="mark_type">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">平台名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="platform_name" lay-verify="platform_name" autocomplete="off" placeholder="请输入平台名称" class="layui-input"
+                                    id="platform_name">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">渠道名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="channel_name" lay-verify="channel_name" autocomplete="off" placeholder="请输入渠道名称" class="layui-input"
+                                    id="channel_name">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">客户端最新版本号</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="version" lay-verify="version" autocomplete="off" placeholder="请输入客户端最新版本号" class="layui-input" id="version">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">客户端兼容版本号</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="compatible_version" lay-verify="compatible_version" autocomplete="off" placeholder="请输入客户端兼容版本号" class="layui-input" id="compatible_version">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark">新增</button>
+                                <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type_mod" lay-verify="mark_type_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_mod" value="" disabled="true">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">平台名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="platform_name_mod" lay-verify="platform_name_mod" autocomplete="off" placeholder="请输入平台名称" class="layui-input"
+                                    id="platform_name_mod" value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">渠道名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="channel_name_mod" lay-verify="channel_name_mod" autocomplete="off" placeholder="请输入渠道名称" class="layui-input"
+                                    id="channel_name_mod">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">客户端最新版本号</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="version_mod" lay-verify="version_mod" autocomplete="off" placeholder="请输入客户端最新版本" class="layui-input"
+                                    id="version_mod">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 115px;">客户端兼容版本号</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="compatible_version_mod" lay-verify="compatible_version_mod" autocomplete="off" placeholder="请输入客户端兼容版本号" class="layui-input"
+                                    id="compatible_version_mod">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_add_account_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type_account" lay-verify="mark_type_account" autocomplete="off" placeholder="请输入渠道类型标记" class="layui-input"
+                                    id="mark_type_account">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_name" lay-verify="server_name" autocomplete="off" placeholder="请输入服务器名称" class="layui-input"
+                                    id="server_name">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器ip</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="ip" lay-verify="ip" autocomplete="off" placeholder="请输入服务器ip" class="layui-input" id="ip">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器port</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="port" lay-verify="port" autocomplete="off" placeholder="请输入服务器port" class="layui-input" id="port">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_account">新增</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_account_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_account_mod" lay-verify="id_account_mod" autocomplete="off" class="layui-input" id="id_account_mod"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type_account_mod" lay-verify="mark_type_account_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_account_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_name_mod" lay-verify="server_name_mod" autocomplete="off" placeholder="请输入服务器名称" class="layui-input"
+                                    id="server_name_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器ip</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="ip_mod" lay-verify="ip_mod" autocomplete="off" placeholder="请输入服务器ip" class="layui-input" id="ip_mod">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器port</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="port_mod" lay-verify="port_mod" autocomplete="off" placeholder="请输入服务器port" class="layui-input"
+                                    id="port_mod">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_account">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_add_login_server_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type_login" lay-verify="mark_type_login" autocomplete="off" placeholder="请输入渠道类型标记" class="layui-input"
+                                    id="mark_type_login">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器id</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_id_login" lay-verify="server_id_login" autocomplete="off" placeholder="请输入服务器id" class="layui-input"
+                                    id="server_id_login">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_name_login" lay-verify="server_name_login" autocomplete="off" placeholder="请输入服务器名称" class="layui-input"
+                                    id="server_name_login">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label" style="width: 100px;">服务器状态</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="status" lay-filter="status" id="status" lay-verify="status">
+                                    <option value="4" selected>维护</option>
+                                    <option value="0">删除</option>
+                                    <option value="1">空闲</option>
+                                    <option value="2">忙碌</option>
+                                    <option value="3">火爆</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label" style="width: 100px;">(新服/推荐)标签</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="label" lay-filter="label" id="label" lay-verify="label">
+                                    <option value="0" selected>普通</option>
+                                    <option value="1">新服</option>
+                                    <option value="2">推荐</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_login_server">新增</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_login_server_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_login_mod" lay-verify="id_login_mod" autocomplete="off" class="layui-input" id="id_login_mod"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="mark_type_login_mod" lay-verify="mark_type_login_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_login_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器id</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_id_login_mod" lay-verify="server_id_login_mod" autocomplete="off" placeholder="请输入服务器id"
+                                    class="layui-input" id="server_id_login_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">服务器名称</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <input type="text" name="server_name_login_mod" lay-verify="server_name_login_mod" autocomplete="off" placeholder="请输入服务器名称"
+                                    class="layui-input" id="server_name_login_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label" style="width: 100px;">服务器状态</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="status_mod" lay-filter="status_mod" id="status_mod" lay-verify="status_mod">
+                                    <option value="4" selected>维护</option>
+                                    <option value="0">删除</option>
+                                    <option value="1">空闲</option>
+                                    <option value="2">忙碌</option>
+                                    <option value="3">火爆</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label" style="width: 100px;">(新服/推荐)标签</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="label_mod" lay-filter="label_mod" id="label_mod" lay-verify="label_mod">
+                                    <option value="0" selected>普通</option>
+                                    <option value="1">新服</option>
+                                    <option value="2">推荐</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_login_server">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_add_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_url" lay-verify="mark_type_url" autocomplete="off" placeholder="请输入渠道类型标记" class="layui-input"
+                                    id="mark_type_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">资源url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="res_url" lay-verify="res_url" autocomplete="off" placeholder="请输入资源url" class="layui-input" id="res_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">bbs_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="bbs_url" lay-verify="bbs_url" autocomplete="off" placeholder="请输入bbs_url" class="layui-input" id="bbs_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">公告url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="notice_url" lay-verify="notice_url" autocomplete="off" placeholder="请输入公告url" class="layui-input"
+                                    id="notice_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">plist_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="plist_url" lay-verify="plist_url" autocomplete="off" placeholder="请输入plist_url" class="layui-input"
+                                    id="plist_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">combat_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="combat_url" lay-verify="combat_url" autocomplete="off" placeholder="请输入combat_url" class="layui-input"
+                                    id="combat_url">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="add_mark_url">新增</button>
+                                <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_res_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_res_mod" lay-verify="id_res_mod" autocomplete="off" class="layui-input" id="id_res_mod" value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_res_mod" lay-verify="mark_type_res_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_res_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">资源url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="res_url_mod" lay-verify="res_url_mod" autocomplete="off" placeholder="请输入资源url" class="layui-input"
+                                    id="res_url_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_res_url">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_bbs_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_bbs_mod" lay-verify="id_bbs_mod" autocomplete="off" class="layui-input" id="id_bbs_mod" value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_bbs_mod" lay-verify="mark_type_bbs_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_bbs_mod" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">bbs_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="bbs_url_mod" lay-verify="bbs_url_mod" autocomplete="off" placeholder="请输入bbs_url" class="layui-input"
+                                    id="bbs_url_mod">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_bbs_url">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_notice_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_notice_mod" lay-verify="id_notice_mod" autocomplete="off" class="layui-input" id="id_notice_mod"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_notice_mod" lay-verify="mark_type_notice_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_notice_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">公告url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="notice_url_mod" lay-verify="notice_url_mod" autocomplete="off" placeholder="请输入公告url" class="layui-input"
+                                    id="notice_url_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_notice_url">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_plist_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                                <input type="text" name="id_plist_mod" lay-verify="id_plist_mod" autocomplete="off" class="layui-input" id="id_plist_mod"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_plist_mod" lay-verify="mark_type_plist_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_plist_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">plist_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="plist_url_mod" lay-verify="plist_url_mod" autocomplete="off" placeholder="请输入plist_url" class="layui-input"
+                                    id="plist_url_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_plist_url">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item" id="mark_mod_combat_url_id">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="display:none;">
+                            <input type="text" name="id_combat_mod" lay-verify="id_combat_mod" autocomplete="off" class="layui-input" id="id_combat_mod"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">渠道类型标记</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="mark_type_combat_mod" lay-verify="mark_type_combat_mod" autocomplete="off" class="layui-input layui-bg-black"
+                                    id="mark_type_combat_mod" value="" disabled="true">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label " style="width: 100px;">combat_url</label>
+                            <div class="layui-input-inline" style="width: 500px;">
+                                <input type="text" name="combat_url_mod" lay-verify="combat_url_mod" autocomplete="off" placeholder="请输入combat_url" class="layui-input" 
+                                    id="combat_url_mod" value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="mod_mark_combat_url">修改</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+<script type="text/javascript">
+
+        function page(json, type) {
+            layui.use(['table', 'layer'], function () {
+                        var table = layui.table;
+                        var $ = layui.jquery;
+                        //console.log(json);
+                        if ('mark_table_edit' == type) {
+                            table.render({
+                                elem: "#mark_table",
+                                height: 500,
+                                width: '1200',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'platform_name',
+                                            title: '<font size="3" face="楷体">平台名称</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'channel_name',
+                                            title: '<font size="3" face="楷体">渠道名称</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'version',
+                                            title: '<font size="3" face="楷体">客户端最新版本号</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'compatible_version',
+                                            title: '<font size="3" face="楷体">客户端兼容版本号</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_list',
+                                data: json,
+                                page: true, //是否显示分页
+                                limit: 10 //每页默认显示的数量
+                            });
+                        } else if ('mark_account_table_edit' == type) {
+                            table.render({
+                                elem: "#mark_account_table",
+                                height: 500,
+                                width: '1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'server_name',
+                                            title: '<font size="3" face="楷体">服务器名称</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'ip',
+                                            title: '<font size="3" face="楷体">服务器ip</font>',
+                                            width: 200,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'port',
+                                            title: '<font size="3" face="楷体">服务器port</font>',
+                                            width: 100,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_account_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_account_list',
+                                data: json,
+                                page: true, //是否显示分页
+                                limit: 10 //每页默认显示的数量
+                            });
+                        } else if ('mark_login_server_table_edit' == type) {
+                            table.render({
+                                elem: "#mark_login_server_table",
+                                height: 500,
+                                width: '1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'server_id',
+                                            title: '<font size="3" face="楷体">服务器id</font>',
+                                            width: 100,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'server_name',
+                                            title: '<font size="3" face="楷体">服务器名称</font>',
+                                            width: 250,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'status',
+                                            title: '<font size="3" face="楷体">服务器状态</font>',
+                                            width: 100,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'label',
+                                            title: '<font size="3" face="楷体">标签(新服/推荐)</font>',
+                                            width: 150,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_login_server_table_edit"
+                                        }
+                                    ]
+                                ],
+            id: 'mark_login_server_list',
+            data:json,
+            page: true, //是否显示分页
+            limit: 10 //每页默认显示的数量
+          });
+        }else if ('mark_url_table_edit' == type) {
+          table.render({
+            elem:"#mark_bbs_url_table",
+            height: 355,
+            width:'1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'left',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'bbs_url',
+                                            title: '<font size="3" face="楷体">bbs_url</font>',
+                                            width: 500,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_bbs_url_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_bbs_url_list',
+                                data: json[0],
+                                page: true, //是否显示分页
+                                limit: 7 //每页默认显示的数量
+                            });
+
+                            table.render({
+                                elem: "#mark_plist_url_table",
+                                height: 355,
+                                width: '1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'left',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'plist_url',
+                                            title: '<font size="3" face="楷体">plist_url</font>',
+                                            width: 600,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_plist_url_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_plist_url_list',
+                                data: json[1],
+                                page: true, //是否显示分页
+                                limit: 7 //每页默认显示的数量
+                            });
+
+                            table.render({
+                                elem: "#mark_notice_url_table",
+                                height: 355,
+                                width: '1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'left',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'notice_url',
+                                            title: '<font size="3" face="楷体">公告url</font>',
+                                            width: 600,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_notice_url_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_notice_url_list',
+                                data: json[2],
+                                page: true, //是否显示分页
+                                limit: 7 //每页默认显示的数量
+                            });
+
+                            table.render({
+                                elem: "#mark_res_url_table",
+                                height: 355,
+                                width: '1000',
+                                cols: [
+                                    [ //标题栏
+                                        {
+                                            field: 'mark_type',
+                                            title: '<font size="3" face="楷体">渠道类型标记</font>',
+                                            align: 'left',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'res_url',
+                                            title: '<font size="3" face="楷体">资源url</font>',
+                                            width: 600,
+                                            align: 'center',
+                                            style: 'background-color: #f2f2f2;'
+                                        }, {
+                                            field: 'right',
+                                            title: '操作',
+                                            align: 'center',
+                                            width: 100,
+                                            toolbar: "#mark_res_url_table_edit"
+                                        }
+                                    ]
+                                ],
+                                id: 'mark_res_url_list',
+                                data: json[3],
+                                page: true, //是否显示分页
+                                limit: 7 //每页默认显示的数量
+                            });
+
+                            table.render({
+                                    elem: "#mark_combat_url_table",
+                                    height: 355,
+                                    width: '1000',
+                                    cols: [
+                                        [ //标题栏 
+                                            {
+                                                field: 'mark_type',
+                                                title: ' <font size = "3" face = "楷体" > 渠道类型标记 </font>', 
+                                                align: 'left', 
+                                                style: 'background-color: #f2f2f2;' 
+                                            },  { 
+                                                field: 'combat_url',
+                                                title: '<font size="3" face="楷体"> combat_url </font>',
+                                                width: 600, 
+                                                align: 'center', 
+                                                style: 'background-color: #f2f2f2;' 
+                                            }, { 
+                                                field: 'right', 
+                                                title: '操作', 
+                                                align:'center',
+                                                width: 100,
+                                                toolbar: "#mark_combat_url_table_edit"
+                                            }
+                                        ]
+                                    ],
+                                    id: 'mark_combat_url_list',
+                                    data: json[4],
+                                    page: true,  //是否显示分页 
+                                    limit: 7 //每页默认显示的数量 
+                                });
+                                }
+
+                            });
+                    }
+
+                    layui.use(['form', 'layedit', 'element', 'table', 'layer'], function () {
+                        var $ = layui.jquery,
+                            form = layui.form,
+                            layer = layui.layer,
+                            layedit = layui.layedit,
+                            laytab = layui.element,
+                            table = layui.table;
+                        
+                        var tip_index = 0;
+                        $(document).on('mouseenter', '#compatible_version', function () {
+                            tip_index = layer.tips('多版本 ; 号间隔', this,{ tips: [2, '#78BA32'], time: 0 });
+                        }).on('mouseleave', '#compatible_version', function () {
+                            layer.close(tip_index);
+                        });
+
+                        $(document).on('mouseenter', '#platform_name', function () {
+                            tip_index = layer.tips('例如:android/ios', this, { tips: [2, '#78BA32'], time: 0 });
+                        }).on('mouseleave', '#platform_name', function () {
+                            layer.close(tip_index);
+                        });
+
+                        $(document).on('mouseenter', '#ip', function () {
+                            tip_index = layer.tips('例如:139.196.41.108', this, { tips: [2, '#78BA32'], time: 0 });
+                        }).on('mouseleave', '#ip', function () {
+                            layer.close(tip_index);
+                        });
+
+                        // $(document).on('mouseenter', '#mark_type_tips_id', function () {
+                        //     tip_index = layer.tips('测试', this, { tips: [4, '#78BA32'], time: 0 });
+                        // }).on('mouseleave', '#mark_type_tips_id', function () {
+                        //     layer.close(tip_index);
+                        // });
+
+                        //自定义验证规则
+                        form.verify({
+                            mark_type: function (value) {
+                                console.log(value);
+                                if ("" == value) {
+                                    return "请输入渠道类型标记";
+                                }
+                            },
+                            platform_name: function (value) {
+                                if ("" == value) {
+                                    return "请输入平台名称";
+                                }
+                            },
+                            channel_name: function (value) {
+                                if ("" == value) {
+                                    return "请输入渠道名称";
+                                }
+
+                            },
+                            version: function (value) {
+                                    if ("" == value) {
+                                        return "请输入客户端最新版本号";
+                                    }
+                            },
+                            mark_type_account: function (value) {
+                                if ("" == value) {
+                                    return "请输入渠道类型标记";
+                                }
+                            },
+                            mark_type_login: function (value) {
+                                if ("" == value) {
+                                    return "请输入渠道类型标记";
+                                }
+                            },
+                            mark_type_url: function (value) {
+                                if ("" == value) {
+                                    return "请输入渠道类型标记";
+                                }
+                            },
+                            server_name: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器名称";
+                                }
+                            },
+                            server_name_login: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器名称";
+                                }
+                            },
+                            server_id: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器id";
+                                }
+                                var is_number = regex_number(value);
+                                if (is_number == null) {
+                                    return '请输入正确的服务器id'
+                                }
+                            },
+                            server_id_login: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器id";
+                                }
+                                var is_number = regex_number(value);
+                                if (is_number == null) {
+                                    return '请输入正确的服务器id'
+                                }
+                            },
+                            ip: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器ip";
+                                }
+                                var result = is_ip(value);
+                                console.log(result);
+                                if (!result) {
+                                    return "请输入正确的服务器ip";
+                                }
+                            },
+                            port: function (value) {
+                                if ("" == value) {
+                                    return "请输入服务器port";
+                                }
+
+                                var is_number = regex_number(value);
+                                if (is_number == null) {
+                                    return '请输入正确的服务器port'
+                                }
+                            },
+                            status: function (value) {
+                                if ("" == value) {
+                                    return "请选择服务器状态";
+                                }
+                            },
+                            label: function (value) {
+                                if ("" == value) {
+                                    return "请选择标签";
+                                }
+                            }
+                        });
+
+                        function POST_AJAX_QUERY(query_type, table_mark) {
+                            $.ajax({
+                                type: "POST",
+                                url: '../php/php/mark.php',
+                                dataType: "json",
+                                data: {
+                                    "query_type": query_type,
+                                },
+                                success: function (json) {
+                                    console.log(json);
+                                    layer.closeAll();
+                                    if (query_type == "mark_login") {
+                                        var data_json = data_mod(json, query_type);
+                                        page(data_json, table_mark);
+                                    } else {
+                                        page(json, table_mark);
+                                    }
+                                    layer.msg("查询成功", {
+                                        icon: 6,
+                                        time: 2000
+                                    });
+                                },
+                                error: function (er) {
+                                    console.log(er);
+                                    renderForm();
+                                    layer.msg("查询错误", {
+                                        icon: 5,
+                                        time: 2000
+                                    });
+                                },
+                            });
+                        }
+
+                        form.on('submit(query_mark)', function (data) {
+                            POST_AJAX_QUERY('mark', 'mark_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(query_mark_account)', function (data) {
+                            POST_AJAX_QUERY('mark_account', 'mark_account_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(query_mark_login)', function (data) {
+                            POST_AJAX_QUERY('mark_login', 'mark_login_server_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(query_mark_url)', function (data) {
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+                        function POST_AJAX_ADD(send, url, type) {
+                            var send_url = '../php/sg_gm/' + url;
+                            $.ajax({
+                                type: "POST",
+                                url: send_url,
+                                dataType: "json",
+                                data: {
+                                    data: JSON.stringify(send)
+                                },
+                                success: function (json) {
+                                    layer.closeAll();
+                                    renderForm();
+                                    var result = "success";
+                                    var send_reload_url = get_json_config("reload");
+                                    console.log(send_reload_url);
+                                    $.ajax({
+                                        type: "GET",
+                                        url: send_reload_url,
+                                        dataType: "json",
+                                        success: function (json) {
+                                            console.log(json);
+                                            result = json.status;
+                                            console.log(result);
+                                            if (result == "success") {
+                                                ///查询
+                                                if ("login_server" == type) {
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: '../php/get_mark_server_list.php',
+                                                        dataType: "json",
+                                                        data: {
+                                                            "mark_type": send.mark_type
+                                                        },
+                                                        success: function (json) {
+                                                            console.log(json);
+                                                            var send_id_list = new Object();
+                                                            var list = new Array();
+                                                            for (var i = 0; i <json.length; i++) {
+                                                                list.push(json[i].server_id);
+                                                            }
+                                                            send_id_list.sid = list;
+                                                            $.ajax({
+                                                                type: "POST",
+                                                                url: '../php/sg_gm/refresh_login_list.php',
+                                                                dataType: "json",
+                                                                data: {
+                                                                    data: JSON.stringify(send_id_list)
+                                                                },
+                                                                success: function (json) {
+                                                                    console.log(json);
+                                                                    var count = 0;
+                                                                    for (var i = 0; i < list.length; i++) {
+                                                                        console.log(json.result[list[i]]);
+                                                                        if (json.result[list[i]] == 0) {
+                                                                            count = ++count;
+                                                                        }
+                                                                    }
+                                                                    console.log(count);
+                                                                    if (0 == count) {
+                                                                        layer.msg("刷新失败", { icon: 5, time: 2000 });
+                                                                    } else {
+                                                                        layer.msg("刷新成功", { icon: 6, time: 2000 });
+                                                                    }
+                                                                },
+                                                                error: function (er) {
+                                                                    console.log(er);
+                                                                    layer.msg("刷新失败", {icon: 5,time: 2000});
+                                                                }
+                                                            });
+                                                        },
+                                                        error: function (er) {
+                                                            console.log(er);
+                                                            layer.msg("获取标签列表失败", {icon: 5,time: 2000});
+                                                        }
+                                                    });
+                                                } else {
+                                                    layer.msg("新增成功", {icon: 6,time: 2000});
+                                                }
+                                            }
+                                        },
+                                        error: function (er) {
+                                            console.log(er);
+                                            layer.msg("reload错误", {icon: 5,time: 2000});
+                                        },
+                                    });
+                                },
+                                error: function (er) {
+                                    layer.closeAll();
+                                    console.log(er);
+                                    renderForm();
+                                    layer.msg("新增错误", {icon: 5,time: 2000});
+                                },
+                            });
+                        }
+
+                        function init_open_form_value(layero, type, data) {
+                            // console.log(layero);
+                            // console.log(type);
+                            console.log(data);
+                            switch (type) {
+                                case 'mark_mod_id':
+                                    {
+                                        $(layero).find("#mark_type_mod").val(data.mark_type);
+                                        $(layero).find("#platform_name_mod").val(data.platform_name);
+                                        $(layero).find("#channel_name_mod").val(data.channel_name);
+                                        $(layero).find("#version_mod").val(data.version);
+                                        $(layero).find("#compatible_version_mod").val(data.compatible_version);
+                                    }
+                                    break;
+                                case 'mark_mod_account_id':
+                                    {
+                                        $(layero).find("#id_account_mod").val(data.id);
+                                        $(layero).find("#mark_type_account_mod").val(data.mark_type);
+                                        $(layero).find("#server_name_mod").val(data.server_name);
+                                        $(layero).find("#ip_mod").val(data.ip);
+                                        $(layero).find("#port_mod").val(data.port);
+                                    }
+                                    break;
+                                case 'mark_mod_login_server_id':
+                                    {
+                                        $(layero).find("#id_login_mod").val(data.id);
+                                        $(layero).find("#mark_type_login_mod").val(data.mark_type);
+                                        $(layero).find("#server_id_login_mod").val(data.server_id);
+                                        $(layero).find("#server_name_login_mod").val(data.server_name);
+                                        switch (data.status) {
+                                            case "删除":
+                                                $(layero).find("#status_mod").val(0);
+                                                break;
+                                            case "空闲":
+                                                $(layero).find("#status_mod").val(1);
+                                                break;
+                                            case "忙碌":
+                                                $(layero).find("#status_mod").val(2);
+                                                break;
+                                            case "火爆":
+                                                $(layero).find("#status_mod").val(3);
+                                                break;
+                                            case "维护":
+                                                $(layero).find("#status_mod").val(4);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+                                        switch (data.label) {
+                                            case "普通":
+                                                $(layero).find("#label_mod").val(0);
+                                                break;
+                                            case "新服":
+                                                $(layero).find("#label_mod").val(1);
+                                                break;
+                                            case "推荐":
+                                                $(layero).find("#label_mod").val(2);
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    break;
+                                case 'mark_mod_plist_url_id':
+                                    {
+                                        $(layero).find("#id_plist_mod").val(data.id);
+                                        $(layero).find("#mark_type_plist_mod").val(data.mark_type);
+                                        $(layero).find("#plist_url_mod").val(data.plist_url);
+                                    }
+                                    break;
+                                case 'mark_mod_notice_url_id':
+                                    {
+                                        $(layero).find("#id_notice_mod").val(data.id);
+                                        $(layero).find("#mark_type_notice_mod").val(data.mark_type);
+                                        $(layero).find("#notice_url_mod").val(data.notice_url);
+                                    }
+                                    break;
+                                case 'mark_mod_res_url_id':
+                                    {
+                                        $(layero).find("#id_res_mod").val(data.id);
+                                        $(layero).find("#mark_type_res_mod").val(data.mark_type);
+                                        $(layero).find("#res_url_mod").val(data.res_url);
+                                    }
+                                    break;
+                                case 'mark_mod_bbs_url_id':
+                                    {
+                                        $(layero).find("#id_bbs_mod").val(data.id);
+                                        $(layero).find("#mark_type_bbs_mod").val(data.mark_type);
+                                        $(layero).find("#bbs_url_mod").val(data.bbs_url);
+                                    }
+                                    break;
+                                case 'mark_mod_combat_url_id': 
+                                    { 
+                                        $(layero).find("#id_combat_mod").val(data.id); 
+                                        $(layero).find("#mark_type_combat_mod").val(data.mark_type);
+                                        $(layero).find("#combat_url_mod").val(data.combat_url); 
+                                    } break;
+                                case 'mark_add_account_id':
+                                    {
+                                        var mark = get_cache_mark();
+                                        $(layero).find("#mark_type_account").val(mark);
+                                    }
+                                    break;
+                                case 'mark_add_login_server_id':
+                                    {
+                                        var mark = get_cache_mark();
+                                        $(layero).find("#mark_type_login").val(mark);
+                                    }
+                                    break;
+                                case 'mark_add_url_id':
+                                    {
+                                        var mark = get_cache_mark();
+                                        $(layero).find("#mark_type_url").val(mark);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        function layer_open_form(type, title, data) {
+                            layer.closeAll();
+                            // console.log(type);
+                            var id = "#" + type;
+                            layer.open({
+                                type: 1,
+                                title: title,
+                                shadeClose: true,
+                                shade: false,
+                                //maxmin: true, //开启最大化最小化按钮
+                                //area: ['500px', '700px'],
+                                area: [],
+                                content: $(id).html(),
+                                success: function (layero, index) {
+                                    //console.log(layero);
+                                    //console.log(index);
+                                    init_open_form_value(layero, type, data);
+                                    form.render();
+                                }
+                            });
+                        }
+
+                        form.on('submit(mod_mark_res_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_res_mod == "" ||
+                                data.field.res_url_mod == "" ||
+                                data.field.id_res_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.id = data.field.id_res_mod;
+                            send.mark_type = data.field.mark_type_res_mod;
+                            send.res_url = data.field.res_url_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(mod_mark_bbs_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_bbs_mod == "" ||
+                                data.field.bbs_url_mod == "" ||
+                                data.field.id_bbs_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.id = data.field.id_bbs_mod;
+                            send.mark_type = data.field.mark_type_bbs_mod;
+                            send.bbs_url = data.field.bbs_url_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(mod_mark_notice_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_notice_mod == "" ||
+                                data.field.notice_url_mod == "" ||
+                                data.field.id_notice_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.id = data.field.id_notice_mod;
+                            send.mark_type = data.field.mark_type_notice_mod;
+                            send.notice_url = data.field.notice_url_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(mod_mark_plist_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_plist_mod == "" ||
+                                data.field.plist_url_mod == "" ||
+                                data.field.id_plist_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.id = data.field.id_plist_mod;
+                            send.mark_type = data.field.mark_type_plist_mod;
+                            send.plist_url = data.field.plist_url_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+
+                        form.on('submit(mod_mark_combat_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_combat_mod == "" ||
+                                data.field.combat_url_mod == "" ||
+                                data.field.id_combat_mod == "") {
+                                return false;
+                            }
+                            var send = new Object();
+                            send.id = data.field.id_combat_mod;
+                            send.mark_type = data.field.mark_type_combat_mod;
+                            send.combat_url = data.field.combat_url_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+
+                        form.on('submit(add_mark)', function (data) {
+                            if (data.field.mark_type == "" ||
+                                data.field.platform_name == "" ||
+                                data.field.channel_name == "" ||
+                                data.field.version == "") {
+                                return false;
+                            }
+                            cache_change_mark(data.field.mark_type);
+                            console.log(data.field);
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type;
+                            send.platform_name = data.field.platform_name;
+                            send.channel_name = data.field.channel_name;
+                            send.version = data.field.version;
+                            send.opt_type = "add_mark";
+                            POST_AJAX_ADD(send, 'add_mark.php');
+                            POST_AJAX_QUERY('mark', 'mark_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_account)', function (data) {
+                            if (data.field.mark_type_account == "" ||
+                                data.field.server_name == "" ||
+                                data.field.server_id == "" ||
+                                data.field.ip == "" ||
+                                data.field.port == "") {
+                                return false;
+                            }
+                            cache_change_mark(data.field.mark_type_account);
+                            console.log(data.field);
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_account;
+                            send.server_name = data.field.server_name;
+                            send.server_id = data.field.server_id;
+                            send.ip = data.field.ip;
+                            send.port = data.field.port;
+                            send.opt_type = "add_mark_account";
+                            POST_AJAX_ADD(send, 'add_account.php');
+                            POST_AJAX_QUERY('mark_account', 'mark_account_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_login_server)', function (data) {
+                            if (data.field.mark_type_login == "" ||
+                                data.field.server_name_login == "" ||
+                                data.field.server_id_login == "" ||
+                                data.field.status == "" ||
+                                data.field.label == "") {
+                                return false;
+                            }
+                            cache_change_mark(data.field.mark_type_login);
+                            console.log(data.field);
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_login;
+                            send.server_name = data.field.server_name_login;
+                            send.server_id = data.field.server_id_login;
+                            send.status = data.field.status;
+                            send.label = data.field.label;
+                            send.opt_type = "add_mark_login_server";
+                            POST_AJAX_ADD(send, 'add_server.php', 'login_server');
+                            POST_AJAX_QUERY('mark_login', 'mark_login_server_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_url)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_url == "") {
+                                return false;
+                            }
+                            if (data.field.bbs_url == "" &&
+                                data.field.res_url == "" &&
+                                data.field.notice_url == "" &&
+                                data.field.plist_url == "" &&
+                                data.field.combat_url == "") {
+                                return false;
+                            }
+                            cache_change_mark(data.field.mark_type_url);
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_url;
+                            send.bbs_url = data.field.bbs_url;
+                            send.res_url = data.field.res_url;
+                            send.notice_url = data.field.notice_url;
+                            send.plist_url = data.field.plist_url;
+                            send.combat_url = data.field.combat_url;
+                            send.opt_type = "add_mark_url";
+                            POST_AJAX_ADD(send, 'add_url.php');
+                            POST_AJAX_QUERY('mark_url', 'mark_url_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(mod_mark)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_mod == "" ||
+                                data.field.platform_name_mod == "" ||
+                                data.field.channel_name_mod == "" ||
+                                data.field.version_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_mod;
+                            send.platform_name = data.field.platform_name_mod;
+                            send.channel_name = data.field.channel_name_mod;
+                            send.version = data.field.version_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_mark.php');
+                            POST_AJAX_QUERY('mark', 'mark_table_edit');
+                            return false;
+                        });
+
+                        form.on('submit(mod_mark_account)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_account_mod == "" ||
+                                data.field.server_name_mod == "" ||
+                                data.field.ip_mod == "" ||
+                                data.field.port_mod == "" ||
+                                data.field.id_account_mod == "") {
+                                return false;
+                            }
+
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_account_mod;
+                            send.server_name = data.field.server_name_mod;
+                            send.ip = data.field.ip_mod;
+                            send.port = data.field.port_mod;
+                            send.id = data.field.id_account_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_account.php');
+                            POST_AJAX_QUERY('mark_account', 'mark_account_table_edit');
+                            return false;
+                        });
+                        form.on('submit(mod_mark_login_server)', function (data) {
+                            console.log(data.field);
+                            if (data.field.mark_type_login_mod == "" ||
+                                data.field.server_name_login_mod == "" ||
+                                data.field.server_id_login_mod == "" ||
+                                data.field.status_mod == "" ||
+                                data.field.label_mod == "" ||
+                                data.field.id_login_mod == "") {
+                                return false;
+                            }
+                            var send = new Object();
+                            send.mark_type = data.field.mark_type_login_mod;
+                            send.server_name = data.field.server_name_login_mod;
+                            send.server_id = data.field.server_id_login_mod;
+                            send.status = data.field.status_mod;
+                            send.label = data.field.label_mod;
+                            send.id = data.field.id_login_mod;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_server.php', 'login_server');
+                            POST_AJAX_QUERY('mark_login', 'mark_login_server_table_edit');
+                            // var tableArr = $(".layui-table-body.layui-table-main");
+                            // console.log(tableArr);
+                            // var trArr = $(".layui-table-body.layui-table-main tr.layui-table-click");
+                            // //console.log(trArr);
+                            // var data = $(trArr[0].sectionRowIndex);
+                            // console.log(data["0"]);
+                            // console.log($(trArr[0].sectionRowIndex["0"]));
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_open)', function (data) {
+                            layer_open_form("mark_add_id", "新增标签<font  color='red'>(需要重启账号服务器)</font>");
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_account_open)', function (data) {
+                            layer_open_form("mark_add_account_id", "新增标签对应账号服");
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_login_open)', function (data) {
+                            layer_open_form("mark_add_login_server_id", "新增标签对应登录服");
+                            return false;
+                        });
+
+                        form.on('submit(add_mark_url_open)', function (data) {
+                            layer_open_form("mark_add_url_id",
+                                "新增标签cdn<font  color='red'>(下列输入框对应值可单个做添加,不为空则会做相应添加)</font>");
+                            return false;
+                        });
+
+                        table.on('tool(mark_table)', function (obj) {
+                            layer_open_form("mark_mod_id", "修改标签<font  color='red'>(请先确认资源已经提交版本号)</font>",
+                                obj.data);
+                            form.render();
+                            return false;
+                        });
+
+                        table.on('tool(mark_account_table)', function (obj) {
+                            layer_open_form("mark_mod_account_id", "修改标签对应账号服", obj.data);
+                            form.render();
+                            return false;
+                        });
+
+                        table.on('tool(mark_login_server_table)', function (obj) {
+                            layer_open_form("mark_mod_login_server_id", "修改标签对应登录服", obj.data);
+                            form.render();
+                            return false;
+                        });
+
+                        table.on('tool(mark_bbs_url_table)', function (obj) {
+                            layer_open_form("mark_mod_bbs_url_id", "修改标签对应cdn", obj.data);
+                            form.render();
+                            return false;
+                        });
+
+                        table.on('tool(mark_res_url_table)', function (obj) {
+                            layer_open_form("mark_mod_res_url_id", "修改标签对应cdn", obj.data);
+                            return false;
+                        });
+
+                        table.on('tool(mark_plist_url_table)', function (obj) {
+                            layer_open_form("mark_mod_plist_url_id", "修改标签对应cdn", obj.data);
+                            return false;
+                        });
+
+                        table.on('tool(mark_notice_url_table)', function (obj) {
+                            layer_open_form("mark_mod_notice_url_id", "修改标签对应cdn", obj.data);
+                            return false;
+                        });
+
+                        table.on('tool(mark_combat_url_table)', function (obj) {
+                            layer_open_form("mark_mod_combat_url_id", "修改标签对应cdn", obj.data);
+                            return false;
+                        });
+
+                        function Eidt_Mark_Login_Table(data, obj) {
+                            console.log(data);
+                            var send = new Object();
+                            send.mark_type = data.mark_type;
+                            send.server_name = data.server_name;
+                            send.server_id = data.server_id;
+                            send.status = data.status;
+                            send.label = data.label;
+                            console.log(send);
+                            Edit_Mark_Post(send, 'modify_server.php');
+                            return false;
+                        }
+
+                        function Edit_Mark_Post(send, url, type) {
+                            var send_url = '../php/sg_gm/' + url;
+                            $.ajax({
+                                type: "POST",
+                                url: send_url,
+                                dataType: "json",
+                                data: {
+                                    data: JSON.stringify(send)
+                                },
+                                success: function (json) {
+                                    if (json == 'success') {
+                                        layer.closeAll();
+                                        var result = "success";
+                                        var send_reload_url = get_json_config("reload");
+                                        console.log(send_reload_url);
+                                        $.ajax({
+                                            type: "GET",
+                                            url: send_reload_url,
+                                            dataType: "json",
+                                            success: function (json) {
+                                                console.log(json);
+                                                result = json.status;
+                                                console.log(result);
+                                                if (result == "success") {
+                                                    ///查询
+
+                                                    if ("login_server" == type) {
+                                                        $.ajax({
+                                                            type: "POST",
+                                                            url: '../php/php/get_mark_server_list.php',
+                                                            dataType: "json",
+                                                            data: {
+                                                                "mark_type": send.mark_type
+                                                            },
+                                                            success: function (json) {
+                                                                console.log(json);
+                                                                var send_id_list = new Object();
+                                                                var list = new Array();
+                                                                for (var i = 0; i < json.length; i++) {
+                                                                    console.log(json[i].server_id);
+                                                                    list.push(json[i].server_id);
+                                                                }
+                                                                send_id_list.sid = list;
+                                                                $.ajax({
+                                                                    type: "POST",
+                                                                    url: '../php/sg_gm/refresh_login_list.php',
+                                                                    dataType: "json",
+                                                                    data: {
+                                                                        data: JSON.stringify(send_id_list)
+                                                                    },
+                                                                    success: function (json) {
+                                                                        console.log(json);
+                                                                        var count = 0;
+                                                                        for (var i = 0; i < list.length; i++) {
+                                                                            console.log(json.result[list[i]]);    
+                                                                            if (json.result[list[i]] == 0) {
+                                                                                count = ++count;
+                                                                            }
+                                                                        }
+                                                                        console.log(count);
+                                                                        if (0 == count) {
+                                                                            layer.msg("刷新失败", { icon: 5, time: 2000 });
+                                                                        } else {
+                                                                            layer.msg("刷新成功", { icon: 6, time: 2000 });
+                                                                        }
+                                                                    },
+                                                                    error: function (er) {
+                                                                        console.log(er);
+                                                                        layer.msg("刷新失败", {icon: 5,time: 2000});
+                                                                    }
+                                                                });
+                                                            },
+                                                            error: function (er) {
+                                                                console.log(er);
+                                                                layer.msg(
+                                                                    "获取标签列表失败", {
+                                                                        icon: 5,
+                                                                        time: 2000
+                                                                    });
+                                                            }
+                                                        });
+                                                    } else {
+                                                        layer.msg("修改成功", {
+                                                            icon: 6,
+                                                            time: 2000
+                                                        });
+                                                    }
+                                                }
+                                            },
+                                            error: function (er) {
+                                                console.log(er);
+                                                layer.msg("reload错误", {
+                                                    icon: 5,
+                                                    time: 2000
+                                                });
+                                            },
+                                        });
+
+                                    } else {
+                                        layer.msg("修改错误", {
+                                            icon: 5,
+                                            time: 2000
+                                        });
+                                    }
+                                },
+                                error: function (er) {
+                                    console.log(er);
+                                    renderForm();
+                                    layer.msg("错误", {
+                                        icon: 5,
+                                        time: 2000
+                                    });
+                                },
+                            });
+                        }
+                    });
+
+
+
+           
+    </script>
+</body>
+
+</html>

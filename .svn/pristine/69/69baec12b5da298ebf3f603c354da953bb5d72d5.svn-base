@@ -1,0 +1,1082 @@
+#ifndef __FIGHT_HERO_HPP__
+#define __FIGHT_HERO_HPP__
+
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include "combat.hpp"
+#include "buff_manager.hpp"
+#include "buff_element_manager.hpp"
+#include "fight_common.hpp"
+#include "skill_manager.hpp"
+#include "tblh/MonsterHero.tbls.h"
+
+class script_fight_hero_t;
+
+struct fight_hero_round_data
+{
+	int damage = 0;
+	int injured = 0;
+};
+
+enum {
+	FIGHT_HERO_TYPE_BIG_BOSS = 3,
+	FIGHT_HERO_TYPE_SML_BOSS = 4,
+};
+
+
+struct fight_calc_result_t
+{
+	fight_calc_result_t(void)
+	{
+		reset();
+	}
+
+	~fight_calc_result_t(void) {};
+
+	void reset()
+	{
+		dodge = false;
+		crit = false;
+		beheaded = false;
+		immuno = false;
+		damage = 0;
+		heal = 0;
+		block = 0;
+		absorb = 0;
+		leech = 0;
+		reflect = 0;
+		add_buff_id = 0;
+		remove_buff_id = 0;
+		over_layer_buff_id = 0;
+		phase = 0;
+		act_type = 0;
+		skill = 0;
+		accept_damage = 0;
+	}
+
+	bool		dodge;				//
+	bool		crit;				//暴击
+	bool		beheaded;			//斩杀
+	bool		immuno;
+	int32_t		damage;				//造成伤害
+	int32_t		heal;				//收到治疗
+	int32_t		block;
+	int32_t		absorb;				//吸收伤害
+	int32_t		leech;
+	int32_t		reflect;
+	uint32_t	add_buff_id;		// 添加的buff id
+	uint32_t	remove_buff_id;		// 移除的buff id
+	uint32_t	over_layer_buff_id;	// 层数溢出的buff id
+	uint32_t    phase;				// 段数
+	uint32_t	act_type;			// 攻击类型(普通、追击、反击、连击)
+	uint32_t	skill;				// 当前使用的技能ID
+	int32_t		accept_damage;		// 受到伤害
+};
+
+// 统计数据
+struct stat_data
+{
+public:
+	void add_heal(uint32_t value) { heal += value; }
+	void add_damage(uint32_t value) { damage += value; }
+	void add_accept_damage(uint32_t value) { accept_damage += value; }
+
+	uint32_t get_heal_count() { return heal; }
+	uint32_t get_damage_count() { return damage; }
+	uint32_t get_accept_damage_count() { return accept_damage; }
+private:
+	uint32_t heal = 0;				// 治疗
+	uint32_t damage = 0;			// 伤害
+	uint32_t accept_damage = 0;		// 承受伤害
+};
+
+// 次数数据
+struct count_data
+{
+public:
+	void resetByRound()
+	{
+		counter_count = 0;						// 反击次数
+		combo_count = 0;						// 连击次数
+		trigger_skill_count = 0;				// 触发技能次数	
+		one_round_injured = 0;					// 一个回合内受到的所有伤害
+		one_round_damage = 0;					// 一个回合内造成的所有伤害
+		other_action_count = 0;					// 其他武将行动次数
+		once_injured = 0;						// 单次伤害
+		buff_combo = 0;							// buff 追击次数(用来精确控制)
+		crit_combo_phase = 0;					// 每回合多段暴击次数
+		union_attack = 0;					    // 夹击次数
+		phase_rate_add = 0;						// 多段率+的段数
+		round_phase_num = 0;					// 总的段数
+		round_do_attack_num = 0;				// 回合中释放技能次数
+		athanasia_heal_hp = 0;					// 濒死回血
+		is_relive_cur_round = false;			// 是否本回合复活过, 用于禁止攻击死亡后复活的目标
+		be_heal_hp = 0;							// 治疗量
+		be_hurt_hp = 0;							// 伤害量
+		round_sub_hp = 0;						// 回合内的扣血
+		round_sub_hp_attacker_uid = 0;			// 单次掉血时的攻击者uid
+	}
+
+	void reset()
+	{
+		trigger_skill_by_hp = 0;				// 血量触发技能次数
+		trigger_skill_by_critical_blow = 0;		// 致命一击触发技能次数
+		trigger_skill_by_beattack_count = 0;	// 被攻击触发技能次数
+		trigger_skill_by_attack_count = 0;		// 攻击触发技能次数
+		beattack_count = 0;						// 被攻击次数
+		attack_count = 0;						// 攻击次数
+		union_attack = 0;					    // 夹击次数
+		relive_count = 0;						// 复活次数
+		counter_count = 0;						// 反击次数
+		combo_count = 0;						// 连击次数
+		is_calc_combo = false;
+		trigger_skill_count = 0;				// 触发技能次数
+		athanasia_count = 0;					// 不死次数
+		add_buff_after_damage_count = 0;		// 受伤害后添加BUFF次数
+		event_trigger_count = 0;				// 事件触发计数
+		one_round_injured = 0;					// 一个回合内受到的所有伤害
+		one_round_damage = 0;					// 一个回合内造成的所有伤害
+		round_count = 0;						// 其他武将行动次数
+		other_action_count = 0;					// 其他武将行动次数
+		in_control_speed = 0;
+		all_team_damage = 0;					// 伤害累计
+		can_soul_relive = 0;					// 是否在死亡时触发灵魂状态
+		soul_relive_count = 0;					// 灵魂复活次数
+		once_injured = 0;						// 单次伤害
+		buff_combo = 0;							// buff 追击次数(用来精确控制)
+		crit_combo_phase = 0;					// 暴击追打的多段次数
+		phase_rate_add = 0;						// 
+		round_phase_num = 0;
+		round_do_attack_num = 0;				// 回合中释放技能次数
+		athanasia_heal_hp = 0;					// 濒死回血
+		is_relive_cur_round = false;			// 是否本回合复活过, 用于禁止攻击死亡后复活的目标
+		be_attack_num = 0;						// 被攻击次数,单纯用在110元素中
+		equip_miss_all_atk_count = 0;			// 闪避全体攻击次数
+		equip_miss_single_atk_count = 0;		// 闪避单体攻击次数
+		equip_miss_mutilp_atk_count = 0;		// 闪避群体攻击次数
+		be_heal_hp = 0;							// 治疗量
+		be_hurt_hp = 0;							// 伤害量
+		is_get_new_round = false;				// 是否获得新回合
+		pursue_and_attack_count = 0;			// 追击技能施放次数
+		round_sub_hp = 0;						// 回合内的扣血 
+		round_sub_hp_attacker_uid = 0;			// 单次掉血时的攻击者uid
+	}
+	//单个英雄动一次的伤害统计
+	void resetByOnceRound() 
+	{
+		once_injured = 0;						// 单次伤害
+		pursue_and_attack_count = 0;			// 多段攻击触发抵抗时一轮只追击一次
+	}
+
+	//一次技能攻击（包括多段、群攻）只算一次攻击，连击算下一次攻击，连击前变量重置，目前该函数只适用于连击
+	void resetByOneSkillAttack()
+	{
+		is_calc_combo = false;
+	}
+
+public:
+	uint32_t buff_combo = 0;						// buff 追击次数(用来精确控制)
+	uint32_t trigger_skill_by_hp			= 0;	// 血量触发技能次数
+	uint32_t trigger_skill_by_critical_blow	= 0;	// 致命一击触发技能次数
+	uint32_t trigger_skill_by_beattack_count = 0;	// 被攻击触发技能次数
+	uint32_t trigger_skill_by_attack_count	= 0;	// 攻击触发技能次数
+	uint32_t beattack_count					= 0;	// 被攻击次数
+	uint32_t attack_count					= 0;	// 攻击次数
+	uint32_t relive_count					= 0;	// 复活次数
+	uint32_t counter_count					= 0;	// 反击次数
+	uint32_t combo_count					= 0;	// 连击次数
+	bool	 is_calc_combo					= false;// 该次攻击是否计算过连击概率，一次攻击（包括多段、群攻）只算一次连击概率，下一次的连击算一次攻击，需要再重新算概率
+	uint32_t trigger_skill_count			= 0;	// 触发技能次数
+	uint32_t athanasia_count				= 0;	// 不死次数
+	uint32_t add_buff_after_damage_count	= 0;	// 受伤害后添加BUFF次数
+	uint32_t event_trigger_count			= 0;	// 事件触发计数
+	uint32_t one_round_injured = 0;					// 一个回合内受到的所有伤害
+	uint32_t one_round_damage = 0;					// 一个回合内造成的所有伤害
+	uint32_t round_count					= 0;	// 回合数
+	uint32_t once_injured = 0;						// 每次攻击受到的伤害（单个人造成的伤害）
+	uint32_t other_action_count				= 0;	// 其他武将行动次数
+	uint32_t in_control_speed				= 0;	// 控制中速度
+	uint32_t all_team_damage				= 0;	// 伤害累计
+	uint32_t all_team_damage_turn			= 0;	// 伤害转换
+	uint32_t shield_small_type				= 0;	// 盾小类型ID	
+	uint32_t all_hero_shield_small_type		= 0;	// 全体盾小类型ID	
+	uint32_t can_soul_relive				= 0;	// 是否在死亡时触发灵魂状态
+	uint32_t soul_relive_count				= 0;	// 灵魂复活次数
+	uint32_t crit_combo_phase = 0;					// 暴击追打的多段次数
+	uint32_t union_attack = 0;						// 夹击次数
+	uint32_t phase_rate_add = 0;					// buff增加的多段数
+	uint32_t round_phase_num = 0;					// 回合内多段攻击数
+	uint32_t round_do_attack_num = 0;				// 回合中释放技能次数
+	uint32_t athanasia_heal_hp = 0;					// 濒死回血
+	bool	 is_relive_cur_round = false;			// 是否本回合复活过, 用于禁止攻击死亡后复活的目标
+	uint32_t be_attack_num = 0;						// 被攻击次数(110元素中使用)
+	uint32_t equip_miss_all_atk_count = 0;			// 闪避全体攻击次数
+	uint32_t equip_miss_single_atk_count = 0;		// 闪避单体攻击次数
+	uint32_t equip_miss_mutilp_atk_count = 0;		// 闪避群体攻击次数
+	uint32_t be_heal_hp = 0;						// 治疗量
+	uint32_t be_hurt_hp = 0;						// 伤害量
+	bool	 is_get_new_round = false;				// 获得新回合
+	uint32_t pursue_and_attack_count = 0;			// 追击技能施放次数
+	uint32_t round_sub_hp = 0;						// 回合内扣血的记录(用于记录单次sub_hp的，并不是累计值)
+	uint32_t round_sub_hp_attacker_uid = 0;			// 单次掉血时的攻击者uid
+};
+
+struct taunt_data
+{
+	std::map<uint32_t, fight_hero_wptr> taunt_target_map;
+	uint32_t taunt_buff_type = 0;
+};
+
+//每回合对自身造成的伤害数据，只记敌人不记自己和队友造成的伤害
+struct round_hurt_data
+{
+	std::map<uint32_t, uint32_t> hurt_info;			// 本回合对自己造成伤害的武将和其伤害值<武将tid，伤害值>
+
+	//回合结束清除伤害数据
+	void clear_hurt_info();
+	//添加伤害值
+	void add_hurt(uint32_t hero_uid, uint32_t hurt);
+	//获取对我造成伤害最大的武将tid，如果为0则表明本回合没有对自己造成伤害的武将
+	uint32_t get_uid_of_hurt_most() const;
+};
+
+// 战斗武将
+class fight_hero_t : public boost::enable_shared_from_this<fight_hero_t>
+{
+public:
+	fight_hero_t();
+	~fight_hero_t();
+
+	void close();
+
+	// 初始化
+	bool init(combat_ptr combat, proto::common::hero_single* hs);
+
+	void on_init();
+	// 部署
+	void set_cur_action(const proto::common::combat_form_single& action);
+	// 清除上次部署
+	void clear_cur_action();
+	// 重置波次转换时的数据
+	void reset_wave_change_data();
+
+	// 是否死亡(此处命名略不好 判断血量 状态是否符合死亡条件)
+	bool is_dead();
+	// 是否可以复活
+	bool can_relive();
+	// 是否免疫
+	bool is_immuno();
+	// 是否召唤物
+	bool is_summon();
+	// 是否怪物
+	bool is_monster();
+	// 是否玩家
+	bool is_player();
+	// 是否自动战斗
+	bool is_auto_fight();
+	// 修改自动战斗
+	void change_auto_fight(uint32_t auto_fight_mode);
+	// 获取自动战斗模式
+	uint32_t get_auto_fight_mode();
+
+	// 死亡
+	void to_die();
+
+	// 
+	void change_death_with_master(uint32_t value);
+	// 
+	uint32_t get_death_with_master();
+	// 修改系统控制
+	void change_control_by_system(uint32_t control_by_system);
+	// 获取系统控制
+	uint32_t get_control_by_system();
+	// 获取速度
+	uint32_t get_speed();
+	// 获取先攻值
+	int32_t get_att_speed();
+	// 获取排序先攻值
+	int32_t get_order_att_speed();
+	// 清空先攻值
+	void clear_att_speed();
+	// 技能修改先攻值
+	void skill_change_att_speed(int32_t change_value, fight_hero_ptr attacker, bool is_percent = false, uint32_t param1 = 0);
+	// 修改先攻值
+	void set_att_speed(int32_t att_speed);
+	// 获取拉条溢出值
+	int32_t get_att_more_speed();
+	// 修改拉条溢出值
+	void set_att_more_speed(int32_t value);
+	// 修改拉条排序值
+	void set_att_order_speed(int32_t value);
+	// 获取位置
+	uint32_t get_pos();
+	// 获取主人
+	uint64_t get_master();
+	// 获取阵营
+	uint32_t get_camp();
+	// 获取敌对阵营
+	uint32_t get_enemy_camp();
+	// 获取武将类型
+	uint32_t get_type(){	return m_hero_data.base_attr().type();	}
+	// 获取UID
+	uint64_t get_uid();
+	const std::string& get_str_uid();
+	// 获取武将唯一ID
+	uint64_t get_unique_id();
+	// 获取TID
+	uint32_t get_tid();
+	// 是否觉醒
+	uint32_t get_wakeup();
+	// 获取模型
+	uint32_t get_plugin();
+	// 获取资源ID(如果是怪物 是没有上面那个接口的id)
+	uint32_t get_resource_id();
+	// 获取脚本ID
+	uint32_t get_script_id();
+	// 获取攻击模式
+	uint32_t get_atk_mode();
+	// 获取系别
+	uint32_t get_terry();
+	// 获取性别
+	uint32_t get_sex();
+	// 获取职业
+	uint32_t get_profession();
+	bool is_weak_profession();
+	// 获取获取最大连击数
+	int get_max_combo_count( fight_hero_ptr target );
+	// 获取最大连击数(根据自己)
+	int get_max_combo_count_by_self();
+	// 获取最大连击数(根据敌人)
+	int get_max_comba_count_by_enemy();
+	// 获取波次
+	uint32_t get_wave_num();
+	// 设置先手队列存在标记
+	void set_first_att_order_pos(int32_t pos) { m_first_order_pos = pos; }
+	int32_t get_first_att_order_pos() { return m_first_order_pos; }
+
+	stat_data& get_stat_data() { return m_stat_data; }
+	count_data& get_count_data() { return m_count_data; }
+	const count_data& get_count_data() const { return m_count_data; }
+
+	void set_is_story(bool is_story) { m_is_story = is_story; }
+	bool is_story() { return m_is_story; }
+
+	void add_skill(const int skill, const int level, const int init_cd, uint32_t turn_level, uint32_t pos, uint32_t is_use_public_cd = 0);
+	void add_turn_skill();
+	void fill_turn_skill(const change_model_skills_vec &vec );
+
+	void remove_skill(const int skill);
+	int get_skill_level(const int skill);
+	// 获取默认技能
+	int32_t get_default_skill();
+	// 获取反击技能
+	int32_t get_counter_skill();
+
+	// 发送触发被动给自己
+	void send_trigger_passive_to_user(uint32_t skill_id, uint32_t buff_id, uint32_t buff_tid);
+
+	// 检测目标是不是自己的讽刺对象
+	bool check_target_taunt(fight_hero_ptr target);
+
+	// 获取技能效果
+	SkillEffectTable* get_skill_effect(uint32_t skill_id);
+	//检查武将是否拥有该技能
+	bool check_skill_exist(int32_t skill_id);
+	// 检查技能是否能用，不检测是否有该技能
+	bool check_skill(int32_t skill_id);
+	// 获取当前最适合的技能
+	uint32_t get_best_skill();
+	// 出手
+	bool do_attack();
+	// ai自动选择
+	bool do_auto_fight();
+	// 找技能AI
+	uint32_t find_skill_ai(std::vector<SkillEffectTable*>& skill_ai_list);
+	// 找目标AI
+	uint32_t find_target_ai(uint32_t skill_id);
+
+	// 使用技能
+	bool do_attack(
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr select = NULL,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill,
+		const std::vector<fight_hero_ptr>* targets = NULL,
+		bool trigger_by_buff = false,
+		bool can_counter = true);
+
+	// buff触发使用技能
+	bool trigger_skill_by_buff(
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr select = NULL,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill,
+		bool can_counter = true);
+
+	bool check_do_attack(
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr select = NULL,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill,
+		const std::vector<fight_hero_ptr>* targets = NULL,
+		bool trigger_by_buff = false);
+
+	void do_counter(std::vector<fight_hero_ptr>& counters, bool can_counter = true);
+
+	size_t get_skill_phase(SkillEffectTable* skill_conf);
+
+	size_t get_total_end_phase(SkillEffectTable* skill_conf);
+	// 查找目标并攻击
+	bool find_target_and_attack(
+		SkillEffectTable* skill_effect_conf,
+		std::vector<fight_hero_ptr>& counters,
+		bool& trigger_combo,
+		size_t& phase,
+		bool trigger_by_buff,
+		fight_hero_ptr select = NULL,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill,
+		bool is_refind = false);
+
+	// 攻击查找到的目标
+	bool do_attack_after_find_target(
+		SkillEffectTable* skill_conf,
+		std::vector<fight_hero_ptr>& counters,
+		bool& trigger_combo,
+		size_t& phase,
+		bool trigger_by_buff,
+		const std::vector<fight_hero_ptr>& targets,
+		const std::vector<fight_hero_ptr>& spurting_targets,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill,
+		bool is_refind = false);
+
+	// 攻击一个目标
+	bool do_attack_target(
+		fight_hero_ptr target,
+		SkillEffectTable* skill_conf,
+		bool& trigger_counter,
+		bool& trigger_combo,
+		size_t& phase,
+		bool trigger_by_buff,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill);
+	
+	//群攻伤害,攻击一群目标
+	bool do_attack_targets(
+		const std::vector<fight_hero_ptr>& targets,
+		SkillEffectTable* skill_conf,
+		bool& trigger_combo,
+		bool trigger_by_buff,
+		std::vector<fight_hero_ptr>& counters,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill);
+
+	//执行一段伤害
+	bool do_phase_hurt(
+		fight_hero_ptr target,
+		SkillEffectTable* skill_conf,
+		bool& trigger_counter,
+		bool& trigger_combo,
+		size_t phase,
+		bool trigger_by_buff,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill);
+
+
+	// 攻击一个目标
+	bool check_do_attack_target(
+		fight_hero_ptr target,
+		SkillEffectTable* skill_conf,
+		size_t& phase,
+		bool trigger_by_buff,
+		proto::common::combat_act_type type = proto::common::combat_act_type_skill);
+
+	void get_pvp_param(int32_t& pvp_add_param, int32_t& pvp_dec_param, fight_hero_ptr target);
+
+	uint32_t get_hero_immuno_attr();
+	int32_t get_hero_element_hurt_increase(fight_hero_ptr target);//根据目标的系别获取自己的系别增伤属性
+	int32_t get_hero_element_hurt_reduce(fight_hero_ptr attacker);//根据攻击者的系别获取自己的系别减伤属性
+	uint32_t get_hero_attr_relation_type(fight_hero_ptr p_target);
+
+	// 攻击一个目标后
+	bool do_after_attack_target(fight_hero_ptr target, SkillEffectTable* skill_conf, bool trigger_by_buff);
+	
+	// 查找目标
+	bool find_target(SkillEffectTable* skill_conf, std::vector<fight_hero_ptr>& targets, std::vector<fight_hero_ptr>& spurting_targets, proto::common::combat_act_type type, fight_hero_ptr select = NULL);
+
+	// 技能附加buff
+	bool do_skill_buff(
+		size_t phase,
+		FIGHT_EVENT when,
+		skill_event_target_type to,
+		SkillEffectTable* skill_conf, 
+		fight_hero_ptr target = NULL);
+
+	// 技能伤害计算
+	bool do_skill_hurt(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		bool & combo);
+
+	void do_crit(fight_hero_ptr target, int & crit_multiple, int & heal_crit_multiple);
+
+	bool do_dodge(SkillEffectTable* skill_conf,fight_hero_ptr target);
+	bool do_immuno(SkillEffectTable* skill_conf, fight_hero_ptr target);
+	bool do_equip_dodge(SkillEffectTable* skill_conf, fight_hero_ptr target);
+
+	bool do_skill_hurt_imp(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple,
+		bool & combo);
+
+	void do_attack_result_notify(proto::common::combat_act_type type, fight_hero_ptr target, SkillEffectTable *p_skill_conf );
+
+	// 吸血
+	void do_leech(SkillEffectTable* skill_conf,fight_hero_ptr target);
+	// 吸血计算
+	int calc_leech(SkillEffectTable* skill_conf, fight_hero_ptr target);
+	// 反射
+	void do_reflect(SkillEffectTable* skill_conf, fight_hero_ptr target);
+	// 检测连击
+	bool check_combo(SkillEffectTable* skill_conf, fight_hero_ptr target);
+
+	// 计算直伤
+	uint32_t calc_direct_injury(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple
+		);
+
+	// 计算伤害限制
+	uint32_t calc_limit_injury(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple
+		);
+
+	uint32_t get_attack();
+
+	// 更新 战斗属性
+	void update_fight_attr(proto::common::hero_single* single, uint32_t type, int32_t value);
+
+	static bool is_buff_skill(uint32_t skill);
+
+	// 计算攻击力
+	int calc_attack(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple);
+
+	// 计算防御力
+	int calc_defend(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple);
+
+	// 计算伤害附加百分比
+	float calc_injury_addition_percent(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple);
+
+	// 通过BUFF目标类型获取目标
+	void get_target_by_buff_select_target(fight_hero_ptr select, int type, int rand_count, std::vector<fight_hero_ptr>& out, uint32_t param1 = 0);
+
+	// 计算伤害
+	int calc_injury(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple);
+
+	// 计算反伤
+	int calc_reflect(
+		size_t phase,
+		SkillEffectTable* skill_conf,
+		fight_hero_ptr target,
+		proto::common::combat_act_type type,
+		int crit_multiple); 
+
+	// 治疗
+	bool do_skill_heal(size_t phase, SkillEffectTable* skill_conf, fight_hero_ptr target, int heal_crit_multiple);
+
+	// 加buff
+	static void do_add_skill_buff(fight_hero_ptr p_hero, fight_hero_ptr p_attacker, uint32_t skill_id, bool b_use_rate, uint32_t buff_add_rate, const buff_info_vec& buffs);
+
+	// 计算效果命中结果
+	static bool do_effect_hit_result(fight_hero_ptr p_attacker, fight_hero_ptr p_target);
+
+	// 驱散buff
+	bool do_dispel_skill_buff(fight_hero_ptr p_hero, fight_hero_ptr p_attacker, uint32_t skill_id, uint32_t buff_dispel_rate, uint32_t buff_dispel_num, const buff_dispel_info_vec& buffs);
+
+	// 更新战斗
+	bool update_fight(const proto::common::hero_state& state);
+
+	void do_update_fight();
+
+	//更新战斗中的血量(boss血量同步)
+	void sync_hp(uint32_t value);
+
+	//设置嘲讽我的英雄
+	void set_taunt_me_hero(uint64_t uid) { m_taunt_me_hero_id = uid; }
+	//清除嘲讽我的英雄
+	void clear_taunt_me_hero() { m_taunt_me_hero_id = 0;  }
+
+	uint64_t get_taunt_me_hero() { return m_taunt_me_hero_id; }
+public:
+	void add_skill_cd_notify();
+public:
+	// 回合开始
+	bool on_round_start_imp();
+	// 回合结束
+	void on_round_end_imp();
+	// 回合开始
+	void on_round_start();
+	// 回合结束
+	void on_round_end();
+	// 攻击前
+	void before_attack(SkillEffectTable* skill_conf, bool trigger_by_buff);
+	// 攻击后
+	void after_attack(SkillEffectTable* skill_conf, bool trigger_by_buff);
+	// 脚本使用技能后
+//	void after_script_use_skill(SkillEffectTable* skill_conf);
+	// 处理技能消耗
+	void do_skill_consum(SkillEffectTable* skill_conf);
+	//检测技能消耗
+	bool check_skill_consum(SkillEffectTable* skill_conf);
+	// 死亡
+	void on_dead(fight_hero_ptr attaker, SkillEffectTable* skill_conf);
+	// 复活
+	void on_relive(
+		fight_hero_ptr attaker, 
+		uint32_t buffid, 
+		uint32_t bufftid,  
+		uint32_t skill, 
+		int relive_hp, 
+		int relive_speed = -1);
+
+	void on_soul_relive(
+		fight_hero_ptr attaker,
+		uint32_t buffid,
+		uint32_t bufftid,
+		uint32_t skill,
+		int relive_hp,
+		int relive_speed,
+		int relive_round,
+		int control_by_system);
+	// 召唤
+	bool summon(
+		// 召唤物ID
+		uint32_t summonid,
+		// 召唤者HP比例， 如果为0 则不使用
+		uint32_t master_hp_ratio,
+		// 召唤者攻击比例， 如果为0 则不使用
+		uint32_t master_attack_ratio,
+		// 召唤者防御比例， 如果为0 则不使用
+		uint32_t master_defend_ratio,
+		// 场上最大数量
+		uint32_t max_count,
+		// 是否随着召唤者死亡
+		uint32_t death_with_master,
+		uint32_t buffid,
+		uint32_t bufftid, 
+		uint32_t skill);
+
+	uint32_t get_relive_count();
+	uint32_t get_soul_relive_count();
+
+	bool is_single_attack(SkillEffectTable* skill_conf);
+	bool is_mutilp_attack(SkillEffectTable* skill_conf);
+public:
+
+	// 获取回合数
+	uint32_t get_round();
+	// 获取战斗指针
+	combat_ptr get_combat();
+	// 获取战斗id
+	uint64_t get_fight_uid();
+
+	// 获取技能cd
+	uint32_t get_skill_cd(uint32_t skill);
+	// 减技能cd
+	void sub_skill_cd(uint32_t cd = 1);
+
+	void sub_skill_cd(uint32_t skill, uint32_t cd);
+	// 加技能cd
+	void add_skill_cd(uint32_t skill);
+	// 加技能cd
+	void add_skill_cd_ex(uint32_t skill, uint32_t cd);
+	//设置技能CD
+	void set_skill_cd(uint32_t skill, uint32_t level );
+
+
+// 	// 校验开场技能cd
+// 	bool check_start_skill_cd(SkillEffectTable* conf);
+//	// 增加目标
+//	void add_cur_target(fight_hero_ptr target);
+	// 设置被嘲讽信息
+	void set_be_taunt_info(fight_hero_ptr target, bool is_add, uint32_t taunt_buff_type = 0, uint32_t buff_tid = 0);
+	// 设置嘲讽buff_id
+	void set_taunt_buff_info(uint32_t buff_type) { m_taunt_data.taunt_buff_type = buff_type; }
+	// 添加嘲讽目标
+	void add_taunt_target(fight_hero_ptr p_target);
+	// 移除嘲讽目标
+	void remove_taunt_target(fight_hero_ptr p_target);
+	// 清除嘲讽信息
+	void clear_taunt_info();
+	// 设置部署选择(注：这个不要随便设置，会导致选择buff施放目标枚举skill_buff_target_type 17 的目标错误）
+	void set_cur_select(const std::string& select);
+
+	// 分发光环BUFF
+	void distribute_special_buff();
+
+	// 回收光环BUFF
+	void recovery_special_buff();
+
+	// 激活被动BUFF
+	void activation_passive_buff();
+
+	// 清除被动BUFF
+	void clear_passive_buff();
+public:
+	// 出手顺序排序
+	static bool hero_speed_sort(const fight_hero_ptr& h1, const fight_hero_ptr& h2);
+	// 先手队列拉条溢出值排序
+	static bool hero_att_more_speed_sort(const fight_hero_ptr& h1, const fight_hero_ptr& h2);
+
+	static bool hero_max_speed_sort(const fight_hero_ptr& h1, const fight_hero_ptr& h2);
+
+	void set_full_speed(uint32_t full_speed) { m_full_speed = full_speed; }
+	uint32_t get_full_speed() { return m_full_speed; }
+public:
+
+	// 获取buff以外的属性
+	int get_attr_without_buff(uint32_t type);
+	// 获取属性
+	int get_attr(uint32_t type);
+	//获取属性百分比
+	int get_attr_percent(uint32_t type);
+	// 设置属性
+	void set_attr(uint32_t type, int value);
+	// 减属性
+	void sub_attr(uint32_t type, int value);
+	//清除回合属性
+	void clear_round_attr();
+
+	int get_real_sub_hp_value( int value );
+
+	void soul_condition_on_round_end();
+	uint32_t get_hp() { return get_attr(attrtype_enum::hp); }
+	uint32_t get_max_hp() { return get_attr(attrtype_enum::max_hp); }
+	uint32_t get_max_hp_without_buff() { return get_attr_without_buff(attrtype_enum::max_hp); }//获取初始最大生命值
+	uint32_t get_hp_percent();
+	// 加hp
+	void add_hp(int value);
+	// 治疗HP
+	uint32_t heal_hp(fight_hero_ptr attacker, int value);
+	// 治疗HP，不考虑治疗效果增减益
+	uint32_t heal_hp_regardless_of_attr(int value);
+	// 减hp
+	void sub_hp(int value, fight_hero_ptr attacker, uint32_t skill = 0, bool is_use_event = true );
+	// 被攻击
+	void on_be_attack(int damage, fight_hero_ptr attacker, uint32_t skill = 0, bool is_buff = false);
+	// 分摊伤害
+	int do_share_damage(int damage, fight_hero_ptr attacker, uint32_t skill, bool is_buff);
+	// 指定英雄分摊伤害
+	int do_share_hurt(int damage, fight_hero_ptr attacker, uint32_t skill);
+	// 计算承担伤害
+	int do_target_bear_damage(int damage, fight_hero_ptr attacker, uint32_t skill, bool is_buff);
+	// 承担伤害
+	void notify_bear_damage();
+	// 转移伤害
+	int do_transfer_damage(int damage, fight_hero_ptr attacker, uint32_t skill, bool is_buff);
+	// 获取怒气
+	uint32_t get_sp();
+	// 减怒气
+	void sub_sp(uint32_t value);
+	// 加怒气
+	void add_sp(uint32_t value);
+	// 减部署怒气
+	void sub_disposition_sp(uint32_t value);
+	// 获取部署怒气
+	uint32_t get_disposition_sp();
+	// 修改标记
+	void set_mark_id(uint32_t mark_id) { m_mark_id = mark_id; }
+	// 获取标记
+	uint32_t get_mark_id() { return m_mark_id; }
+	// 是否被控
+	bool is_in_control();
+	// 添加所有技能CD 
+	void inc_all_skill_cd(fight_hero_ptr attacker, uint32_t cd);
+	// 减少所有技能CD
+	void dec_all_skill_cd(fight_hero_ptr attacker, uint32_t cd);
+
+	// 随机添加技能CD 
+	void inc_random_skill_cd(fight_hero_ptr attacker, uint32_t cd);
+	// 随机减少技能CD
+	void dec_random_skill_cd(fight_hero_ptr attacker, uint32_t cd);
+
+	// 变身
+	void change_model(uint32_t change_type, uint32_t change_phase, uint32_t change_skill_level, uint32_t resource_id);
+	void restore_model();
+
+	uint32_t athanasia_count() const;
+	void athanasia_count(uint32_t value);
+public:
+	// 处理收到的伤害
+	void deal_be_attack(int32_t damage, fight_hero_ptr attacker, uint32_t skill);
+// 	// 记录伤害
+// 	void add_damage(int damage);
+// 	// 记录受到的伤害
+// 	void add_injured(int injured);
+// 	// 获取造成的伤害
+// 	uint32_t get_round_damage(uint32_t round);
+// 	// 获取受到的伤害
+// 	uint32_t get_round_injured(uint32_t round);
+	// 获取最近一次伤害计算结果
+	const fight_calc_result_t& get_fight_calc_result() { return m_calc_result; }
+	// 设置分摊伤害
+	void set_bear_damage(uint32_t ratio, fight_hero_ptr target);
+public:
+
+	// 获取脚本代理
+	inline script_fight_hero_t* get_script_proxy() const { return m_script_proxy; }
+	// 获取当前战斗过程
+	proto::common::combat_action_data* get_cur_process();
+	// 获取buff管理器
+	buff_manager_t& get_buff_manager() { return m_buff_mgr; }
+
+	// 添加战斗行为
+	//void add_combat_act(proto::common::combat_act_type type, uint32_t value, uint64_t target, uint32_t remain_value = 0);
+	void add_combat_act(proto::common::combat_act_type type, uint32_t value, fight_hero_ptr target, fight_hero_ptr attacker,
+						uint32_t remain_value = 0, uint32_t remain_value2 = 0, uint32_t param = 0, uint32_t param1 = 0);
+	// 过滤一些战斗行为
+	bool pass_combat_act_type(proto::common::combat_act_type type);
+
+
+	// 分摊伤害
+	void share_damage_to(fight_hero_ptr teammate, fight_hero_ptr attacker, uint32_t skill, uint32_t damage);
+	// 添加战斗技能行为
+	void add_combat_skill_act(proto::common::combat_act_type type, uint32_t value, uint64_t attacker, std::vector<uint64_t>& targets);
+
+	// buff移除时
+	void on_remove_buff(uint32_t id, uint32_t tid, uint32_t layer, uint32_t round, uint32_t event, uint64_t attacker_id = 0, const bool dispel = false);
+	// buff添加时
+	void on_add_buff(uint32_t id, uint32_t tid, uint32_t layer, uint32_t round, uint32_t event,  uint64_t attacker_id = 0);
+	// 触发免疫buff
+	void on_buff_immuno();
+	// 添加buff行为
+	void add_combat_buff_act(proto::common::combat_act_type type, uint32_t id, uint32_t tid, uint32_t layer, uint32_t round, uint64_t attacker_id = 0);
+	
+	// 设置脚本变量
+	void set_script_var(const std::string& var, int value);
+	// 获取脚本变量
+	int get_script_var(const std::string& var);
+
+	// 获取攻击步骤
+	proto::common::combat_act_step get_attack_step();
+	// 设置攻击步骤
+	void set_attack_step(proto::common::combat_act_step step);
+
+	void pack_attack_targets(std::string &targets);
+	void peek_recovery_data(proto::common::fight_recovery_hero_single_data *hero_data);
+	void peek_attr_list(proto::common::fight_recovery_hero_single_data* hero_data);
+	void peek_fight_skill_data(proto::common::fight_hero_skill_data *skill_data);
+	void peek_save_data(proto::common::hero_save_data *hero_data);
+
+	// 事件 p_event_owner 是事件触发人
+	void do_team_script_event(FIGHT_EVENT event, const fight_hero_ptr p_event_owner );
+
+	// 事件
+	bool on_event(FIGHT_EVENT event, const fight_hero_ptr p_event_owner );
+
+
+	// 添加特殊BUFF给所有人
+	void add_special_buff_to_all(int buff, int target_type, int skill );
+	// 删除所有人BUFF
+	void remove_special_buff_from_all(int buff, int target_type, int skill);
+
+
+	fight_hero_ptr get_first_target();
+	fight_hero_ptr get_cur_target();
+	fight_hero_ptr get_special_target();
+	fight_hero_ptr get_bear_damage_target();
+	
+	SkillEffectTable* get_cur_skill();
+	fight_hero_ptr get_cur_attacker();
+	void set_cur_attacker(fight_hero_ptr attacker);
+
+	uint32_t counter_count() const;
+	void counter_count(uint32_t value);
+
+	uint32_t add_buff_after_damage_count() const;
+	void add_buff_after_damage_count(uint32_t value);
+
+	uint32_t trigger_skill_count() const;
+	void trigger_skill_count(uint32_t value);
+
+	uint32_t combo_count() const;
+	void set_combo_count(uint32_t value);
+
+	//播放技能动作特效
+	bool do_skill_attack_target(SkillEffectTable* skill_conf, const std::vector<fight_hero_ptr>& targets, proto::common::combat_act_type type);
+
+	// 目标护盾只
+	static void do_target_shield_points(fight_hero_ptr target, int32_t &damage, int32_t &absorb );
+
+	static void deal_with_shield(fight_hero_ptr taret, int32_t &damage, int32_t &absorb, attrtype_enum::attr_type type, uint32_t buff_small_type);
+
+	void activation_skill(uint32_t skill, uint32_t level);
+
+
+	bool is_boss() {
+		return ( m_hero_data.base_attr().monster_type() == FIGHT_HERO_TYPE_BIG_BOSS || m_hero_data.base_attr().monster_type() == FIGHT_HERO_TYPE_SML_BOSS );
+	 }
+	
+	int get_max_attr(uint32_t attr_id);
+	
+public:
+	//移除所有被动技能buff效果
+	void clear_all_specail_buff();
+
+	uint32_t add_special_buff_skill_id( uint32_t skill_id );
+
+	uint32_t del_special_buff_skill_id( uint32_t skill_id );
+
+	uint32_t get_special_buff_skill_size(uint32_t skill_id);
+
+	uint32_t on_forget();											//被遗忘时
+
+	uint32_t on_de_forget();										//解遗忘时
+
+	uint32_t on_release_special_buff(uint64_t hero_uid, uint32_t buff_id);
+
+	std::map<uint32_t, uint32_t>	m_special_buff_skill_id;			// 自己被释放了特殊光环的skill_id + 数量(不同buff等级，但是skil_id相同),如果数量为0才移除数值。
+
+	std::map<uint64_t, std::set<uint32_t>>	m_be_special_buff_hero_list;// 被我释放了光环的英雄id+对应的光环列表,用来被遗忘之后收回buff
+public:
+	void add_transfer_hero(uint64_t hero_uid, uint32_t hurt) { m_transfer_hero_list[hero_uid] = hurt; }
+
+	void clear_transfer_hero() { m_transfer_hero_list.clear(); }
+
+	std::map<uint64_t, uint32_t> m_transfer_hero_list;					// 转移伤害英雄列表
+public:
+	//清理一段伤害的数据
+	void clear_phase_fight_info();
+public:
+	proto::common::hero_single m_hero_data;			// 武将初始数据
+
+	buff_manager_t m_buff_mgr;						// buff管理器
+	buff_element_manager_t m_buff_element_mgr;		// buff元素管理器
+	buff_element_manager_t m_buff_element_moment_mgr;// 瞬间BUFF元素管理器
+	combat_wptr m_combat;							// 战斗指针
+	proto::common::combat_form_single m_cur_form;	// 部署
+	attr_map m_cur_attr;							// 属性
+
+
+	fight_calc_result_t m_calc_result;				// 战斗结算结果
+
+	uint32_t get_do_attack_num() { return m_count_data.round_do_attack_num > 0 ? m_count_data.round_do_attack_num : 1; }
+
+	//初始化进度条,用于切波次后
+	void init_att_speed() { m_att_speed = get_speed();	}
+
+	//能否被追击
+	bool can_be_follow_attack(fight_hero_ptr p_attack);
+
+	uint32_t get_activation_skill() { return m_activation_skill; }
+
+	fight_hero_ptr get_self_ptr() { return shared_from_this(); }
+
+	//添加本回合对自己造成伤害的值
+	void add_round_enemy_hurt();
+	//获取本回合对自己伤害最高的存活敌人，伤害相同取随机一个敌人，找不到会随机敌方存活的武将，如果敌方没有存活武将返回NULL
+	fight_hero_ptr get_hurt_most_alive_enemy();
+	//获取客户端部署时选中的目标
+	fight_hero_ptr get_form_selected_hero();
+public:
+
+// 	typedef std::map<uint32_t, fight_hero_round_data> round_data;
+// 	round_data m_round_data;						// 武将回合数据
+public:
+	script_fight_hero_t*			m_script_proxy = NULL;		// 脚本代理
+	std::map<std::string, int>		m_script_var;				// 脚本变量
+	std::map<uint64_t, fight_hero_wptr> m_attack_targets;		// 每次攻击的所有目标
+public:
+	// 添加免疫的buff类型
+	void add_immuno_big_buff_type(uint32_t type);
+	void add_immuno_small_buff_type(uint32_t type);
+
+	bool is_immuno_big_buff_type(uint32_t type);
+	bool is_immuno_small_buff_type(uint32_t type);
+
+	// 清空免疫的buff类型
+	void clear_immuno_buff_type() { m_immuno_big_buff_types.clear(); m_immuno_small_buff_types.clear(); }
+
+	const std::set<uint32_t>& get_immuno_big_buff_types() { return m_immuno_big_buff_types; }
+	const std::set<uint32_t>& get_immuno_small_buff_types() { return m_immuno_small_buff_types; }
+
+public:
+	std::set<uint32_t>			m_immuno_big_buff_types;	// 免疫的所有buff大类型
+	std::set<uint32_t>			m_immuno_small_buff_types;	// 免疫的所有buff小类型
+	uint32_t get_turn_level() { return m_change_model_phase; }
+	uint32_t m_bear_damage = 0;								// 分摊的伤害
+
+	void add_immuno_buff(uint32_t buff_small_type) { m_immuno_special_buff.insert(buff_small_type); }
+	bool is_immuno_buff(uint32_t buff_small_type) { return m_immuno_special_buff.find(buff_small_type) != m_immuno_special_buff.end(); }					//是否是免疫的buff
+	std::set<uint32_t>			m_immuno_special_buff;		//免疫的光环buff
+private:
+	stat_data m_stat_data;								// 统计数据
+	count_data m_count_data;							// 次数数据
+	round_hurt_data m_round_hurt_data;					// 回合伤害数据
+	SkillEffectTable* m_cur_skill_conf = NULL;			// 当前使用的技能
+	fight_hero_wptr m_cur_target;						// 单次攻击的当前目标
+	fight_hero_wptr m_bear_damage_target;				// 分摊伤害目标
+	fight_hero_wptr m_special_target;					// 特殊攻击的目标
+	fight_hero_wptr m_cur_attacker;						// 当前攻击者
+	uint32_t m_mark_id = 0;								// 标记ID
+	uint32_t m_round = 1;								// 当前回合(每个武将单独计算自己的回合)
+	uint32_t m_att_speed = 0;							// 先攻值(不会超过阀值)
+	uint32_t m_order_att_speed = 0;						// 排序先攻值(会超过阀值 无必要不应开放修改接口)
+	uint32_t m_att_more_speed = 0;						// 拉条溢出值
+	uint32_t m_auto_fight_mode = 0;						// 自动战斗模式
+	uint32_t m_change_model_phase = 0;					// 变身阶段
+	uint32_t m_control_by_system = 0;					// 系统控制技能释放
+	uint32_t m_death_with_master = 0;					// 主人死亡时跟随死亡
+	uint32_t m_full_speed = 0;							// 计算后的溢出值
+
+//	int		m_last_hp = 0;								// 上次hp		//wys 注释 设计不合理 判断重复死亡应该用标记 2017.6.16
+	int32_t m_first_order_pos = -1;						// 在先手队列的位置
+
+	uint32_t m_activation_skill = 0;					// 激活技能 
+	uint32_t m_activation_skill_level = 0;				// 激活技能等级
+
+	uint32_t m_target_count = 0;						// 本次目标数量
+	taunt_data m_taunt_data;							// 嘲讽数据
+
+	bool	m_is_story = false;							// 是否是剧情武将
+	bool	m_dead_flag = false;						// 死亡标记
+
+	uint32_t m_bear_damage_ratio = 0;					// 分摊伤害比例
+	uint64_t m_taunt_me_hero_id = 0;					// 嘲讽我的武将id;
+public:
+	skill_manager_t m_skill_manager;
+
+public:
+	uint32_t get_suck_value(uint32_t type) { return m_suck_value[type]; }
+	void add_suck_value(uint32_t type, uint32_t value) { m_suck_value[type] += value; }
+	void clear_suck_value() { m_suck_value.clear(); }
+	std::map<uint32_t, uint32_t> m_suck_value;			//吸属性的buff是临时性的。所以只能存这儿了
+};
+
+#endif//__FIGHT_HERO_HPP__

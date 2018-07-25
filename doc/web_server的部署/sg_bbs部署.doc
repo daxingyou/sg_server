@@ -1,0 +1,28 @@
+1.环境：
+	apache2.2 
+	mysql5.1 
+	php3.3
+	php-mysql(安装成功后重启mysqld httpd服务)
+
+2.修改www目录权限 
+	su root
+	cd /var/www/html 
+	chown -R wangshanyue:wangshanyue(用户名 自己修改成自己的)
+
+4.切换成wnaghanyue 
+5.修改创建文件的other权限 umask 000 (每次ssh连进来都需要输入 或者写到profile里)
+如果已经部署好的环境可跳过以上步骤
+6. 创建log文件夹 cd sg_bbs mkdir log
+7. 上传源文件php到/var/www/html/sg_bbs文件夹 服务器trunk/web_server/sg_bbs/下的所有文件
+8. 修改已存在文件的ohter权限 chmod 777 -R sg_bbs 
+
+sg_game_common/db_connect.php		数据库连接
+sg_game_common/sg_bbs_log.php		日志记录
+hero_strategy_create_comment.php	武将攻略评价 创建新评论
+hero_strategy_get_comments.php		武将攻略评价 获取全部评论
+hero_strategy_like.php			武将攻略评价 点赞
+sg_bbs.php				客户端访问主目录 唯一暴露给客户端的页面 
+
+9.修改sg_game_common/db_connect.php中的数据库连接信息
+10.执行服务器trunk/sql/下的sg_bbs.sql 创建数据库
+11.部署完成

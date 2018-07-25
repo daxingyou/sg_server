@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> GM工具 <span class="c-gray en">&gt;</span> 重载数据表格 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+        <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 2px;">
+              <legend>重载数据表格</legend>
+        </fieldset>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">重载数据表格</li>
+                <!-- <li>公告发放记录</li> -->
+            </ul>
+            <div class="layui-tab-content" style="height: 10px;">
+                <div class="layui-tab-item layui-show">
+                  <form class="layui-form" id="oper_rs">
+                      <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel" lay-search>
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                                  <option value="0" selected=""></option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item proSelect">
+                              <label class="layui-form-label">操作类型</label>
+                              <div class="layui-input-inline" style="width: 300px;">
+                                <select name="option" lay-verify="opt_type" lay-filter="opt_type" id="opt_type">
+                                  <option value="0">全部加载</option>
+                                  <option value="1" selected="">指定加载</option>
+                                </select>
+                              </div>
+                            <div class="layui-inline" id="select_table_name" style="width: 300px;display:none;">
+                              <label class="layui-form-label">文件名</label>
+                              <div class="layui-input-inline editWidth" style="width: 300px;">
+                                  <input type="text" name="table_name" lay-verify="table_name" autocomplete="off" placeholder="请输入文件名" class="layui-input" id="table_name" >
+                              </div>
+                            </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <div class="layui-input-block">
+                              <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit="" lay-filter="send">发送</button>
+                              <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                          </div>
+                      </div>
+                  </form>
+                </div>
+            </div>                  
+        </div>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+
+<script type="text/javascript">
+$(function () {
+        $(document).ready(function () {
+           init_online_check_login_status();
+            var list = reload_select_list();
+            for(var i = 0; i < list.length; i++)
+            {
+               $("#zcySelect").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+            }
+              
+            var type = $('#opt_type').val();
+            var select_table_name_div = document.getElementById("select_table_name");
+            document.getElementById('table_name').value = "";
+            if (type == "1") 
+            {
+              select_table_name_div.setAttribute("style","display");
+            }else {
+              select_table_name_div.setAttribute("style","display:none");
+            }
+            renderForm();
+        });    
+ });
+
+layui.use(['layer','form', 'layedit', 'laydate','element','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,laytab = layui.element;
+
+  //自定义验证规则
+  form.verify({
+    zcySelect: function(value){
+      if (value == 0) {
+        return "请选择服务器"
+      }
+    }, table_name: function(value){
+      // var is_number = value.match(/^[a-z 0-9]+.tbls64$/);
+      // if (is_number == null) {
+      //     return "请输入正确的文件名";
+      // }
+      var type = $('#opt_type').val();
+      if(type == "1"){
+         if (value == "") {
+              return "请输入文件名";
+          }
+      }
+    }
+  });
+  
+  function reset_show()
+  {
+    var type = $('#opt_type').val();
+    var select_table_name_div = document.getElementById("select_table_name");
+        document.getElementById('table_name').value = "";
+        if (type == "1") 
+        {
+          select_table_name_div.setAttribute("style","display");
+        }else {
+          select_table_name_div.setAttribute("style","display:none");
+        }
+        form.render();
+  }
+
+  form.on('select(opt_type)', function(data){
+       reset_show(); 
+    });
+
+  //监听提交
+    form.on('submit(send)', function(data){
+        var storage = window.localStorage;
+        if (storage.account == "" || storage.account == undefined) {
+          layer.msg("没有登录操作无效", { icon: 5, time: 2000 });
+          return false;
+        }
+        var server_id_list = $('#zcySelect').val();
+        if (server_id_list == 0) {
+            layer.msg("请从服务器列表选择服务器", { icon: 5, time: 2000 });
+            return false;
+        }
+        var send = new Object();
+        send.oper_name = storage.account;
+        send.sid = new Array(server_id_list);
+        var type = $('#opt_type').val();
+        if (type == "1") {
+          send.load_type = 1;
+        }else {
+          send.load_type = 0;
+        }
+        send.file_name = $('#table_name').val();
+        // console.log("aaaaaaaaaaaaaaa");
+        console.log(send.file_name);
+        if(send.file_name.lastIndexOf('.tbls64') == -1){
+          send.file_name += '.tbls64';
+        }
+        console.log(send);
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/reload_config.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              console.log(json);
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        $('#oper_rs')[0].reset();
+        reset_show();
+        return false;
+    }); 
+});
+
+</script> 
+</body>
+</html>

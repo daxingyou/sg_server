@@ -1,0 +1,531 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> GM工具 <span class="c-gray en">&gt;</span> 公告发布 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+        <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 2px;">
+              <legend>公告</legend>
+        </fieldset>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">公告发放</li>
+                <li>公告发放记录</li>
+                <li>登录公告</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 10px;">
+                <div class="layui-tab-item layui-show">
+                  <form class="layui-form">
+                      <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel" lay-search>
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                                  <option value="0" selected=""></option>
+                              </select>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">开始时间</label>
+                          <div class="layui-input-block">
+                              <input type="radio" name="time" value="in_time" title="及时" checked="" id="in_time" lay-filter="in_time">
+                              <input type="radio" name="time" value="on_time" title="定时" id="on_time" lay-filter="on_time">
+                              <input type="text" lay-verify="date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss', minDate:'#F{\'%y-%M-%d HH:mm:ss\'}'})" id="logmin" class="input-text Wdate radius" style="width:200px;border-color:1.5px solid #ccc;">        
+
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                       <label class="layui-form-label ">间隔时间(分)</label>
+                          <div class="layui-input-block" style="width: 200px;">
+                              <input type="text" name="interval" lay-verify="interval" autocomplete="off" placeholder="请输入公告间隔时间" class="layui-input" id="interval" value="">
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <label class="layui-form-label">结束时间</label>
+                          <div class="layui-input-block">
+                              <input type="text" lay-verify="date_verify_max" placeholder="请输入结束时间" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin\')||\'%y-%M-%d HH:mm:ss\'}'})" id="logmax" class="input-text Wdate radius" style="width:200px;border-color:1.5px solid #ccc;">        
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item" pane="">
+                        <label class="layui-form-label">发送区域</label>
+                        <div class="layui-input-block">
+                           <input type="radio" name="area" value="marquee" title="跑马灯" id="marquee" lay-filter="marquee" checked="" >
+                           <input type="radio" name="area" value="tv" title="电视" id="tv" lay-filter="tv">
+                           <input type="radio" name="area" value="bugle" title="喇叭" id="bugle" lay-filter="bugle">
+                        </div>
+                      </div>
+
+                      <div class="layui-form-item layui-form-text">
+                          <label class="layui-form-label ">公告内容</label>
+                          <div class="layui-input-inline" style="width: 620px;">
+                              <textarea  lay-verify="content" class="layui-textarea" id="content"></textarea>
+                              <div class="textareaTip">您还可以再输入
+                                    <strong id="noticetextareaCount">200</strong>个字
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <div class="layui-input-block">
+                              <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit="" lay-filter="send">发送</button>
+                              <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                          </div>
+                      </div>
+                  </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel_1" lay-search>
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList_1" lay-search lay-verify="zcySelect_1" id="zcySelect_1" lay-filter="zcySelect_1">
+                                  <option value="0" selected=""></option>
+                              </select>
+                          </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="date_verify_min_log" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'log_max\')||\'%y-%M-%d\'}'})" id="log_min" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                                  -
+                                <input type="text" lay-verify="date_verify_max_log" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'log_min\')}',maxDate:'#F{\'%y-%M-%d\'}'})" id="log_max" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;" >
+                            </div>
+                        </div>
+                        
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline"> 
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query">查询</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="record_table"></table>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                  <form class="layui-form">
+                      <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">标签</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="mark" lay-search lay-filter="mark" id="mark" lay-verify="mark">
+                              <option value="0" selected=""></option>
+                            </select>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item layui-form-text">
+                          <label class="layui-form-label ">公告内容</label>
+                          <div class="layui-input-inline" style="width: 600px;">
+                              <textarea placeholder="" lay-verify="content_login" class="layui-textarea" id="content_login"></textarea>
+                              <div class="textareaTip">您还可以再输入
+                                    <strong id="logintextareaCount">1500</strong>个字
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="layui-form-item">
+                          <div class="layui-input-block">
+                              <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit="" lay-filter="send_login_notice">发送</button>
+                              <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                          </div>
+                      </div>
+                  </form>
+                </div>
+            </div>                  
+        </div>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+<script type="text/javascript">
+
+
+function page(json){
+    layui.use('table',function(){
+        var table = layui.table;
+        table.render({
+            elem:"#record_table",
+            height: 500,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'server_id', title: '<font size="3" face="楷体">服务器ID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'notice', title: '<font size="3" face="楷体">公告内容</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'start_time', title: '<font size="3" face="楷体">开始时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'end_time', title: '<font size="3" face="楷体">结束时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'tick', title: '<font size="3" face="楷体">间隔(分)</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'oper_time', title: '<font size="3" face="楷体">操作时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'oper_name', title: '<font size="3" face="楷体">操作人</font>', align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: true, //是否显示分页
+        limit: 10 //每页默认显示的数量
+        });
+    });    
+}
+
+$(function () {
+        $(document).ready(function () {
+           init_online_check_login_status();
+            var list = reload_select_list();
+             for(var i = 0; i < list.length; i++)
+             {
+                $("#zcySelect").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+             }
+
+             for(var i = 0; i < list.length; i++){
+               $("#zcySelect_1").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+             }
+
+             var mark_list = reload_mark_list();
+             for(var i = 0; i < mark_list.length; i++)
+             {
+                $("#mark").append("<option value='"+mark_list[i].id+"'>"+mark_list[i].name+"</option>");
+             }
+             renderForm();
+        });    
+ });
+
+layui.use(['layer','form', 'layedit', 'laydate','element','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laydate = layui.laydate
+  ,laytab = layui.element
+  ,table = layui.table;
+
+  //自定义验证规则
+  form.verify({
+    zcySelect: function(value){
+      if (value == 0) {
+        return "请选择服务器"
+      }
+    }
+    ,zcySelect_1: function(value){
+      if (value == 0) {
+        return "请选择服务器"
+      }
+    }
+    ,mark: function(value){
+      if (value == 0) {
+        return "请选择标签"
+      }  
+    }
+    , date_verify_min: function(value){
+      var val = $('input:radio[name="time"]:checked').val();
+      var min_time = $('#logmin').val();
+      var now_time = new Date().getTime();
+
+      if(val == 'on_time'){
+         if (min_time == 0) {
+            return '请选择时间';
+         }
+
+         if (min_time < now_time){
+            return '不能小于当前时间';
+         }
+      }
+    }
+    ,date_verify_max: function(value){
+      var val = $('input:radio[name="time"]:checked').val();
+      var min_time = document.getElementById('logmin').value;
+      var max_time = document.getElementById('logmax').value;
+      var now_time = new Date().getTime();
+      var interval = $('#interval').val();
+      if (interval != '' || interval != 0) {
+          if (max_time == 0) {
+            return '请选择时间';
+          }
+
+          if(val == 'on_time'){
+             if(max_time < min_time){
+                return '不能小于开始时间';
+              }
+          }
+
+          if (max_time < now_time){
+              return '不能小于当前时间';
+          }
+      }
+    }
+    ,content: function(value){
+      if(value == ''){
+        return '请输入公告内容';
+      }
+    }
+    ,date_verify_min_log: function(value){
+      var time_max = $('#log_max').val();
+      if(time_max != ''){
+        if (value == '') {
+          return '请选择时间';
+        }
+      }
+    }
+    ,date_verify_max_log: function(value){
+      var time_min = $('#log_min').val();
+      if(time_min != ''){
+        if (value == '') {
+          return '请选择时间';
+        }
+      }
+    }
+    ,interval: function(value){
+      var time_max = $('#logmax').val();
+      if (time_max != '') {
+          if (value == '') {
+          return '请选择间隔时间';
+        }
+      }
+
+      if (value != '') {
+          var is_number = regex_number(value);
+          if (is_number == null) {
+              return "请输入正确的间隔时间";
+          }
+      }
+    }
+    ,content_login: function(value){
+      if(value == ''){
+        return '请输入公告内容';
+      }
+    }
+  });
+  
+  form.on('select(zcySelect)', function(data){
+        document.getElementById('zcySelect_1').value = data.value;
+        renderForm();
+    });
+
+  form.on('select(zcySelect_1)', function(data){
+        document.getElementById('zcySelect').value = data.value;
+        renderForm();
+    });
+
+  //监听提交
+    form.on('submit(send)', function(data){
+        var storage = window.localStorage;
+        if (storage.account == "" || storage.account == undefined) {
+          layer.msg("没有登录操作无效", { icon: 5, time: 2000 });
+          return false;
+        }
+        var server_id_list = $('#zcySelect').val();
+        if (server_id_list == 0) {
+            layer.msg("请从服务器列表选择服务器", { icon: 5, time: 2000 });
+            return false;
+        }
+        var send = new Object();
+        send.oper_name = storage.account;
+        send.sid = new Array(server_id_list);
+        send.notice = ($('#content').val() == undefined ? "" : $('#content').val()); 
+        var start_time = get_msec_to_sec();
+        if(data.field.time == 'on_time'){
+          start_time = get_msec_to_sec($('#logmin').val());
+        }
+        var type = 1;                           //公告区域
+        if(data.field.area == 'tv')
+        {
+            type = 0;
+        }else if(data.field.area == 'bugle') 
+        {
+            type = 2;
+        }
+        
+        send.type = type;
+        send.tick = (data.field.interval == "" ? 0 : data.field.interval) * 60;  //秒数
+        send.start_time = start_time;
+        send.end_time = get_msec_to_sec($('#logmax').val());
+        send.oper_time = get_msec_to_sec();
+        console.log(send);
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/send_notify.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              console.log(json);
+              if (json.status == "success") {
+                  layer.msg("发送成功", { icon: 6, time: 2000 });
+              }else {
+                  layer.msg("发送失败", { icon: 5, time: 2000 });    
+              }
+              
+          },
+          error: function (er) {
+              console.log(er);
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    }); 
+
+
+    form.on('submit(query)', function(data){
+        var server_id_list = $('#zcySelect_1').val();
+        if (server_id_list == 0) {
+            layer.msg("请从服务器列表选择服务器", { icon: 5, time: 2000 });
+            return false;
+        }
+        var send = new Object();
+        send.sid = new Array(server_id_list);
+        var time_min = $('#log_min').val();
+        var time_max = $('#log_max').val();
+        if (time_min != '' && time_max != '') {
+            send.start_time = get_msec_to_sec(time_min);
+            send.end_time = get_msec_to_sec(time_max);
+        }
+        console.log(send);
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/select_send_notice.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              page(data_mod(json,'notice_log'));
+              console.log(json);
+              table.render();
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              renderForm();
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    });
+
+    //监听提交
+    form.on('submit(send_login_notice)', function(data){
+        var storage = window.localStorage;
+        if (storage.account == "" || storage.account == undefined) {
+          layer.msg("没有登录操作无效", { icon: 5, time: 2000 });
+          return false;
+        }
+        var mark_id_list = $('#mark').val();
+        if (mark_id_list == 0) {
+            layer.msg("请选择标签", { icon: 5, time: 2000 });
+            return false;
+        }
+        var send = new Object();
+        //send.oper_name = storage.account;
+        send.mark_type = mark_id_list;
+        send.data = ($('#content_login').val() == undefined ? "" : $('#content_login').val()); 
+        send.data = "\"" + send.data + "\"";
+        console.log(send);
+         var send_url = get_json_config("web_notify");
+         console.log(send_url);
+        $.ajax({
+          type: "POST",
+            url: send_url,
+          dataType: "json",
+          data: {
+           "mark_type": send.mark_type,
+           "data": send.data
+          },
+          success: function (json) {
+              console.log(json);
+              layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+              console.log(er);
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    });
+
+
+    $('#content').keyup(function (params) {
+                var maxLength = get_textarea_limit_value("notice"); // var max = get_textarea_limit_value("mail");
+                console.log(maxLength);
+                var len = $('#content').val().length;
+                $('#noticetextareaCount').html(maxLength - len);
+                if (parseInt($('#noticetextareaCount').text()) <
+                    0) {
+                    $('#noticetextareaCount').html('0');
+                    var res = $(this).val().substring(0, maxLength);
+                    $(this).val(res);
+                }
+    });
+
+    $('#content_login').keyup(function (params) {
+                var maxLength = get_textarea_limit_value("login_notice"); // var max = get_textarea_limit_value("mail");
+                console.log(maxLength);
+                var len = $('#content_login').val().length;
+                $('#logintextareaCount').html(maxLength - len);
+                if (parseInt($('#logintextareaCount').text()) <
+                    0) {
+                    $('#logintextareaCount').html('0');
+                    var res = $(this).val().substring(0, maxLength);
+                    $(this).val(res);
+                }
+    });
+
+});
+
+</script> 
+</body>
+</html>

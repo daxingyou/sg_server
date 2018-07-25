@@ -1,0 +1,29 @@
+#ifndef __GAME_FAMILY_SKILL_MANAGER_H__
+#define __GAME_FAMILY_SKILL_MANAGER_H__
+
+#include "protos_fwd.hpp"
+#include "family_skill.hpp"
+
+class family_skill_manager_t
+{
+public:
+	family_skill_manager_t(uint64_t uid);
+	~family_skill_manager_t();
+public:
+	void load_data(const proto::common::family_skill_data& fsd);
+	void peek_data(proto::common::family_skill_data* p_data);
+
+	void save_self();
+
+	void calc_attr(std::map<uint32_t, int>& attrs);
+
+	
+public:
+	uint32_t levelup(uint32_t skill_id, proto::common::family_skill_single* p_single, proto::common::role_change_data* p_data);
+private:
+	std::string m_key = "";
+	uint64_t m_owner = 0;
+	std::map<uint32_t, family_skill_ptr> m_family_skill_map;
+};
+typedef boost::shared_ptr<family_skill_manager_t> family_skill_mgr_ptr;
+#endif

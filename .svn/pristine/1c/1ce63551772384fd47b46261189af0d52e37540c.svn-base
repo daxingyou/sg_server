@@ -1,0 +1,357 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../lib/layui/css/layui.css" />
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>测试选项</title>
+
+    <style type="text/css">
+body{overflow-y: scroll;}
+</style>
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 游戏玩家 <span class="c-gray en">&gt;</span> 测试选项 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">`
+        <div class="text-c">
+            <font color="#0000000" size="3" face="楷体">日期范围:</font>
+            <input type="text" onfocus="WdatePicker({skin:'twoer', maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-{%d - 1}\'}'})" id="logmin" class="input-text Wdate radius" style="width:110px;border-color:1.5px solid #ccc;">
+        -
+            <input type="text" onfocus="WdatePicker({skin:'twoer', minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-{%d - 1}'})" id="logmax" class="input-text Wdate radius" style="width:110px;border-color:1.5px solid #ccc;">
+            
+            <button href="javascript:void(0);" name="Query" id="Query" class="btn btn-success radius" type="submit" onclick="seach_query()"><i class="Hui-iconfont">&#xe665;</i><font  size="3" face="楷体">查询</font></button><br/>
+            <div class="btn-group" style="line-height:1.6em;margin:4px;">
+                <span name="Yesterday" id="Yesterday" class="btn btn-success radius" type="submit" style="width:60px" href="javascript:;" onclick="yesterday_query()"><i class="Hui-iconfont"></i><font  size="3" face="楷体">昨日</font></span>
+                <span name="Threeday"  id="Threeday"  class="btn btn-success radius" type="submit" style="width:60px" href="javascript:;" onclick="Threeday_query()"><i class="Hui-iconfont"></i><font  size="3" face="楷体">三日</font></span>
+                <span name="Sevenday"  id="Sevenday"  class="btn btn-success radius" type="submit" style="width:60px" href="javascript:;" onclick="Sevenday_query()"><i class="Hui-iconfont"></i><font  size="3" face="楷体">七日</font></span>
+                <span name="Thirtyday" id="Thirtyday" class="btn btn-success radius" type="submit" style="width:70px" href="javascript:;" onclick="Thirtyday_query()"><i class="Hui-iconfont"></i><font  size="3" face="楷体">三十日</font></span>
+            </div>
+
+            <button href="javascript:void(0);" name="Export" id="Export" class="btn btn-success radius" type="submit" onclick="getImport('show_table')"><i class="Hui-iconfont">&#xe665;</i><font  size="3" face="楷体">导出</font></button><br/>
+
+        </div>
+        <div class="mt-20">
+        <table class="layui-table  layui-bg-black" lay-size="sm" id="show_table"></table>
+        
+        </div>
+    
+    <br>
+    <div id="map_show" style="min-width:700px;height:400px"></div>
+    </div>
+    <table class="layui-table" id="test"></table>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="../lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+<script type="text/javascript" src="../lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+<script type="text/javascript" src="../lib/layui/layui.all.js" charset="utf-8"></script>
+<script type="text/javascript">
+////////////////////////////////////////////////////
+
+var idTmr;  
+function getExplorer() {  
+    var explorer = window.navigator.userAgent;  
+    if (explorer.indexOf("MSIE") >= 0 || (explorer.indexOf("Windows NT 6.1;") >= 0 && explorer.indexOf("Trident/7.0;") >= 0)) {  
+        return 'ie';   //ie    
+    }  
+    else if (explorer.indexOf("Firefox") >= 0) {  
+        return 'Firefox';  //firefox    
+    }  
+    else if (explorer.indexOf("Chrome") >= 0) {  
+        return 'Chrome'; //Chrome    
+    }  
+    else if (explorer.indexOf("Opera") >= 0) {  
+        return 'Opera';  //Opera    
+    }  
+    else if (explorer.indexOf("Safari") >= 0) {  
+        return 'Safari';   //Safari    
+    }  
+}  
+  
+//此方法为ie导出之后,可以保留table格式的方法  
+function getIEsink(tableid) {  
+    var curTbl = document.getElementById(tableid);  
+    if (curTbl == null || curTbl == "") {  
+        alert("没有数据");  
+        return false;  
+    }  
+    var oXL;  
+    try {  
+        oXL = new ActiveXObject("Excel.Application"); //创建AX对象excel    
+    } catch (e) {  
+        alert("无法启动Excel!\n\n如果您确信您的电脑中已经安装了Excel，" + "那么请调整IE的安全级别。\n\n具体操作：\n\n" + "工具 → Internet选项 → 安全 → 自定义级别 → 对没有标记为安全的ActiveX进行初始化和脚本运行 → 启用");  
+        return false;  
+    }  
+  
+    var oWB = oXL.Workbooks.Add();  
+    var oSheet = oWB.ActiveSheet;  
+    var sel = document.body.createTextRange();  
+    sel.moveToElementText(curTbl);  
+    sel.select();  
+    sel.execCommand("Copy");  
+    oSheet.Paste();  
+    oXL.Visible = true;  
+}  
+  
+//此方法为ie导出之后,不保留table格式的方法  
+function getIEnotsink(tableid) {  
+    var curTbl = document.getElementById(tableid);  
+    if (curTbl == null || curTbl == "") {  
+        alert("没有数据");  
+        return false;  
+    }  
+    var oXL;  
+    try {  
+        oXL = new ActiveXObject("Excel.Application"); //创建AX对象excel    
+    } catch (e) {  
+        alert("无法启动Excel!\n\n如果您确信您的电脑中已经安装了Excel，" + "那么请调整IE的安全级别。\n\n具体操作：\n\n" + "工具 → Internet选项 → 安全 → 自定义级别 → 对没有标记为安全的ActiveX进行初始化和脚本运行 → 启用");  
+        return false;  
+    }  
+  
+    var oWB = oXL.Workbooks.Add();  
+    var oSheet = oWB.ActiveSheet;  
+    var Lenr = curTbl.rows.length;  
+    for (i = 0; i < Lenr; i++) {  
+        var Lenc = curTbl.rows(i).cells.length;  
+        for (j = 0; j < Lenc; j++) {  
+            oSheet.Cells(i + 1, j + 1).value = curTbl.rows(i).cells(j).innerText;  
+        }  
+    }  
+    oXL.Visible = true;  
+}  
+  
+function getImport(tableid) {  
+    if (getExplorer() == 'ie') {  
+        getIEnotsink(tableid);  
+    }  
+    else {  
+        tableToExcel(tableid);  
+    }  
+}  
+  
+function Cleanup() {  
+    window.clearInterval(idTmr);  
+    CollectGarbage();  
+}  
+var tableToExcel = (function () {  
+    var uri = 'data:application/vnd.ms-excel;base64,',  
+              template = '<html><head><meta charset="UTF-8"></head><body><table border="1">{table}</table></body></html>',  
+            base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) },  
+           format = function (s, c) {  
+               return s.replace(/{(\w+)}/g,  
+                    function (m, p) { return c[p]; })  
+           }  
+    return function (table, name) {  
+        if (!table.nodeType) table = document.getElementById(table)  
+        var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }  
+        window.location.href = uri + base64(format(template, ctx))  
+    }  
+  
+})()
+/////////////////////////////////////////////////////
+function page(json){
+    layui.use('table',function(){
+        var table = layui.table;
+
+        table.render({
+            elem:"#show_table",
+            height: 380,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'time', title: '日期', Width: '25%',align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'second_day', title: '次日留存(%)', Width: '25%',align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'seventh_day', title: '七日留存(%)', Width: '25%',align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'thirtieth_day', title: '三十日留存(%)', Width: '25%',align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: true, //是否显示分页
+        limit: 7 //每页默认显示的数量
+        });
+    });    
+}
+
+
+function get_show_data(json){
+    var second_day = new Object();
+    second_day.name = "次日留存(%)";
+    second_day.data = [];
+
+    var seventh_day = new Object();
+    seventh_day.name = "七日留存(%)";
+    seventh_day.data = [];
+
+    var thirtieth_day = new Object();
+    thirtieth_day.name = "三十日留存(%)";
+    thirtieth_day.data = [];
+
+    var series_list = new Array();
+    series_list.push(second_day);
+    series_list.push(seventh_day);
+    series_list.push(thirtieth_day);
+    for (var i = 0; i < json.length; i++){
+       series_list[0].data.push(parseFloat(json[i].second_day));
+       series_list[1].data.push(parseFloat(json[i].seventh_day));
+       series_list[2].data.push(parseFloat(json[i].thirtieth_day));
+    } 
+
+    return series_list;
+}  
+
+function show_map(json){
+    var date_list = new Array();
+    for (var i = 0; i < json.length; i++){
+        date_list.push(json[i].time);
+    }
+    Highcharts.chart('map_show', {
+         title: {
+            text: '玩家留存相关图形统计图',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: date_list
+        },
+        yAxis: {
+            title: {
+                text: '数据统计'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: ''
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: get_show_data(json)
+    });
+}
+ 
+$(function () {
+        $(document).ready(function () {
+
+            var storage = window.sessionStorage;
+            console.log(storage);
+            if(storage.account == null){
+                window.location.href="/login.html"; 
+            }
+
+            var time = new Date().getTime();
+            var time_max = time - (1 * 24 * 3600 * 1000);
+            var time_min = time - (7 * 24 * 3600 * 1000);
+            var cur_max = new Date(time_max);
+            var cur_min = new Date(time_min);
+            var time_max = cur_max.getFullYear() + '-' + addzero(cur_max.getMonth() + 1) + '-' + addzero(cur_max.getDate());
+            var time_min = cur_min.getFullYear() + '-' + addzero(cur_min.getMonth() + 1) + '-' + addzero(cur_min.getDate());
+            document.getElementById('logmax').value = time_max;
+            document.getElementById('logmin').value = time_min;
+            //query_db(time_min,time_max,3);
+        });    
+    });
+
+function addzero(v) {
+    if (v < 10) return '0' + v;
+    return v.toString();
+}
+
+function getLocalTime(nS) {     
+    return new Date(parseInt(nS) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");      
+}     
+
+function query_db(min_time,max_time,type){
+    var datemin = min_time;
+    var datemax = max_time;
+    var query_type = type;
+    console.log(datemin,datemax,type);
+    $.ajax({
+        type: "GET",
+        url: '../php/data.php',
+        dataType: "json",
+        data: {
+           "query_type": query_type,
+           "datemin": datemin,
+           "datemax": datemax
+        },
+        success: function (json) {
+            $('#show_table tr:gt(0)').remove();//删除之前的数据
+            console.log(json.length);
+            var s = '';
+            for (var i = 0; i < json.length; i++)
+                s += '<tr class="text-c"><td>' + json[i].time + '</td><td>' + json[i].second_day + '</td><td>' + json[i].seventh_day + '</td><td>' + json[i].thirtieth_day + '</td></tr>';
+            page(json);
+            show_map(json);
+        },
+        error: function (er) {
+            console.log(er);
+        },
+
+    });
+}
+
+function click_query_common(param,type){
+    var time = new Date().getTime();
+    var time_max = time - (1 * 24 * 3600 * 1000);
+    var time_min = time - (param * 24 * 3600 * 1000);
+    var cur_max = new Date(time_max);
+    var cur_min = new Date(time_min);
+
+    var time_max = cur_max.getFullYear() + '-' + addzero(cur_max.getMonth() + 1) + '-' + addzero(cur_max.getDate());
+    var time_min = cur_min.getFullYear() + '-' + addzero(cur_min.getMonth() + 1) + '-' + addzero(cur_min.getDate());
+    console.log(time_min);
+    console.log(time_max);
+    document.getElementById('logmax').value = time_max;
+    document.getElementById('logmin').value = time_min;
+    query_db(time_min,time_max,type);
+}
+
+function seach_query(){
+    var datemin = $('#logmin').val();
+    var datemax = $('#logmax').val();
+    query_db(datemin,datemax,3);
+}
+
+function yesterday_query(){
+   click_query_common(1,3);
+}
+
+function Threeday_query(){
+   click_query_common(3,3);
+}
+
+function Sevenday_query(){
+   click_query_common(7,3);
+}
+
+function Thirtyday_query(){
+   click_query_common(30,3);
+}
+</script>
+</body>
+</html>

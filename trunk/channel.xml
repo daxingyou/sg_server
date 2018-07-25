@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<channel>   
+    <channel0>
+        <id>0</id><!--0:test 1:apple 取[0,255]-->
+        <channel_name>test</channel_name><!--渠道名-->
+    </channel0>
+    <channel1>
+        <id>1</id><!--0:test 1:apple-->
+        <channel_name>apple</channel_name><!--渠道名-->
+    </channel1>
+    <channel2>
+        <id>2</id><!--0:test 1:apple-->
+        <channel_name>jy</channel_name><!--渠道名-->
+    </channel2>
+	<channel3>
+        <id>3</id><!--0:test 1:apple-->
+        <channel_name>dj</channel_name><!--渠道名-->
+    </channel3>
+</channel>

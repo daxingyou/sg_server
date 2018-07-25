@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<server>
+    <log_server>
+        <type>0</type><!--0:全局日志服务器 1:单组日志服务器-->
+    </log_server>
+</server>

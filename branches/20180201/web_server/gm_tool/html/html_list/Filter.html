@@ -1,0 +1,243 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../static/h-ui.admin/css/style.css" />
+<link rel="stylesheet" type="text/css" href="../lib/layui/css/layui.css"/>
+<!-- media 属性规定被链接文档将显示在什么设备上 media 属性用于为不同的媒介类型规定不同的样式 
+    media 适用于所有设备 -->
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 后台工具 <span class="c-gray en">&gt;</span> 选服 <a class="btn btn-primary radius r" onclick="removeIframe()" style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+    <div class="page-container">
+    <div class="layui-btn-group demoTable">
+            <!-- <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="getCheckData">获取选中行数据</button>
+            <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="getCheckLength">获取选中数</button>
+            <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="isAll">验证是否全选</button> -->
+            <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="query_server_list">查询</button>
+            <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="save_localStorage">确认</button>
+            <button class="layui-btn layui-btn-primary layui-btn-radius" data-type="clear_localStorage">清除缓存</button>
+    </div>
+    <form class="layui-form" action="">
+        <table class="layui-table layui-bg-black"  lay-filter="showtable"  id="show_table"></table>
+        <!-- <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius" onclick="clear_localStorage()">重置</button>-->
+    </form> 
+    </div>
+    <!--_footer 作为公共模版分离出去-->
+    <script type="text/javascript" src="../lib/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/h-ui/js/H-ui.min.js"></script>
+    <script type="text/javascript" src="../static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="../lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../lib/layui/layui.all.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        layui.use('table', function(){
+          var table = layui.table;
+          //监听表格复选框选择
+          table.on('checkbox(showtable)', function(obj){
+            var checkStatus = table.checkStatus('show_table');
+            //console.log(table.index);
+            //console.log(table);
+            //console.log(obj);
+            //save_localStorage(obj);
+            //return true;
+            table.render();
+          });
+          
+          var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+              var checkStatus = table.checkStatus('show_table')
+              ,data = checkStatus.data;
+              //console.log(data);
+              //console.log(checkStatus);
+              return false;
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                console.log($(this));
+              var checkStatus = table.checkStatus('show_table')
+              ,data = checkStatus.data;
+              layer.msg('选中了：'+ data.length + ' 个');
+              return false;
+            }
+            ,isAll: function(){ //验证是否全选
+              var checkStatus = table.checkStatus('show_table');
+              //console.log(checkStatus.isAll);
+              layer.msg(checkStatus.isAll ? '全选': '未全选')
+              return false;
+            }
+            ,save_localStorage: function(){
+                var checkStatus = table.checkStatus('show_table')
+              ,data = checkStatus.data;
+              // console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+              // console.log(checkStatus);
+              // console.log(data.length);
+              // console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+              if(data.length != 0  || checkStatus.isAll){
+                save_localStorage(data);
+                 //console.log("000000000000000000000000000000000000000");
+              }
+            }
+            ,clear_localStorage: function(){
+              clear_localStorage();
+            }
+            ,query_server_list: function(){
+              query_server_list();
+            }
+          };
+          
+          $('.demoTable .layui-btn').on('click', function(){
+
+            var type = $(this).data('type');
+             console.log(type);
+            active[type] ? active[type].call(this) : '';
+          });
+        });
+
+        $(function () {
+            clear_localStorage();
+            $(document).ready(function () {
+                var storage = window.sessionStorage;
+                console.log(storage);
+                if(storage.account == null){
+                    window.location.href="/login.html"; 
+                }
+            });
+        });
+        ///分页
+        function page(json) {
+            layui.use('table', function () {
+                var table = layui.table;
+                table.render({
+                    elem: "#show_table",
+                    height: 500,
+                    //width:'100%',
+                    cols: [[ //标题栏
+                        { type: 'checkbox' }
+                        , { field: 'mark_type', title: '<font size="3" face="楷体">服务器列表类型</font>', Width: '35%', align: 'center', style: 'background-color: #f2f2f2;', name: "mark_type" }
+                        , { field: 'server_id', title: '<font size="3" face="楷体">服务器组ID</font>', Width: '15%', align: 'center', style: 'background-color: #f2f2f2;', name: "server_list" }
+                        , { field: 'status', title: '<font size="3" face="楷体">状态</font>', Width: '15%', align: 'center', style: 'background-color: #f2f2f2;', name: "server_list" }
+                        , { field: 'server_name', title: '<font size="3" face="楷体">服务器名</font>', Width: '20%', align: 'center', style: 'background-color: #f2f2f2;', name: "server_list" }
+                        , { field: 'label', title: '<font size="3" face="楷体">服务器标签</font>', Width: '15%', align: 'center', style: 'background-color: #f2f2f2;', name: "server_list" }
+                    ]],
+                    data: json,
+                    page: true, //是否显示分页
+                    limit: 10 //每页默认显示的数量
+                });
+            });
+        }
+     
+
+        function save_localStorage(obj) {
+            // body...
+            console.log("+++++++++++++++++++++++++++");
+            //console.log(obj);
+            var storage = window.localStorage;
+            //storage.clear();
+            var server_list = storage.getItem("server_id_list");
+            var list = new Array();
+            //console.log(server_list);
+            if (server_list != null) {
+                // statement
+                list = server_list.split(",");
+            } 
+            //console.log(list);
+            console.log("==================================================================");
+            for(var i = 0; i < obj.length; i++)
+            {
+            console.log("--------start--------------------");
+
+                console.log(list);
+                if (-1 == list.indexOf(obj[i].server_id, 0)) {
+                    list.push(obj[i].server_id);
+                }
+                console.log(list);
+            console.log("---------end--------------------");
+
+                 //=  obj[i].server_id;
+                //console.log(i);
+                //console.log(obj[i].server_id);
+            }    
+            // var list = new Array();
+            // for(var i = 0; i < obj.length; i++){
+            //     list[i] =  obj[i].server_id;
+            //     //console.log(i);
+            //     //console.log(obj[i].server_id);
+            // }
+            // var index = new Array();
+
+            // index.pus(list);
+            // console.log(index);
+            storage["server_id_list"] = list;
+            console.log(storage);
+          
+            //for(var i = 0; i < storage.length; i++)
+            //{
+
+            //}
+            //storage.setItem(ke, value: DOMString)
+                    //storage["version_name"] = obj.value();
+                    //storage.setItem("transfer_number", $('#transfer_number').val())
+        }
+
+         function clear_localStorage() {
+            // body...
+            
+            var storage = window.localStorage;
+            console.log(storage);
+            storage.clear();
+            console.log("==============================================");
+            console.log(storage);
+        }
+
+        function query_server_list(){
+            $.ajax({
+                    type: "GET",
+                    url: '../php/get_server_list.php',
+                    dataType: "json",
+                    success: function (json) {
+                        $('#show_table tr:gt(0)').remove();//删除之前的数据
+                        //console.log(json);
+                        var s = '';
+                        for (var i = 0; i < json.length; i++)
+                            s += '<tr class="text-c"><td>' + json[i].mark_type + '</td><td>' + json[i].server_id + '</td><td>' + json[i].status + '</td><td>' + json[i].server_name + '</td><td>' + json[i].label + '</td></tr>';
+                        page(json);
+                    },
+                    error: function (er) {
+                        console.log(er);
+                    },
+                });
+        }
+        
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+$cfile "script/game_script_func.h"
+$cfile "script/script_role.h"
+$cfile "script/script_fight_hero.h"
+$cfile "script/script_dungeon.h"
+$cfile "../tblh/attr_enum.hpp"

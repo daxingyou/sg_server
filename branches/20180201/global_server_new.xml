@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<server>
+    <!--ios:1 andriod:2-->
+    <platform>1</platform>
+    <!--开服时间-->
+    <start_time>2016-08-01 00:00:00</start_time>
+    <!-- 取[1501,2047] 一个区的所有cross的唯一ID-->
+    <server_id>1501</server_id>
+    <!--支持混渠道，用;隔开 渠道 0:test 1:apple-->
+    <channel>0</channel>
+    <!-- 服务器列表标记,用于管理服务器列表的,可以是字符串 ,以;分割-->
+    <server_list_type>INNER_EDITOR;OUTSIDE_IOS;OUTSIDE_ANDROID;OUTSIZE_IOS_BRANCH_XXX;OUTSIZE_ANDROID_BRANCH_XXX;OUTSIDE2_IOS;JIUYOU_2_ANDROID;JIUYOU_2_IOS;JIUYOU_2_ANDROID_2</server_list_type>
+    <web_server_url>http://139.196.41.108:8080/sg_update</web_server_url>   
+    <common>
+        <!--连接白名单(监听服只接受来自于在白名单中的IP连接) 多个用;隔开-->
+        <ip_white_list>47.100.130.174;139.196.41.108;116.231.159.207;192.168.1.6;192.168.1.5;192.168.1.178;192.168.1.209;192.168.1.212;192.168.1.223;192.168.1.185;192.168.1.233</ip_white_list>
+    	<!--服务器间重连的间隔时间，单位：秒-->
+        <reconnect_interval_time>10</reconnect_interval_time>
+        <!--发送给日志服务器的日志条数限制-->
+		<db_log_count_limit>20</db_log_count_limit>
+    	<path>
+    		<config>../config</config>
+	        <script>../config/script</script>
+	        <map>../config/map</map>
+	        <ai>../config/ai</ai>
+    	</path>
+        <!--0表示按天创建log 1表示按小时创建log-->
+		<new_logfile_per_hour>0</new_logfile_per_hour>
+        <!--LOG路径-->
+        <log_path>./logs</log_path>
+        <!--是否打印trace类型LOG-->
+        <log_trace>0</log_trace>
+        <!--是否打印debug类型LOG-->
+        <log_debug>0</log_debug>
+        <!--是否打印info类型LOG-->
+        <log_info>1</log_info>
+        <!--消息统计LOG-->
+        <log_msg_count>0</log_msg_count>
+        <log>
+	        <role>1</role>
+	        <hero>1</hero>
+	        <equip>1</equip>
+	        <trade>1</trade>
+	        <task>1</task>
+	        <scene>1</scene>
+	        <item>1</item>
+	        <boss>1</boss>
+	        <fight>0</fight>
+	        <treasure>1</treasure>
+	        <pk>1</pk>
+	        <rank>1</rank>
+	        <role_buff>1</role_buff>
+	        <achieve>1</achieve>
+	        <red_point>1</red_point>
+	        <lifeforce>1</lifeforce>
+	        <new_guide>1</new_guide>
+	        <dungeon>1</dungeon>
+	        <kingwar>1</kingwar>
+	        <shop>1</shop>
+	        <mail>1</mail>
+	        <friend>1</friend>
+	        <worldcup>1</worldcup>
+          <arena>1</arena>
+        </log>
+    </common>
+    
+    <!--account_server配置-->
+    <account_server>
+        <timeout>
+            <!--默认60s 和客户端的会话超时 防止客户端sokcet连接上但不发消息占用socket数量-->
+            <session>180</session>
+        </timeout>
+        <thread_num>
+            <network>4</network>
+            <channel>20</channel>
+        </thread_num>
+		<!-- #ACCOUNT_CONF# -->	
+        <#ACCOUNT_NO#>
+            <listen>
+                <client>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </client>
+                <login>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </login>
+                <db>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </db>
+            </listen>
+        </#ACCOUNT_NO#>
+        <mysql>
+            <host>192.168.1.5</host>
+            <db>sg_account</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--默认连接数-->
+            <init_connections>15</init_connections>
+            <!--最大连接数-->
+            <max_connections>20</max_connections>
+        </mysql>
+    </account_server>
+    
+    <!--transfer_server配置-->
+    <transfer_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+		<!-- #TRANSFER_CONF# -->	
+		<#TRANSFER_NO#>
+            <listen>
+                <chat>
+                    <ip>192.168.1.178</ip>
+                    <port>#CHANGE_PORT#</port>
+                </chat>
+                <center>
+                    <ip>192.168.1.178</ip>
+                    <port>#CHANGE_PORT#</port>
+                </center>
+            </listen>
+        </#TRANSFER_NO#>
+
+    </transfer_server>
+    
+    <!--area_server配置-->
+    <area_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+        <listen>
+            <transfer>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </transfer>
+            <cross>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </cross>
+        </listen>
+        <mysql>
+            <host>192.168.1.5</host>
+            <db>sg_area</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--默认连接数-->
+            <init_connections>15</init_connections>
+            <!--最大连接数-->
+            <max_connections>20</max_connections>
+        </mysql>
+        <redis>
+            <host>127.0.0.1</host>
+            <port>6379</port>
+            <pwd>Sanguo1!</pwd>
+            <db>0</db>
+            <!--保存到sql间隔 秒-->
+            <save_interval>1</save_interval>
+            <!--单次保存到sql条数限制-->
+            <save_count_limit>500</save_count_limit>
+        </redis>
+    </area_server>
+    
+    <!--cross server配置 game server copy-->
+    <cross_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+		<!-- #CROSS_CONF# -->
+		<#CROSS_NO#>
+            <listen>
+                <gate>
+                    <ip>192.168.1.5</ip>
+                    <port>#CHANGE_PORT#</port>
+                </gate>
+            </listen>
+        </#CROSS_NO#>	
+    </cross_server>
+
+    <!--glog server配置 log server copy-->
+    <glog_server>
+        <!--默认60秒-->
+        <update_to_db_time>60</update_to_db_time>
+        <thread_num>
+            <network>4</network>
+            <log>4</log>
+        </thread_num>
+        <listen>
+            <account>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </account>
+        </listen>
+        <mysql>
+            <host>192.168.1.5</host>
+            <db>sg_glog</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--默认连接数-->
+            <init_connections>15</init_connections>
+            <!--最大连接数-->
+            <max_connections>20</max_connections>
+        </mysql>
+    </glog_server>
+</server>
+

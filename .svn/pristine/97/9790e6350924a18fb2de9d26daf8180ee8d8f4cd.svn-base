@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<channel>   
+    <channel0>
+        <id>0</id><!--0:test 1:apple 取[0,255]-->
+        <channel_name>test</channel_name><!--渠道名-->
+        <game_name>nms</game_name><!--游戏名-->
+        <login_url>http://10.103.252.39:8999/auth/checkToken?</login_url><!--http://10.103.252.39:8999/auth/checkToken?-->
+        <login_sk>123456</login_sk>
+        <recharge_sk></recharge_sk>
+        <gift_bag_code_url>http://10.103.252.93:9009/main/usecode?</gift_bag_code_url>
+        <gift_bag_code_sk>dsuc1013#$89klfcbio</gift_bag_code_sk>
+		<web_server_url>http://192.168.1.178/sg_update/login_version.php?channel_id</web_server_url>
+    </channel0>
+    <channel1>
+        <id>1</id><!--0:test 1:apple-->
+        <channel_name>apple</channel_name><!--渠道名-->
+        <game_name>nms</game_name><!--游戏名-->
+        <login_url>http://10.103.252.39:8999/auth/checkToken?</login_url><!--http://10.103.252.39:8999/auth/checkToken?-->
+        <login_sk>123456</login_sk>
+        <recharge_sk></recharge_sk>
+        <gift_bag_code_url>http://10.103.252.93:9009/main/usecode?</gift_bag_code_url>
+        <gift_bag_code_sk>dsuc1013#$89klfcbio</gift_bag_code_sk>
+		<web_server_url>http://192.168.1.178/sg_update/login_version.php?channel_id</web_server_url>
+    </channel1>
+    <channel2>
+        <id>2</id><!--0:test 1:apple-->
+        <channel_name>jy</channel_name><!--渠道名-->
+        <game_name>nms</game_name><!--游戏名-->
+        <login_url>http://139.196.41.108:8080/sg_sdk/sdk_service.php</login_url><!--http://10.103.252.39:8999/auth/checkToken?-->
+        <login_sk>123456</login_sk>
+        <recharge_sk></recharge_sk>
+        <gift_bag_code_url>http://10.103.252.93:9009/main/usecode?</gift_bag_code_url>
+        <gift_bag_code_sk>dsuc1013#$89klfcbio</gift_bag_code_sk>
+		<web_server_url>http://192.168.1.178/sg_update/login_version.php?channel_id</web_server_url>
+    </channel2>
+</channel>

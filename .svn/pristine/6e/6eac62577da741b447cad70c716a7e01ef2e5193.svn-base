@@ -1,0 +1,793 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+        <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+    <!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+    <title>后台监控</title>
+    <style type="text/css">
+        html,
+        body {
+            height: auto;
+        }
+
+        #suggest,
+        #suggest2 {
+            width: 200px;
+        }
+
+        .gray {
+            color: gray;
+        }
+
+        .ac_results {
+            background: #fff;
+            border: 1px solid #7f9db9;
+            position: absolute;
+            z-index: 10000;
+            display: none;
+        }
+
+        .ac_results li a {
+            white-space: nowrap;
+            text-decoration: none;
+            display: block;
+            color: #05a;
+            padding: 1px 3px;
+        }
+
+        .ac_results li {
+            border: 1px solid #fff;
+        }
+
+        .ac_over,
+        .ac_results li a:hover {
+            background: #c8e3fc;
+        }
+
+        .ac_results li a span {
+            float: right;
+        }
+
+        .ac_result_tip {
+            border-bottom: 1px dashed #666;
+            padding: 3px;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="breadcrumb">
+        <i class="Hui-iconfont">&#xe67f;</i> 首页
+        <span class="c-gray en">&gt;</span> GM工具
+        <span class="c-gray en">&gt;</span> 道具发放
+        <a class="btn btn-primary radius r" onclick="removeIframe()" style="line-height:1.6em;margin:4px;" title="关闭">
+            <i class="Hui-iconfont">&#xe6a6;</a>
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 2px;">
+            <legend>道具发放</legend>
+        </fieldset>
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">道具发放</li>
+                <li>道具发放记录</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 10px;">
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form" id="oper_send">
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label">渠道</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="channel" lay-search>
+                                    <option value="1" selected="">峰途</option>
+                                </select>
+                            </div>
+                            <label class="layui-form-label">服务器列表</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                                    <option value="0" selected=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">发放时限</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="time" value="in_time" title="及时" checked="" id="in_time" lay-filter="in_time">
+                                <input type="radio" name="time" value="on_time" title="定时" id="on_time" lay-filter="on_time" disabled>
+                                <input type="text" lay-verify="date_verify" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss', minDate:'#F{\'%y-%M-%d HH:mm:ss\'}'})"
+                                    id="log_time" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">范围</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="range" value="Single" title="单人" checked="" id="Single" lay-filter="Single">
+                                <input type="radio" name="range" value="All" title="全服" id="All" lay-filter="All">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">玩家DID</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="role_uid" lay-verify="role_uid" autocomplete="off" placeholder="请输入玩家DID" class="layui-input" id="role_uid"
+                                    layui-disabled="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <b id="show_warning_id">
+                                    <font color='red'>(ID不可重复 装备数量不可大于1)</font>
+                                </b>
+                            </div>
+                            <label class="layui-form-label ">道具</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="item1" lay-verify="number_verify" autocomplete="off" placeholder="道具" class="layui-input" id="item1"
+                                    value="">
+                            </div>
+                            <label class="layui-form-label ">数量</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="number1" lay-verify="number_verify" autocomplete="off" placeholder="数量" class="layui-input" id="number1"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">道具</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="item2" lay-verify="number_verify" autocomplete="off" placeholder="道具" class="layui-input" id="item2"
+                                    value="">
+                            </div>
+                            <label class="layui-form-label ">数量</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="number2" lay-verify="number_verify" autocomplete="off" placeholder="数量" class="layui-input" id="number2"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">道具</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="item3" lay-verify="number_verify" autocomplete="off" placeholder="道具" class="layui-input" id="item3"
+                                    value="">
+                            </div>
+                            <label class="layui-form-label ">数量</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="number3" lay-verify="number_verify" autocomplete="off" placeholder="数量" class="layui-input" id="number3"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">道具</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="item4" lay-verify="number_verify" autocomplete="off" placeholder="道具" class="layui-input" id="item4"
+                                    value="">
+                            </div>
+                            <label class="layui-form-label ">数量</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="number4" lay-verify="number_verify" autocomplete="off" placeholder="数量" class="layui-input" id="number4"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">道具</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="item5" lay-verify="number_verify" autocomplete="off" placeholder="道具" class="layui-input" id="item5"
+                                    value="">
+                            </div>
+                            <label class="layui-form-label ">数量</label>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" name="number5" lay-verify="number_verify" autocomplete="off" placeholder="数量" class="layui-input" id="number5"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label ">邮件标题</label>
+                            <div class="layui-input-inline" style="width: 620px;">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入邮件标题" class="layui-input" id="title"
+                                    value="系统邮件">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label ">邮件内容</label>
+                            <div class="layui-input-inline" style="width: 620px;">
+                                <textarea lay-verify="content" class="layui-textarea" id="content"></textarea>
+                                <div class="textareaTip">您还可以再输入
+                                    <strong id="textareaCount">200</strong>个字
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius " lay-submit="" lay-filter="send" id='send'>发送</button>
+                                <button type="reset" class="layui-btn layui-btn-primary layui-btn-radius">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form" id="oper_query">
+                        <div class="layui-form-item proSelect">
+                            <label class="layui-form-label">渠道</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="channel_1" lay-search>
+                                    <option value="1" selected="">峰途</option>
+                                </select>
+                            </div>
+                            <label class="layui-form-label">服务器列表</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="productList_1" lay-search lay-verify="zcySelect_1" id="zcySelect_1" lay-filter="zcySelect_1">
+                                    <option value="0" selected=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})"
+                                    id="logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                                <input type="text" lay-verify="date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                                    id="logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">DID</label>
+                            <div class="layui-input-inline" id="Role_uid_1" style="width: 200px;">
+                                <input type="text" name="role_uid_1" lay-verify="role_uid_1" autocomplete="off" placeholder="请输入玩家DID" class="layui-input"
+                                    id="role_uid_1" layui-disabled="">
+                            </div>
+
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query">查询</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="record_table"></table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+    <script>
+        function page(json) {
+            layui.use('table', function () {
+                var table = layui.table;
+                table.render({
+                    elem: "#record_table",
+                    height: 500,
+                    //width:'100%',
+                    cols: [
+                        [ //标题栏
+                            {
+                                field: 'server_id',
+                                title: '<font size="3" face="楷体">服务器ID</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'id',
+                                title: '<font size="3" face="楷体">玩家DID</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'title',
+                                title: '<font size="3" face="楷体">邮件标题</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'content',
+                                title: '<font size="3" face="楷体">邮件内容</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'send_name',
+                                title: '<font size="3" face="楷体">发送名</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'send_time',
+                                title: '<font size="3" face="楷体">发送时间</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'end_time',
+                                title: '<font size="3" face="楷体">结束时间</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'on_time',
+                                title: '<font size="3" face="楷体">邮件生效时间</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'items',
+                                title: '<font size="3" face="楷体">物品列表</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'oper_time',
+                                title: '<font size="3" face="楷体">操作时间</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }, {
+                                field: 'oper_name',
+                                title: '<font size="3" face="楷体">操作人</font>',
+                                align: 'center',
+                                style: 'background-color: #f2f2f2;'
+                            }
+                        ]
+                    ],
+                    data: json,
+                    page: true, //是否显示分页
+                    limit: 10 //每页默认显示的数量
+                });
+            });
+        }
+
+        //重新渲染表单
+        $(function () {
+            $(document).ready(function () {
+                init_online_check_login_status();
+                var list = reload_select_list();
+                for (var i = 0; i < list.length; i++) {
+                    $("#zcySelect").append("<option value='" + list[i].id + "'>" + list[i].name +
+                        "</option>");
+                }
+
+                for (var i = 0; i < list.length; i++) {
+                    $("#zcySelect_1").append("<option value='" + list[i].id + "'>" + list[i].name +
+                        "</option>");
+                }
+                renderForm();
+            });
+        });
+
+
+        function get_items() {
+            var items = new String();
+            for (var i = 1; i < 6; i++) {
+                var it = '#item' + i;
+                var nu = '#number' + i;
+                var item = $(it).val();
+                var number = $(nu).val();
+                if (item != 0 && number != 0) {
+                    items = items + item + ':' + number + '$';
+                }
+            }
+            return items;
+        }
+
+        layui.use(['layer', 'form', 'layedit', 'laydate', 'element', 'table'], function () {
+            var form = layui.form,
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                laytab = layui.element,
+                table = layui.table;
+
+            //自定义验证规则
+            form.verify({
+                zcySelect: function (value) {
+                    if (value == 0) {
+                        return "请选择服务器"
+                    }
+                },
+                zcySelect_1: function (value) {
+                    if (value == 0) {
+                        return "请选择服务器"
+                    }
+                },
+                role_uid: function (value) {
+                    var val = $('input:radio[name="range"]:checked').val();
+                    if (val == "Single") {
+					console.log(value);
+                        var is_number = regex_number(value);
+						console.log(is_number);
+                        if (is_number == null) {
+                            return "请输入正确的玩家DID";
+                        }
+                    }
+                },
+                role_uid_1: function (value) {
+                    if (value != "") {
+                        var is_number = regex_number(value);
+                        if (is_number == null) {
+                            return "请输入正确的玩家DID";
+                        }
+                    }
+                },
+                title: function (value) {
+                    if (value.length < 1) {
+                        return '请至少得1个字符';
+                    } else if (value.length > 50) {
+                        return '长度超过50';
+                    }
+                },
+                date_verify: function (value) {
+                    var time = document.getElementById('log_time').value;
+                    var val = $('input:radio[name="time"]:checked').val();
+                    if (val == 'on_time') {
+                        if (time == 0) {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                number_verify: function (value, item) {
+                    if (value != "") {
+                        if (0 == value) {
+                            return '数值不能为0';
+                        }
+                        var is_number = regex_number(value);
+                        if (is_number == null) {
+                            return '请输入正确的数字';
+                        }
+                    }
+
+                    switch (item.id) {
+                        case 'item1':
+                            var number1 = $('#number1').val();
+                            console.log(number1, value);
+                            if (number1 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        case 'item2':
+                            var number2 = $('#number2').val();
+                            if (number2 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+
+                        case 'item3':
+                            var number3 = $('#number3').val();
+                            if (number3 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+
+                        case 'item4':
+                            var number4 = $('#number4').val();
+                            if (number4 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+
+                        case 'item5':
+                            var number5 = $('#number5').val();
+                            if (number5 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    switch (item.id) {
+                        case 'number1':
+                            var item1 = $('#item1').val();
+                            if (item1 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        case 'number2':
+                            var item2 = $('#item2').val();
+                            if (item2 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+
+                        case 'number3':
+                            var item3 = $('#item3').val();
+                            if (item3 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        case 'number4':
+                            var item4 = $('#item4').val();
+                            if (item4 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        case 'number5':
+                            var item5 = $('#item5').val();
+                            if (item5 != 0) {
+                                if (value == 0) {
+                                    return '道具和数量必须同有数值或者同没有数值'
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                },
+                date_verify_min: function (value) {
+                    var time_max = document.getElementById('logmax').value;
+                    if (time_max != '') {
+                        if (value == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                date_verify_max: function (value) {
+                    var time_min = document.getElementById('logmin').value;
+                    if (time_min != '') {
+                        if (value == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                role_uid_1: function (value) {
+                    if (value != "") {
+                        var is_number = regex_number(value);
+                        if (is_number == null) {
+                            return "请输入正确的玩家UID";
+                        }
+                    }
+                }
+            });
+            
+            //监听radio
+            form.on('radio()', function(data){
+                console.log(data);
+                if(data.value === "All"){
+                    //TODO 开启定时
+                    document.getElementById('on_time').removeAttribute('disabled');
+                }
+                else if(data.value === "Single"){
+                    //TODO 关闭定时
+                    //document.getElementById('on_time').removeAttribute('checked');
+                    // document.getElementById('in_time').setAttribute('checked', '1');
+                    document.getElementById('on_time').setAttribute('disabled', '1');
+                }
+                else if(data.value == "on_time"){
+                    //TODO 关闭单人
+                    document.getElementById('Single').setAttribute('disabled', '1');
+                }
+                else if(data.value == "in_time"){
+                    //TODO 开启单人
+                    document.getElementById('Single').removeAttribute('disabled');
+                }
+                console.log('123124323141');
+                renderForm();
+            });
+
+            //监听提交
+            form.on('submit(send)', function (data) {
+                console.log(data.field);
+                var storage = window.localStorage;
+                if (storage.account == "" || storage.account == undefined) {
+                    layer.msg("没有登录操作无效", {
+                        icon: 5,
+                        time: 2000
+                    });
+                    return false;
+                }
+                var server_id_list = $('#zcySelect').val();
+                if (server_id_list == 0) {
+                    layer.msg("请从服务器列表选择服务器", {
+                        icon: 5,
+                        time: 2000
+                    });
+                    return false;
+                }
+                var send = new Object();
+                send.oper_name = storage.account;
+                send.oper_time = get_msec_to_sec();
+                send.sid = new Array(server_id_list);
+                var val = $('input:radio[name="range"]:checked').val();
+                console.log(val);
+                if (val == "Single") {
+                    if (data.field.role_uid == "" || data.field.role_uid == undefined) {
+                        layer.msg("单人发送失败,玩家UID错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                        return false;
+                    }
+
+                    send.id = data.field.role_uid;
+                } else {
+                    send.id = "0";
+                }
+
+                var mail_data = new Object();
+                mail_data.type = "5";
+                mail_data.title = (data.field.title == undefined ? "0" : data.field.title);
+                mail_data.content = ($('#content').val() == undefined ? "" : $('#content').val());
+                mail_data.send_time = get_msec_to_sec();
+                var time = get_msec_to_sec();
+                if (data.field.time == 'on_time') {
+                    time = get_msec_to_sec($('#log_time').val());
+                }
+                mail_data.on_time = time;
+                mail_data.send_time = time;
+                mail_data.send_name = "系统";
+                mail_data.end_time = "0";
+                mail_data.limit_level = "0";
+                mail_data.limit_cond = "0";
+                mail_data.items = get_items();
+                send.mail_data = mail_data;
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/send_mail.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        if (json.status == "success") {
+
+                            layer.msg("发送成功", {
+                                icon: 6,
+                                time: 2000
+                            });
+                        } else {
+                            layer.msg("发送失败", {
+                                icon: 5,
+                                time: 2000
+                            });
+                        }
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                //$('#oper_send')[0].reset();
+                console.log(123423);
+                return false;
+
+            });
+
+            form.on('submit(query)', function (data) {
+                var server_id_list = $('#zcySelect_1').val();
+                if (server_id_list == 0) {
+                    layer.msg("请从服务器列表选择服务器", {
+                        icon: 5,
+                        time: 2000
+                    });
+                    return false;
+                }
+                var send = new Object();
+                send.sid = new Array(server_id_list);
+                if (data.field.role_uid_1 != "") {
+                    send.id = data.field.role_uid_1;
+                }
+                var time_min = document.getElementById('logmin').value;
+                var time_max = document.getElementById('logmax').value;
+                if (time_min != '' && time_max != '') {
+                    send.start_time = get_msec_to_sec(time_min);
+                    send.end_time = get_msec_to_sec(time_max);
+                }
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_send_mail.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        page(data_mod(json, 'mail_log'));
+                        console.log(json);
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+
+            form.on('select(zcySelect)', function (data) {
+                document.getElementById('zcySelect_1').value = data.value;
+                renderForm();
+            });
+
+            form.on('select(zcySelect_1)', function (data) {
+                document.getElementById('zcySelect').value = data.value;
+                renderForm();
+            });
+
+            $('textarea').keyup(function (params) {
+                var maxLength = get_textarea_limit_value("mail"); // var max = get_textarea_limit_value("mail");
+                console.log(maxLength);
+                var len = $('textarea').val().length;
+                $('#textareaCount').html(maxLength - len);
+                if (parseInt($('#textareaCount').text()) <
+                    0) {
+                    $('#textareaCount').html('0');
+                    var res = $(this).val().substring(0, maxLength);
+                    $(this).val(res);
+                }
+            });
+
+
+
+        });
+    </script>
+</body>
+
+</html>

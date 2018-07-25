@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}
+</style>
+
+</head>
+<body>
+<form class="layui-form" action="">
+  <div class="layui-fluid">
+    <div class="layui-row">
+      <div class="layui-col-lg1 layui-col-md-offset4">
+        
+            <select name="choose_server" id='choose_server'>
+              <option value="">请选择服务器</option>
+            </select>
+          
+      </div>
+      <div class="layui-col-lg1">
+        <input type="text" class="layui-input" id="date" value='2018-07-01'>
+      </div>
+      <div class="layui-col-lg1">
+        <button class="layui-btn" lay-submit lay-filter='query'>查询</button>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="layui-tab layui-tab-card">
+  <ul class="layui-tab-title">
+    <li class="layui-this">任务流程节点分布表</li>
+    <li>游戏时长分布表</li>
+    <li>游戏等级分布表</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-show">
+      <!-- 分页数据 -->
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>节点</th>
+            <th>通过人数</th>
+            <th>相对通过率</th>
+            <th>绝对通过率</th>
+            <th>离开人数</th>
+            <th>次日留存</th>
+            <th>留存率</th>
+          </tr> 
+        </thead>
+        <tbody id='table1'>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="layui-tab-item">
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>时长</th>
+            <th>达成人数</th>
+            <th>达成率</th>
+            <th>离开人数</th>
+            <th>次日留存</th>
+            <th>留存率</th>
+          </tr> 
+        </thead>
+        <tbody id='table2'>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="layui-tab-item">
+        <table class="layui-table">
+          <thead>
+            <tr>
+              <th>等级</th>
+              <th>达成人数</th>
+              <th>达成率</th>
+              <th>离开人数</th>
+              <th>次日留存</th>
+              <th>留存率</th>
+            </tr> 
+          </thead>
+          <tbody id='table3'>
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+</body>
+
+<script>
+layui.use(['form', 'layedit','element','table', 'laydate', 'layer'], function(){
+  var layer = layui.layer;
+  var form = layui.form;
+  var laydate = layui.laydate;
+  laydate.render({
+    elem: '#date',
+    type: 'date',
+    done: function(value, date, endDate){
+      // period_select['start'] = date;
+      // period_select['end'] = endDate;
+      // console.log(value); //得到日期生成的值，如：2017-08-18
+      // console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+      // console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+    },
+  });
+  
+  form.on('submit(query)', function(data){
+    var date = $('#date').val();
+    console.log(data);
+    console.log(date);
+    var send_data = {
+      server_id : data.field['choose_server'],
+      date : date,
+    };
+    send_msg_to_server(7, send_data, function(res){
+      console.log(res);
+      $('#table1').empty();
+      $('#table2').empty();
+      $('#table3').empty();
+      for(idx in res){
+        var obj = res[idx];
+        switch(obj.type){
+          case 'task':
+          {
+            var res_data = JSON.parse(obj.data);
+            console.log(res_data);
+            var length = res_data[0].length;
+            for(var i = 0; i < length; i++){
+              $('#table1').append('<tr>');
+              $('#table1').append('<td>' + res_data[0][i] + '</td>');
+              $('#table1').append('<td>' + res_data[1][i] + '</td>');
+              $('#table1').append('<td>' + res_data[2][i] + '</td>');
+              $('#table1').append('<td>' + res_data[3][i] + '</td>');
+              $('#table1').append('<td>' + res_data[4][i] + '</td>');
+              $('#table1').append('<td>' + res_data[5][i] + '</td>');
+              $('#table1').append('<td>' + res_data[6][i] + '</td>');
+            }
+          }
+          break;
+          case 'duration':
+          {
+            var res_data = JSON.parse(obj.data);
+            console.log(res_data);
+            var length = res_data[0].length;
+            for(var i = 0; i < length; i++){
+              $('#table2').append('<tr>');
+              $('#table2').append('<td>' + res_data[0][i] + '</td>');
+              $('#table2').append('<td>' + res_data[1][i] + '</td>');
+              $('#table2').append('<td>' + res_data[3][i] + '</td>');
+              $('#table2').append('<td>' + res_data[4][i] + '</td>');
+              $('#table2').append('<td>' + res_data[5][i] + '</td>');
+              $('#table2').append('<td>' + res_data[6][i] + '</td>');
+            }
+          }
+          break;
+          case 'level':
+          {
+            var res_data = JSON.parse(obj.data);
+            console.log(res_data);
+            var length = res_data[0].length;
+            for(var i = 0; i < length; i++){
+              $('#table3').append('<tr>');
+              $('#table3').append('<td>' + res_data[0][i] + '</td>');
+              $('#table3').append('<td>' + res_data[1][i] + '</td>');
+              $('#table3').append('<td>' + res_data[3][i] + '</td>');
+              $('#table3').append('<td>' + res_data[4][i] + '</td>');
+              $('#table3').append('<td>' + res_data[5][i] + '</td>');
+              $('#table3').append('<td>' + res_data[6][i] + '</td>');
+            }
+          }
+          break;
+        }
+      }
+    });
+    renderForm();
+    return false;
+  });
+});
+
+  //页面预加载
+$(document).ready(function(){
+  send_msg_to_server(6, null, function(res){
+    console.log(res);
+    for(idx in res){
+      $('#choose_server').append("<option value='" + res[idx]['server_id'] + "'>"+res[idx]['server_name']+"</option>");
+    }
+    renderForm();
+  });
+});
+</script>

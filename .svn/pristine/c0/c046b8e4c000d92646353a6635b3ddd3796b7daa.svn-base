@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<server>
+    <!--ios:1 andriod:2-->
+    <platform>1</platform>
+    <!--开服时间-->
+    <start_time>2016-08-01</start_time>
+    <!-- 取[1501,2047] 一个区的所有cross的唯一ID-->
+    <server_id>1501</server_id>
+    <!--支持混渠道，用;隔开 渠道 0:test 1:apple-->
+    <channel>0</channel>
+    <!-- 服务器列表标记,用于管理服务器列表的,可以是字符串 ,以;分割-->
+    <server_list_type>INNER_EDITOR;OUTSIDE_IOS;OUTSIDE_ANDROID;OUTSIZE_IOS_BRANCH_XXX;OUTSIZE_ANDROID_BRANCH_XXX;OUTSIDE2_IOS;JIUYOU_2_ANDROID;JIUYOU_2_IOS;JIUYOU_2_ANDROID_2</server_list_type>
+    <url>
+        <!--获取login_server列表-->
+        <login_list_url>http://139.196.41.108:8080/sg_update</login_list_url>   
+        <!--sdk的登陆校验等-->
+        <sdk_login_url>http://139.196.41.108:8080/sg_sdk/sdk_service.php</sdk_login_url>
+    </url>
+    <common>
+        <!--连接白名单(监听服只接受来自于在白名单中的IP连接) 多个用;隔开-->
+        <ip_white_list>127.0.0.1;47.100.130.174;10.29.44.27;139.196.41.108;101.81.236.201;192.168.1.6;192.168.1.5;192.168.1.178;192.168.1.209;192.168.1.212;192.168.1.223;192.168.1.185;192.168.1.233;192.168.1.232</ip_white_list>
+    	<!--服务器间重连的间隔时间，单位：秒-->
+        <reconnect_interval_time>10</reconnect_interval_time>
+        <!--发送给日志服务器的日志条数限制-->
+		<db_log_count_limit>20</db_log_count_limit>
+    	<path>
+    		<config>../config</config>
+	        <script>../config/script</script>
+	        <map>../config/map</map>
+	        <ai>../config/ai</ai>
+    	</path>
+        <!--0表示按天创建log 1表示按小时创建log-->
+		<new_logfile_per_hour>0</new_logfile_per_hour>
+        <!--LOG路径-->
+        <combat_log_path>/sg_server/nohup_run/combat_logs/</combat_log_path>
+        <log_path>./logs</log_path>
+        <!--是否打印trace类型LOG-->
+        <log_trace>1</log_trace>
+        <!--是否打印debug类型LOG-->
+        <log_debug>1</log_debug>
+        <!--是否打印info类型LOG-->
+        <log_info>1</log_info>
+        <!--消息统计LOG-->
+        <log_msg_count>0</log_msg_count>
+        <log>
+          <role>11</role>
+          <hero>11</hero>
+          <equip>11</equip>
+          <trade>11</trade>
+          <task>11</task>
+          <scene>11</scene>
+          <item>11</item>
+          <boss>11</boss>
+          <fight>0</fight>
+          <treasure>11</treasure>
+          <pk>11</pk>
+          <rank>11</rank>
+          <role_buff>11</role_buff>
+          <achieve>11</achieve>
+          <red_point>11</red_point>
+          <lifeforce>11</lifeforce>
+          <new_guide>11</new_guide>
+          <dungeon>11</dungeon>
+          <kingwar>11</kingwar>
+          <shop>11</shop>
+          <mail>11</mail>
+          <friend>11</friend>
+          <worldcup>11</worldcup>
+          <goods>11</goods>
+          <family>11</family>
+          <active_reward>11</active_reward>
+          <page>11</page>
+          <expedition>11</expedition>
+          <troop>11</troop>
+          <arena>11</arena>
+          <money>11</money>
+          <tower>11</tower>
+          <multi>11</multi>
+          <redbag>11</redbag>
+          <offline_arena>11</offline_arena>
+          <country>11</country>
+          <liandan>11</liandan>
+          <patrol_hire>11</patrol_hire>
+          <activity>11</activity>
+        </log>
+    </common>
+    
+    <!--account_server配置-->
+    <account_server>
+    	<!-- 开启关闭验证login_server列表的标志 0表示不验证，1表示验证 -->
+		<check_login_server_flag>1</check_login_server_flag> 
+        <timeout>
+            <!--默认60s 和客户端的会话超时 防止客户端sokcet连接上但不发消息占用socket数量-->
+            <session>180</session>
+        </timeout>
+        <thread_num>
+            <network>4</network>
+            <channel>20</channel>
+        </thread_num>
+		<!-- #ACCOUNT_CONF# -->	
+        <#ACCOUNT_NO#>
+            <listen>
+                <client>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </client>
+                <login>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </login>
+                <db>
+                    <ip>192.168.1.5</ip>
+                    <port>#ACCOUNT_CHANGE_PORT#</port>
+                </db>
+            </listen>
+        </#ACCOUNT_NO#>
+        <mysql>
+            <host>127.0.0.1</host>
+            <db>sg_account</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--默认连接数-->
+            <init_connections>5</init_connections>
+            <!--最大连接数-->
+            <max_connections>20</max_connections>
+        </mysql>
+    </account_server>
+    
+    <!--transfer_server配置-->
+    <transfer_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+		<!-- #TRANSFER_CONF# -->	
+		<#TRANSFER_NO#>
+            <listen>
+                <chat>
+                    <ip>192.168.1.178</ip>
+                    <port>#CHANGE_PORT#</port>
+                </chat>
+                <center>
+                    <ip>192.168.1.178</ip>
+                    <port>#CHANGE_PORT#</port>
+                </center>
+            </listen>
+        </#TRANSFER_NO#>
+
+    </transfer_server>
+    
+    <!--area_server配置-->
+    <area_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+        <listen>
+            <transfer>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </transfer>
+            <cross>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </cross>
+        </listen>
+        <mysql>
+            <host>127.0.0.1</host>
+            <db>sg_area</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--最大连接数-->
+            <max_connections>5</max_connections>
+        </mysql>
+        <redis>
+            <host>127.0.0.1</host>
+            <port>6379</port>
+            <pwd>Sanguo1!</pwd>
+            <db>0</db>
+			<conn>300</conn>
+			<!--redis db 处理线程-->
+			<thread_num>1</thread_num>
+			<!--redis read 读取处理模块-->
+			<read_unit_num>1</read_unit_num>
+			<!--redis save 保存处理模块-->
+			<save_unit_num>1</save_unit_num>
+            <!--保存到sql间隔 秒-->
+            <save_interval>1</save_interval>
+            <!--单次保存到sql条数限制-->
+            <save_count_limit>200</save_count_limit>
+        </redis>
+    </area_server>
+    
+    <!--cross server配置 game server copy-->
+    <cross_server>
+        <thread_num>
+            <network>4</network>
+        </thread_num>
+		<!-- #CROSS_CONF# -->
+		<#CROSS_NO#>
+            <listen>
+                <gate>
+                    <ip>192.168.1.5</ip>
+                    <port>#CHANGE_PORT#</port>
+                </gate>
+            </listen>
+        </#CROSS_NO#>	
+    </cross_server>
+
+    <!--glog server配置 log server copy-->
+    <glog_server>
+        <!--默认60秒-->
+        <update_to_db_time>60</update_to_db_time>
+        <thread_num>
+            <network>4</network>
+            <log>4</log>
+        </thread_num>
+        <listen>
+            <account>
+                <ip>192.168.1.5</ip>
+                <port>#CHANGE_PORT#</port>
+            </account>
+        </listen>
+        <mysql>
+            <host>127.0.0.1</host>
+            <db>sg_glog</db>
+            <user>root</user>
+            <pwd>Sanguo1!</pwd>
+            <!--默认连接数-->
+            <init_connections>5</init_connections>
+            <!--最大连接数-->
+            <max_connections>20</max_connections>
+        </mysql>
+    </glog_server>
+</server>
+

@@ -1,0 +1,6355 @@
+import "common.proto";
+package proto.client;
+
+//账号服务器消息
+message cn_server_info_request
+{
+    optional common.channel_general general         = 1;//账号信息
+	optional uint32	channel_id						= 2;//渠道ID
+	optional common.mobile_info mobile 				= 3;//设备信息
+	optional string version							= 4;//版本信息
+	optional string mark_type						= 5;//服务器列表标记
+}
+
+message nc_server_info_reply
+{
+	optional uint32 reply_code                      = 1;//返回值，0:成功, 1? 2 登录失败， 3，版本不兼容
+	optional string server_version					= 2;//服务端版本信息
+	repeated common.server_info	server_list			= 3;//服务器列表
+}
+
+//GM命令
+message cg_gm_cmd_request
+{
+    optional string cmd                             = 1;
+	
+}
+message gc_gm_cmd_reply
+{
+    optional uint32 reply_code                      = 1;//返回值，0:成功
+	optional common.role_change_data rcd			= 2;
+	required string gm_cmd							= 3;
+}
+
+message ce_gm_cmd_request
+{
+    optional string cmd                             = 1;
+}
+message ec_gm_cmd_reply
+{
+    optional uint32 reply_code                      = 1;//返回值，0:成功
+	optional common.role_change_data rcd			= 2;
+}
+
+//客户端解锁屏
+message ca_unlock_notify
+{
+
+}
+//客户端锁屏
+message ca_lock_notify
+{
+
+}
+
+//检查版本
+message cl_check_version_request
+{
+    optional string ver                             = 1;
+}
+message lc_check_version_reply
+{
+    optional uint32 reply_code                      = 1; // 0一致 1不一致
+}
+
+//登陆
+message cl_login_request
+{
+	optional string uid								= 1; //account返回给client的role_uid
+    optional string guid                            = 2; //平台给client的guid 目前是账号名
+}
+
+message lc_login_reply
+{
+    optional uint32 reply_code                      = 1;
+    optional string uid                             = 2; //角色uid
+    optional string gate_ip                         = 3; //分配的网关IP
+    optional uint32 gate_port                       = 4; //网关端口
+    optional common.channel_general general         = 5; //账号信息
+}
+
+message lc_login_queue_notify
+{
+    optional uint32 pos								= 1; //排队队列中的位置
+}
+
+//连接gate
+message ca_connect_request
+{
+    optional string uid                             = 1; //login返回给client的uid
+    optional string guid                            = 2; //login返回给client的guid
+    optional int32 reconnect                        = 3; //0 1重连
+    optional string session_id						= 4; //登录串唯一id
+}
+
+message ac_connect_reply
+{
+    optional uint32 reply_code                      = 1; //正常返回0
+}
+
+// 登陆指令
+message ca_login_game_request
+{
+}
+
+message ac_login_game_reply
+{
+	optional uint32 reply_code                  	= 1;
+}
+
+// 创建角色
+message ca_create_role_request
+{
+    required string nickname                        = 1; // 玩家名字
+	optional uint32	role_type						= 2; // 选择职业
+}
+
+message ac_create_role_reply
+{
+    optional uint32 reply_code                      = 1;
+}
+
+//连接gate
+message ca_pingpong_request
+{
+
+}
+
+// 帧数检测
+message ca_frames_check_request
+{
+	optional uint32 high = 1;
+	optional uint32 low = 2;
+}
+
+message ac_frames_check_reply
+{
+	optional uint32 high = 1;
+	optional uint32 low = 2;
+}
+
+//服务器主动踢人，通知客户端返回登陆界面
+message ac_kick_role_notify
+{
+    optional uint32 kick_reason = 1;
+	optional uint32 kick_param = 2;
+}
+
+//gate检测到消息已屏蔽
+message ac_masked_msg_notify
+{
+	repeated uint32 cmds							= 1; //已屏蔽的消息ID
+}
+
+// 获取服务器世界
+message cg_server_time_request
+{
+}
+
+message gc_server_time_reply
+{
+	optional uint32 server_time = 1;
+}
+
+message gc_enter_game_reply
+{
+    optional uint32 reply_code                  	= 1;
+	optional common.role_data role					= 2;	//玩家信息
+	optional common.item_data item					= 3;	//物品数据
+	optional common.hero_data hero					= 4;	//武将数据
+	optional common.formation_data formation		= 5;	//布阵数据
+	optional common.task_data task					= 8;	//任务数据
+	optional common.role_trade_item trade_item  	= 9;	//交易数据
+	optional uint32 server_time						= 10;	//服务器时间
+	optional common.mount_data mount_data			= 11;	//坐骑数据
+	optional common.arena_role_data arena_data  	= 12;	//竞技场数据
+	optional common.activities_data activities_data = 13;	//活动数据
+	optional int32 time_zone						= 14;	//服务器时区
+	optional common.recharge_data recharge_data 	= 15;	//充值数据
+}
+
+message gc_enter_game_for_hero_reply
+{
+	optional common.hero_data hero					= 1;	//武将数据
+}
+
+message gc_enter_game_for_item_reply
+{
+	optional common.item_data item					= 1;	//物品数据
+}
+
+// 修改昵称
+message cg_change_nickname_request
+{
+    optional string nickname                        = 1;
+}
+message gc_change_nickname_reply
+{
+    optional uint32 reply_code                      = 1;
+}
+
+// 消耗道具
+message cg_use_item_request
+{
+    optional string item_uid                        = 1; //使用道具的ID
+    optional uint32 cost_num                        = 2; //使用道具数量
+}
+// 消耗道具回复
+message gc_use_item_reply
+{
+    optional uint32 reply_code                      = 1; //0使用道具成功，1失败
+	optional common.role_change_data rcd			= 2; // 玩家数据变动
+	optional uint32 use_item_tid					= 3; // 使用的道具
+}
+
+// 废弃
+//message gc_item_changed_notify
+//{
+//	optional common.item_data items					= 1;
+//}
+
+// 移动请求
+message cg_move_request
+{
+	optional uint64 time_stamp						= 1;	// 移动时间戳
+	optional uint32 pos_x							= 2;	// 位置
+	optional uint32 pos_y							= 3;	// 位置
+	optional uint32 direction						= 4;	// 朝向
+	optional uint32 high							= 5;	// 高度
+}
+
+// 移动通知
+message gc_move_notify
+{
+    optional uint64 object_id						= 1;	// 生物id
+	optional uint32 pos_x						    = 2;	// 位置X
+    optional uint32 pos_y						    = 3;	// 位置Y
+	optional uint32 direction						= 4;	// 朝向
+	optional uint32 speed							= 5;	// 速度
+	optional uint32 high							= 6;	// 高度
+}
+
+message gc_batch_move_notify
+{
+    repeated gc_move_notify move_list = 1;
+}
+
+// 进入场景请求
+message cg_enter_scene_request
+{
+	optional string scene_id						= 1;	// 场景id
+}
+
+// 进入场景通知
+message gc_enter_scene_notify
+{
+	optional string scene_id = 1;				// 场景唯一id
+	optional uint32 map_tid = 2;				// 地图id
+	optional float pos_x = 3;					// 坐标
+	optional float pos_y = 4;					// 坐标
+	optional float pos_dir = 5;					// 方向
+}
+
+// 场景跳转请求
+message cg_jump_scene_request
+{
+	optional uint32 map_tid							= 1;	// 地图id
+	optional uint32 jump_id							= 2;	// 跳转点id
+}
+
+// 场景跳转请求
+message gc_jump_scene_reply
+{
+	optional uint32 reply_code						= 1;	// 结果
+}
+
+// 客户端读条通知
+message cg_jump_reading_start_notify
+{
+}
+
+// 服务器通知传送读条开始
+message gc_jump_reading_start_notify
+{
+	optional common.transmission_type type = 1[default = transmission_type_none];
+	optional uint32 reply_code = 2;
+}
+
+// 服务器错误通用提示
+message gc_common_error_notify
+{
+	optional uint32 reply_code = 1;
+}
+
+// 组队传送读条结束
+message cg_troop_jump_end_request
+{
+}
+
+// 组队传送结果返回
+message gc_troop_jump_end_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 客户端打断读条通知
+message cg_jump_reading_break_notify
+{
+}
+
+// 服务器打断读条通知
+message gc_jump_reading_break_notify
+{
+}
+
+// 进入视野
+message gc_role_into_vision_notify
+{
+	repeated common.object_common_info common_list	= 1;	// 视野生物信息
+}
+
+// 离开视野
+message gc_role_outo_vision_notify
+{
+	repeated common.object_common_info common_list = 1;		// 视野生物信息
+}
+
+// 进入场景请求
+message gc_enter_scene_reply
+{
+	optional uint32 reply_code						= 1;	// 结果
+	optional gc_role_into_vision_notify vision		= 2;	// 视野信息
+}
+
+// 同场景传送
+message gc_object_scene_jump_notify
+{
+	optional string uid = 1;			// 对象Id
+	optional common.EM_SCENEOBJECT_TYPE object_type = 2[default = SCENEOBJECT_USER];
+	optional uint32 move_type = 3;	// 默认是瞬移
+	optional float dest_x = 4;		// 目的地坐标
+	optional float dest_y = 5;		// 目的地坐标
+	optional float dest_dir = 6;	// 目的地坐标
+}
+
+// 通知客户端组队阵容
+message gc_troop_formation_ntf
+{
+	optional common.formation_single form = 1;
+}
+
+// 修改阵容请求
+message cg_update_formation_request
+{
+	optional common.formation_single form = 1; // 阵容数据
+}
+
+// 修改阵容返回
+message gc_update_formation_reply
+{
+    required uint32 reply_code                      = 1; // 0成功，1失败
+	optional common.formation_single formation		= 2; // 阵容数据
+}
+
+message gc_update_all_formation_reply
+{
+	repeated common.formation_single formations		= 1; // 阵容数据
+}
+
+// 修改当前阵容编号请求
+message cg_update_cur_form_id_request
+{
+	optional uint32 cur_form_id = 1; // 当前阵容编号
+}
+
+// 修改当前阵容编号返回
+message gc_update_cur_form_id_reply
+{
+	optional uint32 cur_form_id = 1; // 当前阵容编号
+}
+
+// 修改忽略布阵标记
+message cg_ignore_lineup_flag_request
+{
+	optional uint32 ignore_lineup_flag = 1; // 忽略布阵标记
+}
+
+// 修改忽略布阵标记
+message gc_ignore_lineup_flag_reply
+{
+	optional uint32 ignore_lineup_flag = 1; // 忽略布阵标记
+}
+
+// 请求指定玩法的全部武将数据
+message cg_get_fight_special_heroes_request
+{
+	optional common.fight_type fight_type = 1[default = fight_type_none];			// 战斗类型
+}
+
+// 回复指定玩法的全部武将数据
+message gc_get_fight_special_heroes_reply
+{
+	optional common.fight_type fight_type = 1[default = fight_type_none];					// 战斗类型
+	optional common.fight_special_hero_data hero_list = 2;			// 本玩法记录的所有武将
+}
+
+// 修改战前布阵阵容请求
+message cg_fight_update_formation_request
+{
+	optional common.formation_single form = 1; // 阵容数据
+	optional string fight_uid = 2;			 // 战斗唯一ID
+}
+
+// 修改战前布阵容返回
+message gc_fight_update_formation_reply
+{
+    required uint32 reply_code                      = 1; // 0成功，1失败
+	optional common.formation_single formation		= 2; // 阵容数据
+	optional string role_uid						= 3; // 改变布阵的玩家
+}
+
+// 修改战前布阵阵容编号请求
+message cg_fight_update_cur_form_id_request
+{
+	optional uint32 cur_form_id = 1; // 当前阵容编号
+	optional string fight_uid = 2;	 // 战斗唯一ID(战前布阵用)
+}
+
+// 修改战前布阵阵容编号返回
+message gc_fight_update_cur_form_id_reply
+{
+	optional uint32 cur_form_id = 1; // 当前阵容编号
+}
+
+// 获取战前布阵数据
+message cg_get_fight_formation_req
+{
+	
+}
+
+// 获取战前布阵数据回复
+message gc_get_fight_formation_reply
+{
+	optional common.formation_single self_form = 1;
+	optional common.formation_single enemy_form = 2;
+}
+
+// 战斗中发言
+message cg_combat_speak_notify
+{
+	optional uint32 word_id = 1;
+}
+
+// 战斗中发言
+message gc_combat_speak_notify
+{
+	optional string role_uid = 1;
+	optional uint32 word_id = 2;
+}
+
+// 战斗中标记
+message cg_combat_mark_target_notify
+{
+	optional uint32 fight_hero_id = 1;		// 战斗中的英雄
+	optional uint32 mark_id = 2;			// 标记id
+	optional uint32 mark_hero_id = 3;		// 谁标记的
+}
+
+// 战斗中标记
+message gc_combat_mark_target_notify
+{
+	optional uint32 fight_hero_id = 1;		// 战斗中的英雄
+	optional uint32 mark_id = 2;			// 标记id
+	optional uint32 mark_hero_id = 3;		// 谁标记的
+}
+
+// 申请观战
+message cg_watch_combat_request
+{
+	optional string req_role_uid = 1;		// 观战的对象的UID
+	optional string fight_uid = 2;			// 观战的战斗UID
+}
+
+// 回复申请观战
+message gc_watch_combat_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional common.combat_data combat_data = 2;	// 战斗数据
+	optional common.fight_recovery_data recovery_data = 3;	// 战斗恢复数据
+}
+
+// 申请取消观战
+message cg_cancel_watch_combat_request
+{
+	optional string fight_uid = 1;		// 战斗UID
+}
+
+// 回复申请取消观战
+message gc_cancel_watch_combat_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+}
+
+// 服务器询问客户端是否恢复战斗
+message gc_combat_recovery_ask_req
+{
+	
+}
+
+// 客户端回复服务器是否恢复战斗
+message cg_combat_recovery_ask_reply
+{
+	optional uint32 recovery = 1;	// 是否恢复
+}
+
+// 服务器回复客户端恢复战斗结果
+message gc_combat_recovery_notify
+{
+	optional uint32 result = 1;	// 0 失败(战斗结束) 1成功
+	optional common.fight_recovery_data recovery_data = 2;	// 战斗恢复数据
+}
+
+// 服务器给短线重连的客户端补发的战斗结算消息
+message gc_reconnect_combat_result_ntf
+{
+	optional string target_name = 1;		// 对方名字 玩家名或是队伍名
+	optional uint32 win_lose = 2;			// 1 赢 0输
+}
+
+// 内政相关
+message gc_interior_info_notify
+{
+	optional common.interior_info interior			= 1;//common use
+}
+
+//获取内政大厅产出铜币
+message cg_get_build_copper_request
+{
+}
+
+message gc_get_build_copper_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 copper_count					= 3;
+}
+
+//升级内政大厅
+message cg_upgrade_interior_build_request
+{
+}
+
+// 内政相关
+message gc_upgrade_interior_build_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 level							= 3;//升级后的等级
+}
+
+//通知内政任务完成
+message gc_interior_task_finished_notify
+{
+	optional uint32 task_id							= 1;//任务id
+}
+
+//派遣内政任务
+message cg_dispatch_task_request
+{
+	repeated uint32 hero_id_list					= 1;//派遣的武将列表
+}
+
+// 内政相关
+message gc_dispatch_task_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional uint32 task_id							= 2;//任务id
+	optional uint32 task_star_level					= 3;//任务星级
+	repeated uint32 hero_id_list					= 4;//派遣的武将列表
+}
+
+//刷新内政任务
+message cg_refresh_task_request
+{
+}
+
+// 内政相关
+message gc_refresh_task_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 task_id							= 3;//任务id
+	optional uint32 task_star_level					= 4;//任务星级
+}
+
+//提升内政任务星级
+message cg_upgrade_task_star_level_request
+{
+
+}
+
+// 内政相关
+message gc_upgrade_task_star_level_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 task_star_level					= 3;//任务星级
+}
+
+//内政领奖
+message cg_get_interior_reward_request
+{
+}
+
+// 内政相关
+message gc_get_interior_reward_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+}
+
+//立即完成内政任务
+message cg_complete_interior_task_request
+{
+}
+
+// 内政相关
+message gc_complete_interior_task_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+}
+
+//获取离线奖励
+message cg_get_offline_reward_request
+{
+}
+
+// 内政相关
+message gc_get_offline_reward_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 copper							= 3;
+	optional uint32 exp								= 4;
+	repeated common.item_single	item_list			= 5;
+}
+
+//扫荡
+message cg_instant_battle_request
+{
+}
+
+// 内政相关
+message gc_instant_battle_reply
+{
+	optional uint32 reply_code						= 1;//0成功，1失败
+	optional common.role_change_data rcd			= 2;
+	optional uint32 exp								= 3;
+}
+
+//通知离线信息
+message gc_offline_info_notify
+{
+	optional uint32 offline_time					= 1;
+	optional uint32 exp								= 2;
+	optional uint32 copper							= 3;
+	optional uint32 map_id							= 4;
+	optional uint32 area_id							= 5;
+	repeated common.item_single	item_list			= 6;
+	optional common.role_change_data rcd			= 7;
+	optional uint32 kill_monster_count				= 8;
+}
+
+//武将养成
+message cg_hero_cultivate_request
+{
+	optional uint32 hero_id							= 1;
+	optional common.EM_CULTIVATE_TYPE type			= 2[default = EMCUTYPE_LEVEL];
+	repeated uint32 value							= 3;
+}
+
+// 内政相关
+message gc_hero_cultivate_reply
+{
+	optional uint32 reply_code						= 1;// 0 成功 1 失败
+	optional common.role_change_data rcd			= 2;
+	optional common.EM_CULTIVATE_TYPE type			= 3[default = EMCUTYPE_LEVEL];
+	optional uint32 value							= 4;
+}
+
+message cg_hero_recruit_request
+{
+	optional uint32 hero_id							= 1;
+}
+
+message gc_hero_recruit_reply
+{
+	optional uint32 reply_code						= 1;// 0 成功 1 失败
+	optional common.role_change_data rcd			= 2;
+}
+
+message gc_hero_info_notify
+{
+	optional common.hero_single	hero_info			= 1;
+}
+
+// 主角武将解锁
+message cg_role_main_hero_unlock_request
+{
+	optional uint32 hero_tid = 1;
+}
+
+message gc_role_main_hero_unlock_reply
+{
+	optional uint32 hero_tid = 1;
+	optional uint32 reply_code = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+// 主角武将更换
+message cg_role_main_hero_change_request
+{
+	optional uint32 hero_tid = 1;
+}
+
+message gc_role_main_hero_change_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.hero_single new_main_hero = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+// 区域信息
+message gc_area_id_notify
+{
+	optional uint32 area_id = 1;	// 区域id
+}
+
+// 明雷进入战斗请求
+message cg_enter_fight_request
+{
+	optional string object_id = 1; // 对象ID
+	optional common.EM_SCENEOBJECT_TYPE object_type = 2[default = SCENEOBJECT_USER]; // 对象类型
+	optional common.EM_PK_MODE mode = 3[default = PK_PEACE]; // 0 和平 1 杀戮
+}
+
+// 明雷进入战斗返回
+message gc_enter_fight_reply
+{
+	optional uint32 reply_code = 1; // 0 成功 1 失败
+}
+
+//********task start************
+//请求接取任务
+message cg_accept_task_request
+{
+	optional uint32 task_id = 1; //任务id
+	optional uint32 task_type = 2;	//任务类型（接受环任务的时候用,填策划任务表中的环任务类型）
+	optional uint32 circle_id = 3;	//环任务ID（接受环任务的时候用,师门任务填0，悬赏任务填策划表ID）
+}
+
+message gc_accept_task_reply
+{
+	optional common.task_state task = 1; //任务状态
+	optional common.role_change_data rcd = 2;
+	optional uint32 reply_code = 3;
+	optional uint32 is_auto = 4;
+}
+
+message cg_kill_task_monster_request
+{
+	optional uint32 task_id = 1;//任务id
+}
+
+message gc_kill_task_monster_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+}
+//请求提交任务
+message cg_commit_task_request
+{
+	optional uint32 task_id = 1;//任务id
+	repeated string param = 2; //额外参数
+}
+
+message gc_commit_task_reply
+{
+	optional common.task_state task = 1; //任务状态
+	optional common.role_change_data rcd			= 2;
+	optional uint32 reply_code = 3;
+	optional uint32 is_auto = 4;		//是否自动完成 0否， 1是
+}
+
+//请求放弃任务
+message cg_drop_task_request
+{
+	optional uint32 task_id = 1;//任务id
+}
+
+message gc_drop_task_reply
+{
+	optional common.task_data task = 1; //任务状态
+}
+//通知客户端任务状态改变
+message gc_task_change_ntf
+{
+	repeated common.task_state task_changed = 1; // 任务状态发生改变的任务列表
+	optional common.role_change_data rcd = 2;
+}
+
+message cg_task_refresh_shilian_request
+{
+}
+
+message gc_task_refresh_shilian_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//一键完成任务数据请求
+message cg_task_quick_data_request
+{
+}
+
+//一键完成任务数据返回
+message gc_task_quick_data_reply
+{
+	repeated common.quick_task_info task_list = 1;
+}
+
+//完成一键任务
+message cg_task_quick_complete_request
+{
+	optional uint32 activity_id = 1;			//活动id
+	optional uint32 count = 2;					//完成次数
+}
+
+message gc_task_quick_complete_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+	optional uint32 activity_id = 3;
+	optional uint32 count = 4;					//已经完成的次数
+}
+
+//********task end************
+
+
+message ac_pingpong_reply
+{
+
+}
+
+message lc_kick_role_notify
+{
+
+}
+
+message gc_scene_object_info_notify
+{
+	optional common.object_common_info common_info = 1;
+}
+
+message cg_change_pk_mode_request
+{
+	optional common.EM_PK_MODE mode = 1[default = PK_PEACE];                   // 0 和平 1 杀戮
+}
+
+message gc_change_pk_mode_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+}
+
+message gc_system_hint_notify
+{
+	optional uint32 proir = 1;						// 显示优先级,越小越高
+	optional string notice_language_id = 2; 
+	optional uint32 show_postion = 3; 				// 显示位置  common.SHOW_POSTION
+	repeated string params = 4;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// redbag cmd start
+// 发红包
+message cg_redbag_send_request
+{
+	optional uint32 count = 1;						// 红包数量
+	optional uint32 money = 2;						// 红包金额
+}
+
+// 发红包回复
+message gc_redbag_send_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+	optional common.role_change_data rcd			= 2;
+}
+
+// 发红包广播 由center广播 家族在center
+message ec_redbag_notify
+{
+	optional string role_uid = 1;					// 发红包玩家UID
+	optional string role_name = 2;					// 发红包玩家名
+	optional uint32 role_level = 3;					// 角色等级
+	optional uint32 plugin = 4;						// 头像ID
+	optional string redbag_uid = 5;					// 红包uid
+}
+
+// 抢红包
+message ce_redbag_draw_request
+{
+	optional string redbag_uid = 1;					// 红包uid
+}
+
+// 抢红包回复
+message ec_redbag_draw_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.redbag_data redbag_data = 2;	// 红包数据
+}
+
+// 抢红包通知 
+message gc_redbag_draw_notify
+{
+	optional uint32 money = 1;						//金额
+	optional common.role_change_data rcd = 2;			
+}
+
+// redbag cmd end
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// chat cmd start
+message ch_test_request
+{
+    optional string chat_str = 1;
+}
+message hc_test_reply
+{
+    optional string chat_str = 1;
+}
+// 聊天
+message ch_channel_chat_request
+{
+	optional common.chat_channel chat_channel = 1[default = chat_channel_vicinity];	// 频道类型
+	optional string	chat_info = 2;			// 聊天内容
+	repeated common.chat_param chat_param = 3;	// 聊天参数
+	optional uint32	head_icon_id = 4;	// 头像
+	optional uint32 role_level = 5;		// 角色等级
+	optional string param = 6;			// 附加参数
+}
+// 聊天回复
+message hc_channel_chat_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+}
+// 聊天广播
+message hc_channel_chat_notify
+{
+ 	optional common.chat_channel chat_channel = 1[default = chat_channel_vicinity];	// 频道类型
+	optional string src_uid = 2;			// 发起玩家UID
+	optional string src_name = 3;			// 发起玩家姓名
+	optional string	chat_info = 4;			// 聊天内容
+	optional uint32	head_icon_id = 5;		// 头像
+	optional uint32 role_level = 6;			// 角色等级
+	optional string param = 7;				// 附加参数
+	optional common.chat_common_role_info chat_role_data = 8;	// 聊天数据(道具 武将数据)
+
+}
+
+// 帮助完成任务
+message cg_help_task_request
+{
+	optional string help_role_uid = 1;			// 帮助玩家ID
+	optional uint32 help_task_tid = 2;			// 帮助任务ID
+}
+// 帮助完成任务回复
+message gc_help_task_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+}
+// 获取跨服聊天频道
+message ch_get_server_channel_list_request
+{
+}
+// 获取跨服聊天频道回复
+message hc_get_server_channel_list_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.server_channel_data	server_channel_data = 2;	// 所有频道
+}
+// 更换跨服聊天频道
+message ch_change_server_channel_request
+{
+	optional uint32 dst_channel_id = 1;				// 目标频道
+	optional string user_name = 2;					// 玩家名字
+	optional uint32 type = 3;						// 0 离开 1 加入
+}
+// 更换跨服聊天频道回复
+message hc_change_server_channel_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+	optional uint32 channel_id = 2;					  // 当前频道
+}
+// 更换跨服聊天频道广播
+message hc_change_server_channel_notify
+{
+	optional uint32 src_chat_id = 1;				// 发起者聊天频道ID
+	optional string src_chat_name = 2;				// 聊天频道名字
+	optional string user_uid = 3;					// 玩家UID
+	optional string user_name = 4;					// 玩家姓名
+	optional uint32 type = 5;						// 0 离开 1 加入
+}
+// 跨服聊天
+message ch_server_channel_chat_request
+{
+	optional string	chat_info = 1;			// 聊天内容
+}
+// 跨服聊天回复
+message hc_server_channel_chat_reply
+{
+	optional uint32 reply_code = 1;                   // 0 成功 1 失败
+}
+// 跨服聊天广播
+message hc_server_channel_chat_notify
+{
+	optional uint32 src_chat_id = 1;				// 发起者聊天频道ID
+	optional string src_chat_name = 2;				// 聊天频道名字
+	optional string user_uid = 3;					// 玩家UID
+	optional string user_name = 4;					// 玩家姓名
+	optional string	chat_info = 5;					// 聊天内容
+}
+
+// 私聊
+message ce_personal_chat_request
+{
+	optional string tar_role_id = 1;			// 私聊目标玩家
+	optional string	chat_info = 2;				// 聊天内容
+	optional uint32 channel_id = 3;				// 频道
+	optional uint32 head_id = 4;				// 头像ID
+	optional uint32 level = 5;					// 玩家等级
+	repeated common.chat_param chat_param = 6;	// 聊天参数
+}
+
+
+// 私聊广播(只做内容广播 展示类不处理)
+message ce_personal_chat_notice_request
+{
+	optional string	chat_info = 1;				// 聊天内容
+	optional uint32 head_id = 2;				// 头像ID
+	repeated string friend_uid_list = 3;		// 好友UID列表 
+}
+
+// 私聊回复
+message ec_personal_chat_reply
+{
+	optional uint32 reply_code = 1;				// 0 成功 1 失败
+	optional uint32 contact_time = 2;			// 说话成功的时间
+	optional common.chat_common_role_info chat_role_data = 3;	// 聊天数据(道具 武将数据)
+}
+
+// 私聊通知
+message ec_personal_chat_notify
+{
+	optional string src_role_id = 1;			// 发起聊天玩家UID
+	optional string src_role_name = 2;			// 发起聊天玩家姓名
+	optional string	chat_info = 3;				// 聊天内容
+	optional uint32 src_head_id = 4;			// 发起者头像ID
+	optional uint32 src_level = 5;				// 发起者玩家等级
+	optional uint32 contact_time = 6;			// 这条消息的时间
+	optional common.chat_common_role_info chat_role_data = 7;	// 聊天数据(道具 武将数据)
+}
+
+message ec_batch_personal_chat_notify
+{
+	repeated ec_personal_chat_notify chat_msgs = 1;	// 批量通知离线聊天
+}
+
+// chat cmd end
+///////////////////////////////////////////////////////////////////////////////
+
+// 贸易(跑商)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+message trade_item_exchange_info
+{
+	optional uint32 item_id = 2;		// 物品tid
+	optional uint32 item_num = 3;		// 物品数量
+}
+
+// 贸易购买物品
+message cg_trade_buy_item_request
+{
+	optional uint32 city_id = 1;			// 城市tid
+	repeated trade_item_exchange_info item_list = 2;	// 购买物品列表
+}
+// 贸易购买物品回复
+message gc_trade_buy_item_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 city_id = 2;			// 城市tid
+	optional common.role_change_data change_data = 5;	 // 玩家数据变动
+}
+
+// 贸易出售物品
+message cg_trade_sell_item_request
+{
+	optional uint32 city_id = 1;			// 城市tid
+	repeated trade_item_exchange_info item_list = 2;	// 出售物品列表
+}
+// 贸易出售物品回复
+message gc_trade_sell_item_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 city_id = 2;			// 城市tid
+	optional int32 gain = 3;				// 贸易利润 (当前售出价-购买价)
+	optional common.role_change_data change_data = 5;	 // 玩家数据变动
+}
+
+// 获取城市贸易商店信息
+message cg_get_city_trade_shop_request
+{
+	optional uint32 city_id = 1;		// 城市tid 0代表获取全部
+}
+// 获取城市贸易商店信息回复
+message gc_get_city_trade_shop_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.city_trade_shop_info city_shop_info_list = 2;	// 城市贸易商店列表
+	optional uint32 item_buy_num_reset_time = 3;					// 到货刷新倒计时
+}
+
+// 贸易补货
+message cg_trade_supplement_request
+{
+	optional uint32 city_id = 1;			// 城市tid
+	optional string rebuy_item_uid = 2;		// 使用道具购买的道具UID
+}
+// 贸易补货回复
+message gc_trade_supplement_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 city_id = 2;			// 城市tid
+	optional common.city_trade_shop_info city_shop_info = 3;	// 城市贸易商店数据
+	optional common.role_change_data change_data = 4;	 // 玩家数据变动
+}
+
+// 请求所有城市的贸易事件
+message cg_trade_event_request
+{
+	optional uint32 type = 1;				//0 请求推荐 1 请求所有
+}
+
+// 请求所有城市贸易事件回复
+message gc_trade_event_reply
+{
+	repeated common.city_trade_event_info city_event_list = 1;	// 所有城市的贸易事件
+	optional uint32 event_reset_time = 2;						// 事件上次刷新时间
+}
+
+
+// 通知客户端货物热卖
+message gc_trade_info_notify
+{
+	repeated common.trade_item_info item_info_list = 1;			// 跑商背包货物信息
+}
+
+message gc_trade_supplement_notify
+{
+	optional uint64 role_uid							= 1;			///玩家ID
+	optional uint32 use_item_id							= 2;			///使用的补货书物品ID
+	repeated common.trade_supplement_info item_list		= 3;			// 补货物品信息列表
+	optional common.city_trade_shop_info city_shop_info = 4;			// 城市贸易商店数据
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//****************战斗**********************************
+// 进入战斗通知（客户端计算）
+message gc_enter_fight_notify
+{
+	optional common.fight_data data = 1; // 战斗数据
+}
+
+// 回合结束（客户端计算）
+message cg_fight_round_end_notify
+{
+	optional common.fight_result result = 1; // 回合结束时，这个结构中不用填充胜利失败
+}
+
+// 请求战斗完成（客户端计算）
+message cg_finish_fight_request
+{
+	optional common.fight_result result = 1; // 战斗结束时
+}
+
+// 返回战斗结果（客户端计算）
+message gc_finish_fight_reply
+{
+	optional uint32 result 					= 1; // 战斗结果（1:胜利 0:失败）
+	optional common.role_change_data rcd	= 2; // 玩家数据变动
+}
+
+// 跨天
+message gc_next_day_notify
+{
+	optional uint32 trade_point = 1;
+	optional uint32 prestige = 2;
+}
+
+//////////////////new family/////////////////////////
+//创建家族
+message cg_create_family_request
+{
+	optional string name = 1;//家族名称
+	optional string declaration = 2;//家族宣言
+}
+
+message gc_create_family_reply
+{
+	optional string id = 1;//家族id
+	optional common.role_change_data rcd = 2;//玩家信息
+	optional uint32 reply_code = 3;//错误码
+}
+
+// 弹劾家族长
+message cg_impeach_family_general_request
+{
+}
+
+message gc_impeach_family_general_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional common.role_change_data rcd = 2;//玩家信息
+}
+
+// 加入家族						
+message ce_join_family_request
+{
+	optional string id = 1;//家族id
+}
+
+// 加入家族返回
+message ec_join_family_reply
+{
+	optional string id = 1;//家族id
+	optional uint32 reply_code = 2;//错误码
+	optional common.family_member_type member_type = 3[default = family_member_type_none];//家族成员类型
+}
+
+// 同意加入家族
+message ce_approve_join_family_request
+{
+	optional string role_id = 1;//玩家uid
+}
+
+message ec_approve_join_family_reply
+{
+	optional string id = 1;//uid
+	optional uint32 reply_code = 2;//错误码
+
+}
+
+// 一键同意加入家族
+message ce_one_key_approve_join_family_request
+{
+}
+
+message ec_one_key_approve_join_family_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	repeated string all_uids = 2;	// uid 所有加入的uid
+}
+
+// 一键拒绝加入家族
+message ce_one_key_decline_join_family_request
+{
+}
+
+message ec_one_key_decline_join_family_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+// 拒绝加入家族申请
+message ce_decline_join_family_request
+{
+	optional string role_id = 1;//玩家uid
+}
+
+message ec_decline_join_family_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string role_id = 2;//玩家uid
+}
+
+// 家族id通知
+message ec_family_id_notify
+{
+	optional string family_id = 1;		// 家族id
+	optional string family_name = 2;	// 家族名字
+}
+
+// 离开家族
+message ce_leave_family_request
+{
+}
+
+message ec_leave_family_reply
+{
+	optional uint32 reply_code = 1; //错误码
+}
+
+// 任命家族官职
+message ce_family_assign_request
+{
+	optional string role_id = 1;//玩家uid
+	optional uint32 office = 2;//官职
+}
+
+message ec_family_assign_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string role_id = 2;//玩家uid
+	optional uint32 office = 3;//官职
+}
+
+// 家族官职改变通知
+message ec_family_officer_changed_notify
+{
+	optional uint32 officer = 1;
+	optional string role_id = 2;
+}
+
+// 罢免家族官职
+message ce_family_fire_request
+{
+	optional uint32 officer = 1;//官职
+	optional string role_id = 2;//玩家uid
+}
+
+message ec_family_fire_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string role_id = 2;//玩家uid
+}
+
+// 踢出家族
+message ce_kick_family_member_request
+{
+	optional string role_id = 1;//玩家uid
+}
+
+message ec_kick_family_member_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string role_id = 2;//玩家uid
+}
+
+// 获取家族列表
+message ce_get_family_list_request
+{
+	optional uint32 page = 1;	// 页
+}
+
+message ec_get_family_list_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+	repeated common.family_list_info family_list = 2;	// 家族列表
+	optional uint32 page = 3;							// 页
+}
+
+// 获取家族信息
+message ce_get_family_info_request
+{
+}
+
+message ec_get_family_info_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional common.family_data data = 2;			// 家族信息
+	repeated common.family_member members = 3;	// 家族成员
+	optional bool is_init = 4;					// 是否是初始化数据
+}
+
+// 获取家族成员列表
+message ce_get_family_member_list_request
+{
+}
+
+message ec_get_family_member_list_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	repeated common.family_member members = 2;	// 家族成员
+}
+
+// 新成员加入家族通知
+message ec_family_members_in_notify
+{
+	optional string member = 1;
+}
+
+// 成员离开家族通知
+message ec_family_members_out_notify
+{
+	optional string member = 1;
+}
+
+// 切换自动成为学徒标志
+message ce_toggle_auto_newbie_request
+{
+}
+
+message ec_toggle_auto_newbie_reply
+{
+	optional uint32 status = 1;//当前状态
+	optional uint32 reply_code = 2;//错误码
+}
+
+// 修改家族宣言
+message ce_modify_family_declaration_request
+{
+	optional string declaration = 1;//宣言
+}
+
+message ec_modify_family_declaration_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string declaration = 2;//宣言
+}
+
+// 修改家族公告
+message ce_modify_family_notification_request
+{
+	optional string notification = 1;//公告
+}
+
+message ec_modify_family_notification_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string notification = 2;//公告
+}
+
+// 家族资金变动通知
+message ec_family_money_change_notify
+{
+	optional uint32 money = 1;
+}
+
+// 修改家族公告通知
+message ec_family_notification_change_notify
+{
+	optional string notification = 1;
+}
+
+// 修改家族宣言通知
+message ec_family_declaration_change_notify
+{
+	optional string declaration = 1;
+}
+
+// 获取家族申请列表
+message ce_family_apply_list_request
+{
+}
+
+message ec_family_apply_list_reply
+{
+	repeated common.family_apply_member members = 1;//当前家族申请列表
+	optional uint32 reply_code = 2;//错误码
+}
+
+// 获取家族建筑信息
+message ce_get_family_build_info_request
+{	
+}
+
+message ec_get_family_build_info_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	repeated common.family_build_data builds = 2;	// 建筑信息
+}
+
+// 升级家族建筑
+message ce_upgrade_family_build_request
+{
+	optional common.family_build_type type = 1[default = family_build_type_congress];//建筑类型
+}
+
+message ec_upgrade_family_build_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional common.family_build_data builds = 2;	// 建筑信息
+	optional common.family_data data = 3;			// 家族信息
+}
+
+// 清除家族建筑升级cd
+message ce_clear_family_build_upgrade_cd_request
+{
+	optional common.family_build_type type = 1[default = family_build_type_congress];	// 建筑类型
+}
+
+message ec_clear_family_build_upgrade_cd_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional common.family_build_type type = 2[default = family_build_type_congress];	// 建筑类型
+}
+
+//获取家族活动列表
+message cg_get_family_activities_request
+{
+
+}
+
+message gc_get_family_activities_reply
+{
+	optional uint32 reply_code = 1;				//错误码
+	repeated common.activity_single activity_data = 2; //活动信息
+}
+
+// 模糊查询
+message ce_family_fuzzy_query_request
+{
+	optional string name = 1;
+}
+
+// 模糊查询结果
+message ec_family_fuzzy_query_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+	repeated common.family_list_info family_list = 2;	// 家族列表
+}
+
+// 邀请加入家族
+message ce_family_invite_request
+{
+	optional string role_uid = 1;						// 被邀请者
+}
+
+// 邀请加入家族返回
+message ec_family_invite_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+}
+
+// 邀请通知
+message ec_family_invite_notify
+{
+	optional string inviter_uid = 1;					// 邀请者uid
+	optional string inviter_name = 2;					// 邀请者名字
+	optional string family_uid = 3;						// 家族id
+	optional string family_name = 4;					// 家族名字
+	optional uint32 family_level = 5;					// 家族等级
+}
+
+// 回复邀请
+message ce_reply_family_invite_request
+{
+	optional common.family_invite_result result = 1;
+}
+
+// 批量拒绝
+message ce_refuse_family_invite_request
+{
+	repeated common.family_invite_result results = 1;
+}
+
+message ec_reply_family_invite_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+}
+
+// 通知邀请人
+message ec_family_invite_refuse_notify
+{
+	optional string inviter_name = 1;					// 邀请的人
+}
+
+// 打开家族商店
+message ce_get_family_shop_request
+{
+	
+}
+
+// 家族商店信息返回
+message ec_get_family_shop_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+	optional common.family_shop_data shop_data = 2;		// 商店信息
+	optional common.family_shop_personal_data personal_data = 3;// 个人限购信息
+	optional uint32 shop_lv = 4;						// 当前家族商店等级
+}
+
+// 购买家族商店商品
+message cg_family_shop_buy_request
+{
+	optional uint32 index = 1;							// 索引
+	optional uint32 shop_id = 2;						// 商品id
+	optional uint32 num = 3;							// 购买数量
+}
+
+// 购买返回
+message gc_family_shop_buy_reply
+{
+	optional uint32 reply_code = 1;							// 错误码
+	optional common.family_shop_data shop_data = 2;			// 商店信息
+	optional common.family_shop_personal_data personal_data = 3;// 个人限购信息
+	optional common.role_change_data change_data = 4;		// 人物数据变化
+}
+
+// 购买返回
+message ec_family_shop_buy_reply
+{
+	optional uint32 reply_code = 1;							// 错误码
+}
+
+// 下面的消息暂时没整理
+//取消弹劾
+message ce_abandon_impeach_family_general_request
+{
+
+}
+
+message ec_abandon_impeach_family_general_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional common.role_change_data rcd = 2;//玩家信息
+}
+
+//响应弹劾
+message ce_approve_impeach_family_general_request
+{
+
+}
+
+message ec_approve_impeach_family_general_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//弹劾开始通知
+message ec_impeach_start_notify
+{
+
+}
+
+//弹劾结果通知
+message ec_impeach_result_notify
+{
+	optional uint32 status = 1; //0 fail 1 success 2cancel
+	optional uint32 general = 2;//弹劾后家族长uid
+	optional uint32 reply_code = 3;//错误码
+
+}
+
+//弹劾状态通知
+message ec_impeach_status_notify
+{
+	optional common.family_impeach_data impeach_data = 1;//弹劾数据
+}
+
+//获取家族弹劾信息
+message ce_get_impeach_data_request
+{
+}
+
+message ec_get_impeach_data_reply
+{
+	optional common.family_impeach_data impeach_data = 1;//弹劾数据
+	optional uint32 reply_code = 2;//错误码
+	optional bool is_impeach_ack = 3;//是否已响应弹劾
+}
+
+//////////////////////////////////////////////////
+// 家族战
+
+// 请求家族战列表
+message ce_get_family_war_list_request
+{
+	
+}
+
+message ec_get_family_war_list_reply
+{
+	optional common.family_war_state state = 1[default = family_war_state_end];
+	optional common.family_against_list list = 2;
+	optional uint32 war_time = 3;				// 家族战时间
+}
+
+// 请求历史数据
+message ce_get_family_war_history_request
+{
+	optional uint32 index = 1;	// 索引 0 1 2
+}
+
+message ec_get_family_war_history_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.family_war_history_data history_data = 2;
+}
+
+// 请求进入家族战场景
+message ce_enter_family_war_scene_request
+{
+	
+}
+
+message ec_enter_family_war_scene_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 请求场景家族人数
+message cg_family_war_member_request
+{
+}
+
+// 通知备战
+message gc_family_war_member_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 left_family = 2;	// 左方家族数量
+	optional uint32 right_family = 3;	// 右方家族数量
+}
+
+// 家族战战斗信息
+message family_war_fight_info
+{
+	optional string family_id = 1;
+	optional string family_name = 2;
+	optional uint32 curr_hp = 3;	// 血量(当前积分)
+	optional uint32 max_hp = 4;		// 最大血量(获胜积分)
+	optional bool is_occupied_sun = 5;	// 日曜台
+	optional bool is_occupied_moon = 6;	// 月曜台
+}
+
+message gc_family_war_fight_info_notify
+{
+	optional common.family_war_state state = 1[default = family_war_state_end];
+	optional uint32 end_time = 2;
+	optional family_war_fight_info left_info = 3;
+	optional family_war_fight_info right_info = 4;
+}
+
+message family_war_fight_data
+{
+	optional family_war_fight_info base = 1; // 基础信息
+	optional uint32 war_member = 2;		// 家族参战人数
+	optional uint32 fight_win_cnt = 3;	// 战斗胜利次数
+	optional uint32 occupied_cnt = 4;	// 占领次数
+	optional string kill_max_member = 5;// 杀敌最多人数
+	optional string hurt_max_member = 6;// 龙柱最多伤害
+	optional uint32 kill_max_value = 7;// 杀敌最多数量
+	optional uint32 hurt_max_value = 8;// 伤害量
+}
+
+message family_war_role_data
+{
+	optional uint32 action_point = 1;	// 行动力
+	optional uint32 personal_score = 2;	// 个人积分
+	optional uint32 score_rank = 3;		// 积分排名
+	optional uint32 kill_count = 4;		// 击杀数
+	optional uint32 death_count = 5;	// 死亡数
+	optional uint32 kills = 6;			// 连杀
+}
+
+// 战况表
+message cg_family_war_fight_data_request
+{
+	
+}
+
+message gc_family_war_fight_data_reply
+{
+	optional family_war_role_data role_data = 1;	 // 玩家信息
+	optional family_war_fight_data left_family = 2;  // 左方家族
+	optional family_war_fight_data right_family = 3; // 右方家族
+}
+
+// 离开家族战副本
+message cg_leave_family_war_request
+{
+	
+}
+
+// 传送进入家族战场
+message cg_ask_enter_battlefield_requet
+{
+	
+}
+
+message gc_ask_enter_battlefield_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 玩家信息
+message gc_formations_info_notify
+{
+	optional family_war_role_data role_data = 1;	 	// 玩家信息
+	repeated common.family_war_hero_data data = 2;		// 有这个字段就处理
+}
+
+// 请求打开布阵界面
+message cg_ask_formations_info_request
+{
+	
+}
+
+message gc_ask_formations_info_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.family_war_hero_data data = 2;
+}
+
+// 请求上阵武将
+message cg_formations_hero_update_request
+{
+	repeated string up_hero_uid = 1;
+	repeated string down_hero_uid = 2;
+}
+
+message gc_formations_hero_update_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.family_war_hero_data data = 2;
+}
+
+// 请求复活武将
+message cg_formations_hero_revive_request
+{
+	repeated string hero_uid = 1;
+}
+
+message gc_formations_hero_revive_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 通知攻击图标的显示
+message gc_attack_icon_notify
+{
+	optional uint32 type = 1; // 1:显示 0:隐藏
+	optional string long_uid = 2; // 怪物uid
+}
+
+// 攻击龙柱遭遇战提示
+message gc_attack_platform_fight_notify
+{
+	
+}
+
+// 龙柱伤害
+message long_hurt_info_data
+{
+	optional string family_id = 1;
+	optional uint32 hurt = 2;
+}
+
+// 请求龙柱信息
+message cg_long_hurt_info_request
+{
+	optional string object_id = 1;
+}
+// 请求龙柱信息
+message gc_long_hurt_info_reply
+{
+	optional uint32 max_hp = 1;
+	optional long_hurt_info_data left_side = 2;
+	optional long_hurt_info_data right_side = 3;
+}
+
+// 全场景定时推送龙柱血量
+message gc_family_long_info_notify
+{
+	optional string object_id = 1;					// uid
+	optional uint32 monster_id = 2;					// tid
+	optional uint32 curr_hp = 3;					// 龙柱血量
+	optional uint32 max_hp = 4;						// 龙柱最大血量
+	optional string kill_family_id = 5;				// 当龙柱被击杀时候显示击杀家族
+	optional uint32 revive_time = 6;				// 被击杀显示复活时间
+	optional common.family_object_pos long_pos = 7;	// 龙柱位置
+	optional long_hurt_info_data left_side = 8;	
+	optional long_hurt_info_data right_side = 9;
+}
+
+// 通知日月台信息
+message gc_family_platform_info_notify
+{
+	optional common.family_object_pos sun_pos = 1;	// 日位置
+	optional common.family_object_pos moon_pos = 2;// 月位置
+}
+
+// 请求攻击
+message cg_family_war_attack_long_request
+{
+	
+}
+
+message gc_family_war_attack_long_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 请求结算界面
+message cg_family_war_result_info_request
+{
+}
+
+message gc_family_war_result_info_reply
+{
+	optional uint32 reply_code = 1;
+	optional family_war_role_data role_data = 2;	 	// 玩家信息
+	optional family_war_fight_data left_family = 3;
+	optional family_war_fight_data right_family = 4;
+	optional string win_family_id = 5;
+}
+
+message ec_family_war_state_notify
+{
+	optional common.family_war_state state = 1[default = family_war_state_end];
+	optional uint32 war_time = 2;				// 家族战时间
+}
+
+//////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+// 家族祈愿
+message ce_family_prayer_list_request
+{
+}
+
+message ec_family_prayer_list_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 prayer_times = 2;			// 祈愿次数
+	optional uint32 prayer_rwd_times = 3;		// 奖励领取次数
+	optional common.family_prayer_list data = 4;// 数据 
+}
+
+// 家族祈愿
+message ce_prayer_gift_reward_request
+{
+	
+}
+
+message ec_prayer_gift_reward_reply
+{
+	optional uint32 reply_code = 1;	// 
+	optional uint32 gift_times = 2;
+}
+
+message ce_prayer_record_request
+{
+
+}
+
+message ec_prayer_record_reply
+{
+	optional uint32 reply_code = 1;	// 
+	optional common.family_prayer_record_list data = 2;
+}
+
+// 祈愿武将
+message cg_family_prayer_request
+{
+	optional string hero_uid = 1; 	// 武将uid
+	optional uint32 hero_tid = 2; 	// 武将tid
+	optional uint32 hero_num = 3;	// 碎片数量
+}
+
+message gc_family_prayer_reply
+{
+	optional uint32 reply_code = 1;	// 
+}
+
+message ec_family_prayer_reply
+{
+	optional uint32 reply_code = 1;	// 
+}
+
+// 赠送碎片
+message cg_family_prayer_gift_request
+{
+	optional string role_id = 1; 	// 赠与玩家uid
+	optional uint32 hero_tid = 2; 	// 武将id
+	optional uint32 hero_num = 3;	// 碎片数量
+}
+
+message gc_family_prayer_gift_reply
+{
+	optional uint32 reply_code = 1;	// 
+	optional string role_id = 2; 	// 赠与玩家uid
+	optional uint32 hero_tid = 3; 	// 武将id
+	optional uint32 hero_num = 4;	// 碎片数量
+	optional common.role_change_data change_data = 5;	// 人物数据变化
+}
+
+//////////////////////////////////////////////////
+
+//**************country start*******************
+// 国家系统开启预告
+//message ec_country_open_notify
+//{
+//	optional uint32 period_type = 1;
+//	optional uint32 start_time = 2;
+//}
+
+// 国家预览
+message ce_country_preview_request
+{
+}
+
+// 国家预览回复
+message ec_country_preview_reply
+{
+	repeated common.country_base_data datas = 1;
+}
+
+// 同盟请求
+message ce_country_alliance_request
+{
+	optional uint32 country_id = 1;
+}
+
+message ec_country_alliance_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 country_id = 2;
+	optional string family_name = 3;
+}
+
+// 同盟通知
+message ec_country_alliance_notify
+{
+	optional uint32 country_id = 1;
+	optional string family_name = 2;
+}
+
+// 解除同盟
+message ce_dismiss_alliance_request
+{
+}
+
+// 解除同盟
+message ec_dismiss_alliance_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 国家信息
+message ce_country_info_request
+{
+	optional uint32 country_id = 1;
+}
+
+// 国家信息回复
+message ec_country_info_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.country_info_data base_info = 2;
+	repeated common.country_officer_data officers = 3;
+}
+
+// 国家年号修改
+message ce_modify_year_name_request
+{
+	optional string name = 1;
+}
+
+// 国家年号修改
+message ec_modify_year_name_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 is_free = 2; 						// 是否免费（0：不免费 1：免费）
+	optional common.country_info_data data = 3;			// 新的国家数据
+	optional common.role_change_data change_data = 4;	// 人物数据变化
+}
+
+// 国家年号修改返回
+message gc_modify_year_name_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 国家公告修改
+message ce_modify_notice_request
+{
+	optional string name = 1;
+}
+
+// 国家公告修改
+message ec_modify_notice_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 打开国家任命
+message ce_open_appoint_request
+{
+	optional uint32 officer_id = 1;
+}
+
+// 打开国家任命
+message ec_open_appoint_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.family_member members = 2;	// 家族成员
+}
+
+// 任命国家官员
+message ce_appoint_officer_request
+{
+	optional string uid = 1;
+	optional uint32 officer_id = 2;
+}
+
+// 任命国家官员
+message ec_appoint_officer_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.country_officer_data officers = 2;
+}
+
+// 罢免国家官职
+message ce_fire_officer_request
+{
+	optional uint32 officer_id = 1;
+}
+
+// 任命国家官员
+message ec_fire_officer_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.country_officer_data officers = 2;
+}
+
+// 辞官
+message ce_resign_officer_request
+{
+	
+}
+
+// 辞官
+message ec_resign_officer_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.country_officer_data officers = 2;
+}
+
+// 势力界面
+message ce_country_family_list_request
+{
+	optional uint32 country_id = 1;
+}
+
+// 势力界面
+message ec_country_family_list_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.country_info_data base_info = 2;
+	optional common.country_family_list list = 3; 
+}
+
+// 立国资格查询
+message ce_country_create_list_request
+{
+}
+
+// 返回数据暂时没有
+message ec_country_create_list_reply
+{
+}
+
+// 获得当前已经获得的旗帜列表
+message ce_country_flag_list_request
+{
+}
+
+// 返回旗帜列表
+message ec_country_flag_list_reply
+{
+	optional uint32 reply_code = 1;
+	repeated uint32 flag_lists = 2;
+}
+
+// 请求修改国家名字
+message ce_change_country_name_request
+{
+	optional string name = 1;
+	optional uint32 flag_id = 2;
+}
+
+// 修改国家名字
+message ec_change_country_name_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 is_free = 2; 						// 是否免费（0：不免费 1：免费）
+	optional common.country_info_data data = 3;			// 新的国家数据
+	optional common.role_change_data change_data = 4;	// 人物数据变化
+}
+
+// 修改国家名字
+message gc_change_country_name_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 国家广播
+message ec_update_country_notify
+{
+	optional common.country_common country = 1;		// 国家信息
+}
+
+//***************country end*****************
+
+
+//***************rank begin*****************
+
+// 请求排行数据
+message ce_rank_request
+{
+	optional int32 rank_type = 1;	//< 排行榜类型
+	optional uint32 page = 2;	// 页
+}
+
+// 返回排行数据
+message ec_rank_reply
+{
+	optional int32 rank_type = 1; //< 排行榜类型
+	optional uint32 reply_code = 2;
+	optional uint32 page = 3;
+	repeated common.rank_single_data rank_list = 4; // 排行榜数据
+	optional common.rank_single_data self = 5; //< 自己(只有page = 0才会下发)
+}
+
+//***************rank end*******************
+
+// *******************************mount 坐骑**********************************
+// 使用坐骑
+message cg_use_mount_request
+{
+	optional uint32 mount_tid = 1;		// 坐骑ID
+}
+// 使用坐骑回复
+message gc_use_mount_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 mount_tid = 2;		// 坐骑ID
+	optional string role_uid = 3;		// 切换坐骑的玩家
+}
+
+// 幻化
+message cg_turn_mount_request
+{
+	optional uint32 mount_tid = 1;		// 坐骑ID
+	optional bool is_cancel = 2;		// 是否取消
+}
+// 幻化回复
+message gc_turn_mount_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 mount_tid = 2;		// 坐骑ID
+}
+
+//***************field boss begin*****************
+// 请求参加boss战
+message cg_field_boss_attack_request
+{
+	optional string object_id = 1;		// 请求攻击boss
+}
+
+// 请求boss战回复
+message gc_field_boss_attack_reply
+{
+	optional string object_id = 1;		// 对象id
+	optional uint32 reply_code = 2;		// 结果
+	optional uint32 cool_time = 3;		// 冷却时间
+	optional string cool_name = 4;		// 有冷却的人的名字
+}
+
+// 刷新9屏界面
+message gc_field_boss_notify
+{
+	optional string object_id = 1;		// 对象id
+	optional uint32 monster_id = 2;		// 怪物id
+	optional uint32 current_hp = 3;		// 当前血量
+	optional uint32 max_hp = 4;			// 最大血量
+	repeated common.field_boss_rank ranks = 5;	// 排行榜
+	optional uint32 self_rank = 6;			// 自己的排名
+	optional uint32 self_hurt = 7;			// 自己的伤害
+	optional uint32 pos_x = 8;				// 坐标
+	optional uint32 pos_y = 9;				// 坐标
+}
+
+// boss cd请求
+message cg_field_boss_request
+{
+	optional string object_id = 1;		// 对象id
+}
+
+message gc_field_boss_reply
+{
+	optional string object_id = 1;		// 对象id
+	optional uint32 cd_time = 2;
+}
+
+// 请求界面信息
+message ce_field_boss_info_request
+{
+	
+}
+
+// 下发今日所有boss信息
+message ec_field_boss_info_notify
+{
+	repeated common.filed_boss_state today_boss = 1;	// boss信息
+}
+
+// 通知本地图boss位置
+message gc_field_boss_pos_info_notify
+{
+	repeated common.field_boss_pos_info infos = 1;		// boss信息
+}
+
+//***************field boss end*******************
+
+//****************邮件**********************************
+// 请求邮件列表
+message ce_mail_list_request
+{
+	
+}
+
+// 有新邮件通知
+message ec_new_mail_notify
+{
+	optional bool is_have_new = 1;		// 是否有新邮件
+}
+
+// 发送邮件列表（可能多次发送）
+message ec_mail_list_notify
+{
+	repeated common.mail_base_info base_infos = 1;	// 列表基础信息
+	optional uint32 force_del_flag = 2;				// 告诉客户端被强制清楚的邮件数量
+}
+
+// 发送邮件状态改变
+message ec_mail_state_change_notify
+{
+	optional uint32 reply_code = 1;
+	repeated common.mail_common_info common_infos = 2;	// 列表基础信息
+}
+
+// 请求邮件内容
+message ce_mail_content_request
+{
+	optional string m_id = 1;	// 邮件id
+}
+
+// 邮件内容
+message ec_mail_content_reply
+{
+	optional uint32 reply_code = 1;					// 返回值
+	optional common.mail_base_info base_info = 2;	// 邮件基础信息
+	optional string objs = 3;						// 附件道具信息
+	optional string content = 4;					// 内容
+}
+
+// 领取邮件附件
+message ce_mail_get_addenda_request
+{
+	optional string m_id = 1;	// 邮件id
+}
+
+// 删除邮件
+message ce_mail_remove_request
+{
+	optional string m_id = 1;	// 邮件id
+}
+
+// 批量处理
+message ce_mail_batch_request
+{
+	optional common.em_mail_batch act = 1[default = MAIL_BATCH_GET];	// 批量处理行为
+}
+
+// 得到附件给客户端的返回
+message gc_mail_get_addenda_reply
+{
+	optional common.item_data items				= 1;	// 物品数据
+	optional common.role_change_data change_data = 2;	// 人物数据变化
+}
+
+//****************新的回合制战斗**********************************
+
+// 进入战斗开始loading
+message gc_combat_start_loading_ntf
+{
+	optional common.combat_data combat 	= 1;		// 战斗数据
+	optional common.combat_end_ahead  cond = 2;		// 提前结束
+}
+
+// 进入战斗加载完成
+message cg_combat_loading_end_ntf
+{
+	optional string fight_uid = 1; // 战斗唯一ID
+}
+
+// 回复进入战斗加载完成
+message gc_combat_loading_end_reply
+{
+}
+
+// 同步回合战斗状态
+message gc_combat_data_ntf
+{
+	optional common.combat_data data = 1; // 战斗数据
+}
+
+// 同步玩家状态
+message gc_combat_obj_state_ntf
+{
+	optional common.fight_obj_state_data data = 1;
+}
+
+// 战前布阵就绪
+message cg_combat_before_form_ready_request
+{
+	optional string fight_uid 				= 1; // 战斗唯一ID
+}
+
+// 就绪返回
+message gc_combat_before_form_ready_reply
+{
+	optional string fight_uid 		= 1; // 战斗唯一ID
+	optional string uid 			= 2; // 就绪的玩家
+}
+
+// 重新部署后的战斗数据
+message gc_combat_reset_form_notify
+{
+	optional common.combat_data combat 	= 1; // 战斗数据
+}
+
+// 部署
+message cg_combat_form_request
+{
+	optional string fight_uid 				= 1; // 战斗唯一ID
+	optional common.combat_form_data data 	= 2; // 部署数据
+}
+
+// 部署返回
+message gc_combat_form_reply
+{
+	optional uint32 reply_code = 1; // 失败返回1
+}
+
+// 战斗播放结束
+message cg_combat_play_end_ntf
+{
+	optional string fight_uid = 1; 			// 战斗唯一ID
+	optional uint32 hero_att_round = 2;		// 武将攻击回合
+}
+
+// 回复战斗播放结束
+message gc_combat_play_end_reply
+{
+}
+
+// 结算
+message gc_combat_result_ntf
+{
+	optional common.combat_data combat 		= 1; // 战斗数据
+	optional common.combat_result result 	= 2; // 战斗结果
+	optional common.role_change_data rcd	= 3; // 玩家数据变动
+	optional common.combat_count_data count_data = 4;	// 战斗统计数据
+	optional uint32 role_exp				= 5; // 玩家获得经验
+	repeated common.pve_hero_exp hero_exp			= 6; // 武将获得经验
+	optional uint32 friendliness_extra_exp	=7; //亲密度额外经验万分比
+	optional uint32 friendliness_extra_money = 8;//亲密度额外金钱万分比
+}
+
+// 询问是否投降
+message cg_combat_ask_escape_req
+{
+	
+}
+
+// 询问是否投降
+message gc_combat_ask_escape_rep
+{
+	optional string role_uid = 1;	// 发起投降玩家ID
+}
+
+// 逃跑
+message cg_combat_escape_ntf
+{
+	optional string fight_uid = 1; // 战斗唯一ID
+}
+
+// 逃跑广播
+message gc_combat_escape_ntf
+{
+	optional string role_uid = 1;	// 玩家UID
+}
+
+// 召唤物
+message gc_combat_summon_ntf
+{
+	optional common.hero_data 	hero_list 	= 1;
+	optional uint32 	camp		= 2; 	// 阵营
+	optional string 	master_uid	= 3;	// 主人
+}
+
+// 武将自动战斗数据
+// -------------------------------------------------
+message hero_auto_fight_data_single
+{
+	optional string hero_uid = 1;
+	optional uint32 fight_mode = 2;	// 战斗模式 0 全自动 1 普通攻击
+}
+
+message hero_auto_fight_data
+{
+	repeated hero_auto_fight_data_single hero_list = 1;
+}
+
+// -------------------------------------------------
+
+// 自动战斗切换
+message cg_combat_auto_fight_request
+{
+	optional string fight_uid = 1; 	// 战斗唯一ID
+	optional uint32 auto_fight = 2; // 默认0为不自动战斗，非0为自动战斗
+	optional hero_auto_fight_data hero_data = 3;	// 武将自动战斗数据
+}
+
+// 自动战斗切换返回
+message gc_combat_auto_fight_reply
+{
+	optional uint32 reply_code = 1; // 返回码
+	optional uint32 auto_fight = 2;	// 默认0为不自动战斗，非0为自动战斗
+	optional hero_auto_fight_data hero_data = 3;	// 武将自动战斗数据
+	optional uint32 need_change_hero = 4;	// 是否需要改变武将自动战斗数据
+}
+
+// 角色数据改变通知(通用于服务器主动下发的逻辑)
+message gc_role_change_data_notify
+{
+	optional common.role_change_data change_data	= 1;
+}
+
+// 通知战斗力变化(会造成战斗力变化的事件太多所以单独通知不放在role_change_data)
+message gc_update_fighting_notify
+{
+	optional uint32 fighting	= 1;	//战斗力
+}
+// ---------------------- 国家悬赏 -----------------------------
+//客户端请求国家悬赏数据
+message cg_country_bounty_data_request
+{
+}
+//服务器通知国家悬赏数据
+message gc_country_bounty_data_reply
+{
+	optional common.country_bounty_data country_bounty = 1;
+}
+//客户端请求接受国家悬赏
+message cg_country_bounty_accept_request
+{
+	optional uint32 bounty_id = 1;		//悬赏ID
+}
+
+message gc_country_bounty_accept_reply
+{
+	optional uint32 reply_code = 1;	
+	optional uint32 bounty_id = 2;		//悬赏ID
+	optional common.country_bounty_data country_bounty = 3; //国家悬赏数据
+}
+//客户端请求放弃国家悬赏
+message cg_country_bounty_drop_request
+{
+	optional uint32 bounty_id = 1;		//悬赏ID
+}
+
+message gc_country_bounty_drop_reply
+{
+	optional uint32 reply_code = 1;	
+	optional uint32 bounty_id = 2;		//悬赏ID
+	optional common.country_bounty_data country_bounty = 3; //国家悬赏数据
+}
+//客户端请求刷新国家悬赏
+message cg_country_bounty_refresh_request
+{
+}
+
+message gc_country_bounty_refresh_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.country_bounty_data country_bounty = 2; //国家悬赏数据
+	optional common.role_change_data rcd	= 3;
+}
+//客户端请求领取星级宝箱
+message cg_country_bounty_box_request
+{
+	optional uint32 box_id = 1;		//宝箱ID	
+}
+
+message gc_country_bounty_box_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.country_bounty_data country_bounty = 2; //国家悬赏数据
+	optional common.role_change_data rcd = 3;
+}
+
+message gc_country_bounty_finish_ntf
+{
+	optional uint32 bounty_id = 1;	
+	optional common.country_bounty_data country_bounty = 2;
+	optional common.role_change_data rcd = 3;
+}
+//*****************************friend start***********************************
+
+//获取最近联系人列表
+message ce_get_recent_friends_request
+{
+}
+
+message ec_get_recent_friends_reply
+{
+	repeated common.friend_member friends = 1;//最近联系人列表
+	optional uint32 reply_code = 2;//错误码
+}
+
+//获取好友列表
+message ce_get_friends_request
+{
+}
+
+message ec_get_friends_reply
+{
+	repeated common.friend_member friends = 1;//好友列表
+	optional uint32 fp_has_sent_today = 3;//今天已送友情值的好友数量
+	optional uint32 fp_has_received_today = 4;//今天已领取友情值的好友数量
+	optional uint32 reply_code = 2;//错误码
+}
+
+//亲密度改变通知
+message ec_friendliness_change_notify
+{
+	optional string friend_role_id = 1; //好友id
+	optional string friend_name = 5;	//好友名字
+	optional int32 change_value = 2; //改变的值
+	optional int32 err_code = 3;	//0正常增加 1到达今日上限 2到达总上限 3失败
+	optional common.change_friendliness_reason reason = 4[default = change_reason_be_friends];//改变原因
+}
+
+//获取黑名单列表
+message ce_get_black_friends_request
+{
+}
+
+message ec_get_black_friends_reply
+{
+	repeated common.friend_member friends = 1;//黑名单列表
+	optional uint32 reply_code = 2;//错误码
+}
+
+//获取好友申请列表
+message ce_get_friend_applier_list_request
+{
+}
+
+message ec_get_friend_applier_list_reply
+{
+	repeated common.friend_member friends = 1;//好友申请列表
+	optional uint32 reply_code = 2;//错误码
+}
+
+//添加好友
+message ce_add_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_add_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional common.friend_member member_info = 2;//好友信息
+	optional string error_name = 3;	// 错误名字
+}
+
+//同意所有的加好友申请
+message ce_approve_add_friend_request
+{
+
+}
+
+//同意所有的加好友申请返回
+message ec_approve_add_friend_reply
+{
+	repeated ec_add_friend_reply reply = 1;
+}
+
+//删除好友
+message ce_remove_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_remove_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string friend_uid = 2;//成功删除好友uid
+}
+
+//加入黑名单
+message ce_black_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_black_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional common.friend_member member_info = 2;//好友信息
+}
+
+//移出黑名单
+message ce_cancel_black_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_cancel_black_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string friend_uid = 2;//成功移除黑名单uid
+}
+
+//id查找玩家
+message ce_friend_search_user_by_id_request
+{
+	optional string uid = 1;//玩家uid
+}
+
+message ec_friend_search_user_by_id_reply
+{
+	optional common.user_info info = 1;//玩家信息
+	optional uint32 reply_code = 2;//错误码
+}
+
+//名字查找玩家
+message ce_friend_search_user_by_name_request
+{
+	optional string name = 1;//玩家名字
+}
+
+message ec_friend_search_user_by_name_reply
+{
+	optional common.user_info info = 1;//玩家信息
+	optional uint32 reply_code = 2;//错误码
+}
+
+//刷新好友推荐列表
+message ce_refresh_recommend_friends_list_request
+{
+}
+
+message ec_refresh_recommend_friends_list_reply
+{
+	repeated common.recommend_member recommend_friends = 1;//推荐好友列表
+	optional uint32 reply_code = 2;//错误码
+}
+
+//置顶好友
+message ce_top_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_top_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string friend_uid = 2;//成功置顶id
+}
+
+//取消好友置顶
+message ce_cancel_top_friend_request
+{
+	optional string friend_uid = 1;//好友uid
+}
+
+message ec_cancel_top_friend_reply
+{
+	optional uint32 reply_code = 1;//错误码
+	optional string friend_uid = 2;//成功取消置顶id
+}
+
+//清除七天未登录好友
+message ce_clear_friends_request
+{
+}
+
+message ec_clear_friends_reply
+{
+	optional uint32 reply_code = 1;	// 错误码
+	repeated string del_uids = 2;	// 删除好友id
+}
+
+//清除最近联系人
+message ce_clear_recent_friends_request
+{
+}
+
+message ec_clear_recent_friends_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//清除黑名单
+message ce_clear_black_friends_request
+{
+}
+
+message ec_clear_black_friends_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//清除好友申请列表
+message ce_clear_friend_appliers_request
+{
+}
+
+message ec_clear_friend_appliers_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//更新好友状态
+message ec_friend_member_update_notify
+{
+	optional common.friend_member member = 1;
+}
+
+//亲密度变化通知
+
+//赠送友情点
+message ce_give_friend_point_request
+{
+	optional string friend_uid = 1;
+}
+
+message ec_give_friend_point_reply
+{
+	optional string friend_uid = 1;
+	optional int32 reply_code = 2;
+	optional uint32 give_timestamp = 3;
+	optional uint32 add_friendliness = 4;
+}
+
+//收取友情点
+message ce_get_friend_point_request
+{
+	optional string friend_uid = 1;
+	
+}
+
+message ec_get_friend_point_reply
+{
+	optional string friend_uid = 1;
+	optional int32 reply_code = 2;
+	optional uint32 get_timestamp = 3;
+	optional common.role_change_data change_data = 4;
+}
+
+//获取羁绊奖励界面数据
+message ce_get_relation_award_data_request
+{
+	
+}
+
+message ec_get_relation_award_data_reply
+{
+	repeated common.relation_interface_data data = 1;
+}
+
+//领取羁绊奖励
+message ce_get_relation_award_request
+{
+	optional uint32 level = 1;
+}
+
+message ec_get_relation_award_reply
+{
+	optional uint32 level = 1;
+	optional common.role_change_data change_data = 2;
+	optional int32 reply_code = 3;
+}
+
+//赠送礼物
+message ce_give_present_request
+{
+	optional string target_role_uid = 1;
+	optional uint32 item_id = 2;
+	optional uint32 item_quantity = 3;			
+	optional bool confirm = 4;
+}
+
+message ec_give_present_reply
+{
+	optional string target_role_uid = 1;
+	optional common.role_change_data change_data = 2;
+	optional uint32 add_friendliness = 4;
+	optional int32 reply_code = 3;
+}
+
+//通知被送礼物的人
+message ec_get_present_notify
+{
+	optional uint32 item_id = 1;
+	optional uint32 item_quantity = 2;
+	optional common.role_change_data change_data = 3;
+	optional string giver_role_id = 4;
+	optional string giver_name = 5;
+	optional uint32 add_friendliness = 6;
+}
+
+//组队推荐好友
+message ec_friend_troop_notify
+{
+	optional string role_uid = 1;
+	optional string name = 2;
+	optional uint32 level = 3;
+	optional uint32 headpic = 4;
+}
+
+//*****************************friend end***********************************
+// 出售背包中的物品
+message cg_sell_bag_item_request
+{
+	optional string item_uid = 1;		// 物品UID
+	optional uint32 item_num = 2;		// 出售物品数量
+}
+// 出售背包中的物品回复
+message gc_sell_bag_item_reply
+{
+	optional uint32 reply_code = 1;
+	optional string item_uid = 2;		// 物品UID
+	optional common.role_change_data role_data = 4; // 玩家数据变动
+}
+//货币兑换
+message cg_exchange_money_request
+{
+	optional uint32 source_type = 1;	//源货币类型（MONEY_TYPE）
+	optional uint32 dest_type = 2;		//目标货币类型（MONEY_TYPE）
+	optional uint32 count = 3;			//兑换数量
+}
+
+message gc_exchange_money_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data role_data = 2; // 玩家数据变动
+}
+
+//*****************************切磋***********************************
+// 请求切磋
+message cg_fight_study_request
+{
+	optional string target_uid = 1; 	// 目标uid
+}
+
+// 请求切磋返回
+message gc_fight_study_reply
+{
+	optional uint32 reply_code = 1; 	// 返回码
+	optional uint32 remain_time = 2; 	// 倒计时时间
+}
+
+// 请求者取消
+message cg_fight_study_cancel_notify
+{
+	
+}
+
+// 被切磋通知
+message gc_fight_study_notify
+{
+	optional string attacker_name = 1; 	// 发起者名字
+	optional string attacker_uid = 2; 	// 发起者uid
+	optional uint32 remain_time = 3; 	// 倒计时时间
+}
+
+// 被切磋者答复
+message cg_fight_study_answer_request
+{
+	optional string attacker_uid = 1; 	// 发起者uid
+	optional uint32 answer = 2;			// 非0为同意， 0为拒绝
+}
+
+// 被切磋者答复返回
+message gc_fight_study_answer_reply
+{
+	optional uint32 reply_code = 1; 	// 返回码
+	optional uint32 remain_time = 2; 	// 倒计时时间
+}
+
+// 通知发起者被切磋者的答复
+message gc_fight_study_answer_notify
+{
+	optional uint32 answer = 1;			// 非0为同意， 0为拒绝
+	optional uint32 remain_time = 2; 	// 倒计时时间
+}
+
+// ---------------------- 采集 -----------------------------
+// 开始采集
+message cg_start_collect_request
+{
+	optional string collect_point_uid = 1;		// 采集点ID
+}
+
+message gc_start_collect_reply
+{
+	optional uint32 reply_code = 1;
+	optional string collect_point_uid = 2;		// 采集点ID
+}
+
+// 结束采集
+message cg_end_collect_request
+{
+	optional string collect_point_uid = 1;		// 采集点ID
+}
+
+message gc_end_collect_reply
+{
+	optional uint32 reply_code = 1;
+	optional string collect_point_uid = 2;		// 采集点ID
+	optional common.role_change_data rcd = 3;
+}
+
+// 取消采集申请
+message cg_cancel_collect_request
+{
+	optional string collect_point_uid = 1;		// 采集点ID
+}
+
+// 取消采集回复
+message gc_cancel_collect_reply
+{
+	optional uint32 reply_code = 1;
+	optional string collect_point_uid = 2;		// 采集点ID
+}
+
+// ---------------------- 活动 -----------------------------
+//客户端请求活动数据
+message cg_activity_data_request
+{
+}
+
+//服务器通知活动数据
+message gc_activity_data_reply
+{
+	optional common.activities_data activities_data = 1;
+}
+
+//客户端请求领取星级宝箱
+message cg_liveness_box_request
+{
+	optional uint32 box_id = 1;		//宝箱ID(活跃度值)	
+}
+
+message gc_liveness_box_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.activities_data activities_data = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+message gc_activity_done_notify
+{
+	optional common.activity_single activity_data = 1;		//单个活动信息
+}
+// ---------------- 竞技场 ------------------------------
+// 进入竞技场
+message cg_enter_arena_request
+{
+
+}
+
+message gc_enter_arena_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 参加竞技场
+message cg_arena_join_request
+{
+
+}
+
+// 参加竞技场回复
+message gc_arena_join_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+// 购买竞技场门票
+message cg_arena_buy_ticket_request
+{
+
+}
+
+// 购买竞技场门票
+message gc_arena_buy_ticket_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 new_tickets = 2;			// 最新门票数
+	optional common.role_change_data rcd = 3;
+}
+
+// 请求匹配
+message cg_arena_match_request
+{
+	
+}
+
+// 匹配结果
+message gc_arena_match_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 target_score = 2;					// 目标积分
+	optional uint32 target_arena_level = 3;				// 目标段位
+	optional common.role_cross_data target_user = 4;	// 目标玩家参与跨服战的数据
+}
+
+// 取消匹配
+message cg_arena_cancel_match_request
+{
+}
+
+message gc_arena_cancel_match_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 通知客户端 战斗结果
+message gc_arena_battle_result_notify
+{
+	optional uint32 is_win = 1;		// 0 输 1 赢
+	optional common.arena_role_data arena_data = 2;		// 玩家竞技场数据
+	optional common.role_change_data rcd = 3;			// 只有本次门票可玩次数用尽后 才有变化
+	optional common.role_cross_data target_user = 4;	// 对方玩家信息
+	optional int32 own_rank_up = 5;				// 排名变化
+	optional uint32 own_new_rank = 6;			// 最新排名
+}
+
+// 获取竞技场排行榜数据
+message cg_get_arena_rank_data_request
+{
+	optional uint32 rank_start_pos = 1;			// 请求的排行榜起始位置 0表示请求自己的信息
+}
+
+message gc_get_arena_rank_data_reply
+{
+	optional common.arena_rank_info_array rand_data = 1;		// 排行榜数据
+}
+
+message cg_arena_self_rank_request
+{
+}
+
+message gc_arena_self_rank_reply
+{
+	optional uint32 rank = 1;					//排名
+}
+
+message cg_leave_arena_request
+{
+}
+
+// ---------------------- 藏宝图 -----------------------------
+//请求队伍寻宝道具信息
+message cg_treasure_data_request
+{
+}
+
+message gc_treasure_data_reply
+{
+	optional common.treasure_data treasure_data = 1;	//寻宝道具信息
+}
+
+//请求放弃寻宝
+message cg_treasure_drop_request
+{
+}
+
+message gc_treasure_drop_reply
+{
+	optional string uid = 1;			//玩家uid
+}
+
+//队长请求挖宝
+message cg_treasure_gather_request
+{
+}
+
+message gc_treasure_gather_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+	optional uint32 treasure_event_id = 3;		//对应treasure_event表
+}
+
+
+// 客户端请求改变玩家状态(系统)
+message cg_change_sys_state_notify
+{
+	optional common.object_state_type obj_state = 1[default = object_state_normal];
+	optional common.role_mode_state mode_state = 2[default = role_mode_state_normal];
+}
+
+// 服务器通知客户端改变状态结果
+message gc_change_sys_state_notify
+{
+	optional string role_uid = 1;						// 改变状态的玩家
+	optional uint32 reply_code = 2;						// 0 成功 1失败
+	optional common.object_state_info object_state = 3;	// 新的状态
+}
+
+// ---------------------- 系统通知 -----------------------------
+// 系统初始通知
+message gc_sys_init_notice_notify
+{
+	repeated common.sys_notice_data notices		= 1;	// 系统初始通知
+}
+
+// 系统通知
+message gc_sys_notice_notify
+{
+	repeated common.sys_notice_data notices		= 1;	// 系统通知
+}
+
+// 系统通知
+message ec_sys_notice_notify
+{
+	repeated common.sys_notice_data notices		= 1;	// 系统通知
+}
+
+//---------------------- PK -------------------------------------
+message cg_pk_request
+{
+	optional string role_uid = 1;					// 要PK的玩家
+}
+
+message gc_pk_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//----------------------约战-------------------------------------
+message ce_challenge_request
+{
+	optional string target_uid = 1;					// 要约战的玩家ID
+	optional string target_name = 2;				// 要约战的玩家名字
+}
+
+message ec_challenge_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.user_info target_info = 2;
+}
+
+message cg_challenge_request
+{
+	optional string target_uid = 1;					// 要约战的玩家ID
+}
+
+message gc_challenge_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+//通知被约战的玩家
+message ec_challenge_invite_notify
+{
+	optional string challenger_name = 1;			//约战发起者的名字
+}
+//被约战的玩家处理战书
+message cg_challenge_process_request
+{
+	optional uint32 process = 1;					//0为接受1为拒绝
+}
+
+message gc_challenge_process_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//通知约战双方约战是否成功
+message ec_challenge_result_notify
+{
+	optional string challenger_name = 1;
+	optional string target_name = 2;
+	optional uint32 result = 3;						//challenge_state
+}
+
+//战前1分钟倒计时
+message ec_challenge_ready_notify
+{
+	optional string challenger_name = 1;			//对战玩家名字
+}
+
+//战斗开始10秒钟倒计时
+message ec_challenge_fight_start_notify
+{
+
+}
+
+//获取约战记录
+message ce_challenge_record_request
+{
+}
+
+message ec_challenge_record_reply
+{
+	repeated common.challenge_info challenge_done = 1;		//已经完成的约战
+	repeated common.challenge_info challenge_coming = 2;	//即将开打的约战
+}
+
+//通知客户端自己即将有约战
+message ec_challenge_coming_notify
+{
+	optional common.challenge_info coming_challenge = 1;		//即将开始的约战
+}
+
+//通知客户端不战而胜
+message ec_challenge_win_without_fight_notify
+{
+	optional string challenger_name = 1;			//对战玩家名字
+}
+
+//----------------------王城争夺战-------------------------------------
+// 天下大势
+message ce_world_trend_info_request
+{
+}
+
+message ec_world_trend_info_reply
+{
+	optional common.country_king_war_info king_war = 1;
+	optional common.family_war_info family_war = 2;
+}
+
+// 报名
+message ce_king_war_sign_up_request
+{
+	optional uint32 country_id = 1;			// 国家id
+}
+
+// 报名结果
+message ec_king_war_sign_up_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 bid_money = 2;			// 本轮自己家族的竞价
+	optional uint32 family_money = 3;		// 自己家族多少钱
+}
+
+// 撤销报名
+message ce_king_war_undo_sign_up_request
+{
+}
+
+// 撤销结果
+message ec_king_war_undo_sign_up_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.king_war_country_sign_up_single country = 2;
+}
+
+// 点赞
+message ce_king_war_like_request
+{
+	optional uint32 country_id = 1; 		// 国家
+	optional string family_id = 2;			// 家族
+	optional uint32 like = 3;				// 0:点赞 1:点踩
+}
+
+// 点赞返回
+message ec_king_war_like_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 country_id = 2;
+	optional common.king_war_family_info info = 3; // 国家预告信息
+}
+
+// 编辑战前宣言
+message ce_king_war_notice_request
+{
+	optional uint32 country_id = 1;
+	optional string notice = 2;						// 宣言
+}
+
+message ec_king_war_notice_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 country_id = 2;
+	optional common.king_war_family_info info = 3; // 国家预告信息
+}
+
+// 竞价
+message ce_king_war_offer_money_request
+{
+	optional uint32 money = 1;				// 出价
+	optional uint32 country_id = 2;			// 国家id
+}
+
+// 竞价结果
+message ec_king_war_offer_money_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 bid_money = 2;			// 本轮自己家族的竞价
+	optional uint32 family_money = 3;		// 自己家族多少钱
+	optional common.king_war_country_sign_up_single country = 4;
+}
+
+// 报名列表
+message ce_king_war_sign_up_list_request
+{
+	optional uint32 country_id = 1;			// 国家id
+}
+
+// 报名列表返回
+message ec_king_war_sign_up_list_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.king_war_sign_up_data datas = 2;		// 列表
+	optional uint32 country_id = 3;			// 国家id
+}
+
+// 请求助战
+message ce_king_war_help_family_list_request
+{
+	optional uint32 page = 1;	// 页
+}
+
+message ec_king_war_help_family_list_reply
+{
+	optional uint32 reply_code = 1;						// 错误码
+	repeated common.king_war_help_family family_list = 2;	// 家族列表
+	optional uint32 page = 3;							// 页
+}
+
+// 请求助战 模糊查询
+message ce_king_war_help_family_fuzzy_request
+{
+	optional string name = 1;
+}
+
+// 模糊查询结果
+message ec_king_war_help_family_fuzzy_reply
+{
+	optional uint32 reply_code = 1;							// 错误码
+	repeated common.king_war_help_family family_list = 2;	// 家族列表
+}
+
+// 邀请助战
+message ce_king_war_invite_help_request
+{
+	optional string family_uid = 1;
+}
+
+message ec_king_war_invite_help_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional string family_uid = 2;					// 邀请成功
+}
+
+// 取消邀请
+message ce_cencel_king_war_invite_request
+{
+	
+}
+
+message ec_cencel_king_war_invite_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional uint32 country_id = 2;
+	optional common.king_war_family_info info = 3; 	// 国家预告信息
+}
+
+// 取消助战
+message ce_cencel_king_war_help_request
+{
+	
+}
+
+message ec_cencel_king_war_help_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+	optional uint32 country_id = 2;
+	optional common.king_war_family_info info = 3; 	// 国家预告信息
+}
+
+// 邀请助战通知
+message ec_king_war_invite_help_notify
+{
+	repeated common.king_war_helf_info infos = 1;
+}
+
+// 处理邀请
+message ce_king_war_invite_process_request
+{
+	optional string family_uid = 1;
+	optional uint32 process = 2; // 0 拒绝 1 同意
+}
+
+message ec_king_war_invite_process_reply
+{
+	optional uint32 reply_code = 1;					// 错误码
+}
+
+// 清空邀请列表
+message ce_king_war_invites_clear_request
+{
+	
+}
+
+// 王城战通知
+message ec_king_war_notice_notify
+{
+	optional uint32 country_id = 1;				// 国家id
+	optional common.king_war_state state = 2[default = king_war_state_end];	// 状态
+	optional uint32 time = 3;					// 时间
+	optional string defensive_name = 4;			// 守方家族
+	optional bool is_king = 5;					// 是否是国王家族
+	optional string attack_name = 6;			// 攻击方家族
+	optional string def_family_id = 7;			// 防守家族id
+	optional string att_family_id = 8;			// 进攻家族id
+	optional string def_help_family = 9;			// 守方助战家族id
+	optional string def_help_family_name = 10;		// 守方助战家族
+	optional string att_help_family = 11;			// 攻方助战家族id
+	optional string att_help_family_name = 12;		// 攻方助战家族
+}
+
+// 请求王城战斗场景人数
+message ce_king_war_scene_num_request
+{
+	optional uint32 country_id = 1;
+}
+
+// 回复王城战斗场景人数
+message ec_king_war_scene_num_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 def_family_num = 2;
+	optional uint32 att_family_num = 3;
+}
+
+// 请求进入王城战场景
+message cg_enter_king_war_scene_request
+{
+	optional uint32 country_id = 1;
+}
+
+// 请求进入王城战场景回复
+message gc_enter_king_war_scene_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+// 通知场景其他家族玩家王城战开启了
+message gc_king_war_scene_start_notify
+{
+	optional string def_family_id = 1;
+	optional string att_family_id = 2;
+	optional string def_help_family = 3;
+	optional string att_help_family = 4;
+}
+
+// 图标
+message gc_king_war_icon_notify
+{
+	optional uint32 state = 1;			// 1 显示 0 消失
+	optional uint32 occupy_camp = 2;	// 龙脉属于哪个阵容
+	optional string object_id =	3;		// 对象Id
+}
+
+// 请求攻击龙脉
+message cg_king_war_attack_start_request
+{
+	optional string object_id =	1;			// 对象Id
+}
+
+// 请求攻击龙脉回复
+message gc_king_war_attack_start_reply
+{
+	optional uint32 reply_code = 1;	// 0 表示攻击成功
+}
+
+// 请求造成伤害
+message cg_king_war_attack_end_request
+{
+	optional string object_id =	1;			// 对象Id
+}
+
+// 请求造成伤害回复
+message gc_king_war_attack_end_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 left_time = 2;
+	optional bool is_fight = 3;		// 是否被拉进战斗
+}
+
+// 请求防守龙脉
+message cg_king_war_defence_request
+{
+	optional string object_id =	1;			// 对象Id
+}
+
+// 请求防守龙脉回复
+message gc_king_war_defence_reply
+{
+	optional uint32 reply_code = 1; // 0 表示攻击成功
+}
+
+// 攻击龙脉结束
+message cg_king_war_attack_end_notify
+{
+	optional string object_id =	1;			// 对象Id
+}
+
+// 同步血量
+message gc_object_hp_change_notify
+{
+	optional string object_id = 1;
+	optional common.obj_hp_change_type change_type = 2[default = obj_hp_change_type_none];
+	optional uint32 change_value = 3;
+	optional string hurt_id = 4;	// 引起这个事件的生物id
+}
+
+// 死亡界面
+message gc_object_death_notify
+{
+	optional common.object_revive_type revive_type = 1[default = object_revive_normal];// 复活界面类型
+	optional uint32 revive_time = 2;	// 复活时间
+	optional uint32 curr_revive_times = 3;	// 当前复活次数(副本中使用)
+	optional uint32 max_revive_times = 4;	// 最大可复活次数(副本中使用)
+	optional uint32 death_count = 5;	// 死亡次数(王城战用)
+	optional uint32 king_war_free = 6;	// 免费复活次数(王城战用)
+}
+
+// 请求复活
+message cg_object_revive_request
+{
+	optional common.object_revive_type revive_type = 1[default = object_revive_normal];// 复活界面类型
+	optional bool is_auto = 2;	// 是否是倒计时到了自动复活
+}
+
+// 复活回复
+message gc_object_revive_reply
+{
+	optional uint32 reply_code = 1;		// 
+	optional uint32 left_time = 2;		// 还有多久才能复活
+	optional common.role_change_data change_data = 3;	// 人物数据变化
+}
+
+// 王城战战意
+message gc_role_battle_value_notify
+{
+	optional uint32 state = 1;	// 1 显示 0 消失
+	optional uint32 value = 2;	// 战意值
+}
+
+// 通知boss血量位置等信息
+message gc_update_long_info_notify
+{
+	optional uint32 state = 1;						// 1 显示 0 消失
+	repeated common.king_war_long_info infos = 2;	// 场景中龙脉信息
+}
+
+// 通知神器发动倒计时
+message gc_artifact_left_time_notify
+{
+	optional string family_name = 1;
+	optional string role_name = 2;
+	optional uint32 tid = 3;
+}
+
+// 王城战奖励通知
+message gc_king_war_reward_notify
+{
+	optional string def_name = 1;			// 守方家族
+	optional string def_help = 2;			// 守方助战家族
+	optional uint32 def_score = 3;			// 守方积分
+	optional string att_name = 4;			// 攻击方家族
+	optional string att_help = 5;			// 攻击方助战家族
+	optional uint32 att_score = 6;			// 攻击积分
+	optional string win_family = 7;			// 胜利家族
+	optional uint32 rank = 8;				// 排名
+	optional common.king_war_rank_single rank_info = 9; // 自己排名信息
+	optional uint32 rank_level = 10;		// 排名奖励等级
+	optional uint32 exploit_level = 11;		// 功勋奖励等级
+	optional string win_help_family = 12;	// 胜利方助战家族
+}
+
+// 请求王城战战斗信息
+message cg_ask_king_war_fight_request
+{
+}
+
+message gc_ask_king_war_fight_reply
+{
+	optional uint32 reply_code = 1;
+	optional string self_family = 2;			// 我方家族
+	optional string enemy_family = 3;			// 敌方家族
+	optional uint32 self_warfare = 4;			// 我方战意
+	optional uint32 enemy_warfare = 5;			// 敌方战意
+	optional common.king_war_side_roles self_role = 6; // 战场人员信息
+	optional uint32 self_exploits = 7; // 自己的战功
+	repeated common.king_war_rank_single rank_list = 8; // 排行前3
+	optional uint32 self_long_gas = 9;			// 我方龙气
+	optional uint32 enemy_long_gas = 10;		// 敌方龙气
+	optional uint32 artifact_start_left = 11;	// 神器刷新前1分钟的时间
+}
+
+// 请求所有榜单
+message cg_king_war_rank_list_request
+{
+
+}
+
+message gc_king_war_rank_list_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.king_war_rank_list list = 2;
+}
+
+message cg_king_war_jump_request
+{
+	
+}
+
+message gc_king_war_jump_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//----------------------商店-------------------------------------
+// 请求商店数据
+message ce_shop_goods_request
+{
+	optional common.shop_type type 			= 1[default = shop_type_none]; // 商店类型 
+}
+// 返回商店数据
+message ec_shop_goods_reply
+{
+	optional uint32 reply_code					= 1;
+	optional common.shop_type type 				= 2[default = shop_type_none]; // 商店类型 
+	optional common.shop_goods_list	shop_list 	= 3;	// 商店限购数据
+	optional common.user_goods_list	user_list 	= 4;	// 用户限购数据
+}
+
+// 请求购买有限购的物品
+message ce_buy_goods_request
+{
+	optional common.user_buy_goods	info		= 1;	// 商品信息
+}
+
+// 请求购买center返回
+message ec_buy_goods_reply
+{
+	optional uint32 reply_code					= 1;
+	optional common.shop_goods shop_goods_data	= 2;
+}
+
+message cg_buy_goods_request
+{
+	optional common.user_buy_goods	info		= 1;	// 商品信息
+}
+
+// 请求购买game返回
+message gc_buy_goods_reply
+{
+	optional uint32 reply_code						= 1;
+	optional common.role_change_data change_data	= 2;	// 人物数据变化
+	optional common.shop_goods shop_goods_data		= 3;
+	optional common.user_goods user_goods_data		= 4;
+	
+}
+
+
+//----------------------装备-----------------------
+message cg_equip_exchange_request
+{
+	optional uint32 exchange_id = 1;			//打造ID
+	optional uint32 type = 2;					//0为普通打造1为强化打造
+}
+
+message gc_equip_exchange_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//穿装备
+message cg_equip_on_request
+{
+	optional string hero_uid = 1;
+	optional string equip_uid = 2;
+}
+
+message gc_equip_on_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//卸载装备
+message cg_equip_off_request
+{
+	optional string hero_uid = 1;
+	optional string equip_uid = 2;
+}
+
+message gc_equip_off_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//重铸基础属性
+message cg_equip_remake_attr_request
+{
+	optional string equip_uid = 1;
+	optional uint32 gold_flag = 2;	//重铸石不足是否用金币代替 0为不代替1为代替
+}
+
+message gc_equip_remake_attr_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//重铸判词
+message cg_equip_remake_exattr_request
+{
+	optional string equip_uid = 1;
+	repeated uint32 lock_index = 2;	//锁定的属性
+}
+
+message gc_equip_remake_exattr_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//替换判词
+message cg_equip_replace_exattr_request
+{
+	optional string equip_uid = 1;
+}
+
+message gc_equip_replace_exattr_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//熔炼
+message cg_equip_smelt_request
+{
+	repeated string equip_uid = 1;
+}
+
+message gc_equip_smelt_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+message cg_equip_smelt_data_request
+{
+}
+
+message gc_equip_smelt_data_reply
+{
+	optional uint32 equip_smelt_value	= 1; //熔炼值
+	repeated common.equip_smelt_box box_list	= 2; //熔炼值宝箱
+}
+
+message cg_equip_smelt_box_request
+{
+	optional uint32 box_id = 1;				//宝箱ID（熔炼度）
+}
+
+message gc_equip_smelt_box_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;
+}
+
+//装备强化
+message cg_equip_strengthen_request
+{
+	optional string equip_uid = 1;
+	optional uint32 count = 2;
+}
+
+message gc_equip_strengthen_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//装备注灵
+message cg_equip_soul_request
+{
+	optional string equip_uid = 1;
+	optional uint32 soul_id = 2;
+}
+
+message gc_equip_soul_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+
+//增加改造次数
+message cg_equip_add_remake_count_request
+{
+	optional string equip_uid = 1;
+}
+
+message gc_equip_add_remake_count_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;	
+}
+//-------------------------------演武大赛-----------------------------------
+message ce_world_cup_data_request
+{
+}
+
+message ec_world_cup_data_reply
+{
+	optional common.world_cup_data world_cup_info = 1;	//大赛信息
+}
+
+//参战
+message cg_world_cup_play_request
+{
+}
+
+message gc_world_cup_play_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//十五分钟倒计时
+message ec_world_cup_coming_quarter_notify
+{
+	optional uint32 time_remain = 1;	//剩余时间
+}
+
+//五分钟倒计时
+message ec_world_cup_coming_soon_notify
+{
+	optional uint32 time_remain = 1;	//剩余时间
+}
+
+//战前准备倒计时
+message ec_world_cup_ready_notify
+{
+	optional common.world_cup_battle battle_info = 1;
+	optional uint32 time_remain = 2;	//剩余时间
+}
+
+//请求投注
+message cg_world_cup_bet_request
+{
+	optional string battle_uid = 1;		//对阵ID
+	optional string winner = 2;			//投注内容
+	optional uint32 odds = 3;			//投注赔率
+	optional uint32 bet = 4;			//投注金额
+}
+
+message gc_world_cup_bet_reply
+{
+	optional uint32 reply_code = 1;		
+	optional uint32 odds = 2;					//最新的投注赔率（尝试投注失败时会返回）
+	optional common.world_cup_bet self_bet = 3;	//投注成功会返回给客户端
+	optional common.role_change_data rcd = 4;
+}
+
+//请求领取投注返还
+message cg_world_cup_bet_reward_request
+{
+	optional string battle_uid = 1;				//对阵唯一ID
+}
+
+message gc_world_cup_bet_reward_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//请求赔率信息
+message ce_world_cup_odds_request
+{
+	optional string battle_uid = 1;		//对阵唯一ID
+}
+
+message ec_world_cup_odds_reply
+{
+	optional common.world_cup_odds odds_data = 1;
+}
+//----------------------成就-----------------------
+//请求获取成就列表
+message cg_get_achieve_infolist_request
+{
+}
+
+message gc_get_achieve_infolist_reply
+{
+	optional common.achieve_data achieve_list = 1;	//成就信息列表
+}
+
+//获取个人历程
+message cg_get_achieve_record_request
+{
+	
+}
+
+message gc_get_achieve_record_reply
+{
+	optional common.achieve_record achieve_record = 1;	//成就个人历程
+	optional string achieve_cup_list = 2;	//成就不同奖杯列表以:隔开
+	optional string achieve_type_number_list = 3; //不同成就类别完成数列表以: | 隔开
+}
+
+//发送成就完成的通知
+message gc_achieve_finish_notify
+{
+	optional uint32 tid = 1;
+	optional uint32 level = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+//领取个人成就奖励
+message cg_get_achieve_reward_request
+{
+	optional uint32 type = 1;			//领取类型
+	optional uint32 tid = 2;			//成就ID
+	optional uint32 level = 3;			//成就等级
+}
+message gc_get_achieve_reward_reply
+{
+	optional uint32 reply_code = 1;			
+	optional common.role_change_data rcd = 2;
+}
+
+//--------------------------------------爬塔-------------------------------------
+//请求爬塔数据
+message cg_tower_data_request
+{
+}
+
+message gc_tower_data_reply
+{
+	optional common.tower_data tower_info = 1;
+}
+
+//手动爬塔
+message cg_tower_fight_request
+{
+}
+
+message gc_tower_fight_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.tower_data tower_info = 2;
+}
+
+//扫荡
+message cg_tower_auto_fight_request
+{
+}
+
+message gc_tower_auto_fight_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 auto_fight_time = 2;	//扫荡结束时间和tower_data中一样
+}
+
+//立即扫荡
+message cg_tower_auto_fight_immediately_request
+{
+}
+
+message gc_tower_auto_fight_immediately_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 auto_fight_time = 2;	//扫荡结束时间和tower_data中一样
+	optional common.role_change_data rcd = 3;
+}
+
+//扫荡结束请求领取收益
+message cg_tower_auto_fight_reward_request
+{
+}
+
+message gc_tower_auto_fight_reward_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.tower_data tower_info = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+//重置
+message cg_tower_reset_request
+{
+}
+
+message gc_tower_reset_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 current_tower = 2;	//当前爬塔层数
+	optional uint32 reset_count = 3;	//重置次数
+}
+
+//请求领取爬塔成就奖励
+message cg_tower_achieve_reward_request
+{
+}
+
+message gc_tower_achieve_reward_reply
+{
+	optional uint32 reply_code = 1;	
+	optional uint32 current_achieve = 2;//当前爬塔成就（是否可以领取根据最高层数判断）
+	optional common.role_change_data rcd = 3;
+}
+
+//请求攻打隐藏关卡
+message cg_tower_trigger_fight_request
+{
+	optional string trigger_uid = 1;	//隐藏关卡唯一ID
+}
+
+message gc_tower_trigger_fight_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.tower_data tower_info = 2;
+}
+
+//通知自己发现了隐藏关卡
+message gc_tower_trigger_notify
+{
+	optional uint32 trigger_tid = 1;	//隐藏关卡策划表ID
+}
+
+//通知自己他人发现了隐藏关卡
+message gc_tower_other_trigger_notify
+{
+	optional common.tower_trigger other_trigger = 1;	//关卡信息
+}
+//--------------------------------------红点提示-------------------------------------
+
+
+
+
+//发送红点提示通知
+message gc_red_point_notify
+{
+	optional common.red_point_data red_info_list = 1;
+}
+
+//客户端发送红点点击反馈请求
+message cg_red_point_request
+{
+	optional common.RED_POINT_TYPE red_type = 1[default = RED_POINT_TYPE_BEGIN];	//红点类型
+	optional uint32 param = 2;						//	统一参数 根据红点类型不同传不同的参数	
+}
+
+//------------------------------抽卡--------------------------------
+message cg_luckydraw_request
+{
+	optional uint32 type = 1;		//common.luckydraw_type
+	optional uint32 count = 2;		//次数（普通抽卡可以抽取多次，次数限制读全局表）
+}
+
+message gc_luckydraw_reply
+{
+	optional uint32 reply_code	= 1;	
+	optional uint32 type = 2;		//common.luckydraw_type
+	optional common.role_change_data rcd = 3;
+	repeated common.luckydraw_award award_list = 4;
+	optional common.luckydraw_client_data luckydraw = 5;
+}
+
+message cg_luckydraw_data_request
+{
+	
+}
+
+message gc_luckydraw_data_reply
+{
+	optional common.luckydraw_client_data luckydraw = 1;
+}
+
+//--------------------------------------命力相关-------------------------------------
+//激活命星请求
+message cg_activate_life_star_request
+{
+	
+}
+message gc_activate_life_star_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd = 2;
+}
+
+//境界突破
+message cg_break_life_state_request
+{
+	
+}
+message gc_break_life_state_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd = 2;
+}
+
+//命师称号升级
+message cg_up_level_lifelabel_request
+{
+	
+}
+
+message gc_up_level_lifelabel_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd = 2;
+	optional uint32 label_level  = 3;
+}
+
+//---------------------------新手引导---------------------------
+//已完成的新手引导
+message cg_finish_new_role_guide_notify
+{
+	optional uint32	tid 		= 1; //已完成的新手引导ID
+}
+
+message gc_finish_new_role_guide_reply
+{
+	repeated uint32 id_list		= 2;//已完成的新手引导ID
+}
+
+//触发新手引导
+message gc_touch_new_role_guide_notify
+{
+	optional uint32	tid 		= 1; //触发的新手引导ID
+	optional uint32	type 		= 2; //新手引导/剧情
+}
+
+//---------------------------组队（新）--------------------------
+//创建队伍
+message cg_troop_create_request  
+{
+	optional uint32 type = 1;//队伍类型
+	optional string role_uid = 2;//被邀请玩家uid
+}
+
+message ec_troop_create_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+message gc_troop_create_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//踢人
+message ce_troop_kick_request 
+{
+	optional string role_id = 1;//成员uid
+}
+
+message ec_troop_kick_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//通知队伍所有成员队员发生变化
+message ec_troop_event_notify
+{
+	optional uint32 event = 1;	//common.troop_event
+	optional string member_name = 2;	//队员名字
+	optional common.troop_data troop = 3; //队伍数据
+}
+
+//通知队伍所有成员队员发生变化
+message gc_troop_event_notify
+{
+	optional uint32 event = 1;	//common.troop_event
+	optional string member_name = 2;	//队员名字
+	optional common.troop_data troop = 3; //队伍数据
+}
+
+//自动匹配
+message cg_troop_auto_match_request
+{
+	optional uint32 type = 1;//队伍类型
+}
+
+message gc_troop_auto_match_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//加入队伍
+message cg_troop_join_request 
+{
+	optional string troop_id = 1;//队伍id
+}
+
+message gc_troop_join_reply
+{
+	optional uint32 reply_code = 2;//错误码
+}
+
+message ec_troop_join_reply
+{
+	optional string troop_id = 1;//队伍id
+	optional uint32 reply_code = 2;//错误码
+}
+
+//获取申请人列表
+message ce_troop_apply_member_request
+{
+}
+
+message ec_troop_apply_member_reply
+{
+	repeated common.user_troop_member apply_list = 1;
+}
+
+//处理申请人的请求
+message ce_troop_process_apply_request
+{
+	optional string apply_member_id = 1;	//申请人ID
+	optional uint32 process = 2;			//0为同意 1为拒绝
+}
+
+message ec_troop_process_apply_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//邀请加入队伍(这个是批量邀请而且没返回)
+message ce_troop_invite_join_request 
+{
+	repeated string role_id = 1;		// 被邀请玩家uid
+	optional bool is_invite_tutor = 2;	// 是否有导师
+}
+
+//邀请加入队伍(单个)
+message ce_troop_invite_single_request 
+{
+	optional string role_id = 1;//被邀请玩家uid
+}
+
+message ec_troop_invite_join_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//通知被邀请人
+message ec_troop_invite_join_notify 
+{
+	optional string leader_name = 1;	//发起邀请玩家名
+	optional string troop_id = 2;
+	optional uint32 type = 3;
+	optional uint32 leader_level = 4;	//发起邀请玩家等级
+}
+
+//处理组队邀请
+message cg_troop_process_invite_request 
+{
+	optional string troop_id = 1;//队伍id
+	optional uint32 process = 2; //0为同意1为拒绝
+}
+
+message ec_troop_process_invite_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//设置是否允许自动加入
+message ce_troop_auto_join_flag_request 
+{
+	
+}
+
+message ec_troop_auto_join_flag_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//退出队伍
+message ce_troop_quit_request 
+{
+}
+
+message ec_troop_quit_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//修改队伍设置
+message ce_troop_modify_request 
+{
+	optional uint32 type = 1;//队伍类型
+	optional uint32 level_min = 2;//成员最小等级
+	optional uint32 level_max = 3;//成员最大等级
+}
+
+
+message ec_troop_modify_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+//获取这一类型的所有队伍
+message ce_troop_list_request 
+{
+	optional uint32 type = 1;//队伍类型
+}
+
+message ec_troop_list_reply
+{
+	repeated common.troop_data troops = 1;//队伍列表
+}
+
+//转交队长
+message ce_troop_transfer_leader_request 
+{
+	optional string role_id = 1;//新队长uid
+}
+
+message ec_troop_transfer_leader_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+// 归队
+message cg_troop_back_request
+{
+}
+
+message gc_troop_back_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+// 暂离
+message ce_troop_leave_request
+{
+}
+
+message ec_troop_leave_reply
+{
+	optional uint32 reply_code = 1;//错误码
+}
+
+message ec_troop_invite_result_notify
+{
+	optional uint32 reply_code = 1; //错误码
+	optional string name = 2;		//玩家名字
+	optional uint32 process = 3;	//0为同意1为拒绝
+}
+
+// 归队通知
+message ec_troop_rejoin_notify
+{
+}
+
+// 邀请化身
+message ce_troop_invite_shadow_request
+{
+	optional string friend_uid = 1;	// 邀请化身
+}
+
+message ec_troop_invite_shadow_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+message gc_troop_invite_shadow_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.friend_member member_info = 2;//好友信息
+	optional common.role_change_data rcd = 3;
+}
+
+//---------------------------副本系统---------------------------
+// 请求副本信息 
+message cg_role_dungeon_info_request
+{
+}
+
+// 副本信息返回
+message gc_role_dungeon_info_reply
+{
+	optional common.role_all_client_dungeon_data dungeon_data = 1;//副本数据
+}
+
+// 请求开启一个副本
+message cg_open_dungeon_request
+{
+	optional uint32 dungeon_id = 1;		// 副本id
+}
+
+// 请求开启一个副本回复
+message gc_open_dungeon_reply
+{
+	optional uint32 reply_code = 1;		// 返回
+	optional uint32 dungeon_id = 2;
+	repeated string team_uids = 3;		// 无法进副本的玩家id
+}
+
+// 请求队员确认
+message gc_dugeon_team_check_request
+{
+	optional uint32 dungeon_id = 1;
+	optional string leader_id = 2;
+	repeated common.teamcheck_data datas = 3;
+}
+
+// 请求队员确认回复
+message cg_open_dugeon_team_check_reply
+{
+	optional common.team_check_type type = 1[default = team_check_type_none];
+}
+
+// 同步确认结果
+message gc_sync_team_check_notify
+{
+	optional uint32 dungeon_id = 1;
+	repeated common.teamcheck_data datas = 2;
+}
+
+// 请求确认结果
+message cg_ask_team_check_reuqest
+{
+	
+}
+
+// 请求确认结果返回
+message gc_ask_team_check_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.teamcheck_data datas = 2; 
+}
+
+// 通知副本进度
+message gc_dungeon_schedule_data_notify
+{
+	optional uint32 dungeon_id = 1;
+	optional common.dungeon_state_type state_type = 2[default = dungeon_state_none]; //状态
+	repeated common.dungeon_schedule_data datas = 3;
+	optional uint32 left_time = 4;
+	optional uint32 pass_time = 5;	// 通过次数
+}
+
+// 副本挑战结果
+message gc_notify_dungeon_result_notify
+{
+	optional uint32 dungeon_id = 1;
+	optional common.dungeon_result_type type = 2[default = dungeon_result_none]; // 结果
+	optional uint32 all_score = 3;					// 总分
+	optional uint32 all_round_time = 4;				// 所有回合数时间
+	optional uint32 round_score = 5;				// 回合数时间加分
+	optional uint32 history_round_time = 6;			// 历史回合数时间
+	optional uint32 average_death = 7;				// 平均死亡数
+	optional uint32 death_score = 8;				// 死亡数加分
+	optional uint32 history_death = 9;				// 历史最好死亡数
+	optional common.role_change_data rcd = 10; 		// 通关奖励
+	optional uint32 reply_code = 11;				// 返回码
+}
+
+// 请求离开副本
+message cg_dungeon_leave_request
+{
+	
+}
+
+// 请求离开副本
+message gc_dungeon_leave_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+
+// 副本无法在获得奖励的提示
+message gc_dungeon_reward_limit_notify
+{
+	optional uint32 reply_code = 1;
+	optional uint32 monster_tid = 2;
+}
+
+// 再次挑战请求
+message cg_dungeon_fight_again_request
+{
+	
+}
+
+message gc_dungeon_fight_again_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+message cg_dungeon_event_request
+{
+	optional uint32 event_id = 1;
+}
+
+message cg_dungeon_buy_request
+{
+	optional uint32 dungeon_type = 1;		// dungeon_type表的ID
+}
+
+message gc_dungeon_buy_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_dungeon_times_data dungeon_times_data = 2;	// 副本次数数据
+	optional common.role_change_data rcd = 3;
+}
+
+message cg_dungeon_times_request
+{
+	
+}
+
+message gc_dungeon_times_reply
+{
+	optional uint32 vigour = 1;	// 当前体力值
+	optional common.role_dungeon_times_data dungeon_times_data = 2;	// 副本次数数据
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+
+// 服务器通知客户端 function_code改变
+message gc_update_function_code_ntf
+{
+	optional string function_code = 1;		// 开启功能的编码
+}
+
+// 更新阵法数据
+message gc_tactic_update_ntf
+{
+	repeated common.tactic_single tactics = 1;
+}
+
+// 更新BUFF数据
+message gc_role_buff_update_ntf
+{
+	optional common.role_buff_data role_buffs = 1;
+}
+
+// 服务器通知客户端npc显示改变
+message gc_update_npc_code_ntf
+{
+	optional uint32 npc_code = 1;		// 通知npc显示隐藏
+}
+
+// 服务器通知客户端采集物显示改变
+message gc_update_collect_code_ntf
+{
+	optional uint32 collect_code = 1;		// 控制采集物的显示隐藏
+}
+
+
+// 请求切换皮肤
+message cg_change_hero_plugin_request
+{
+	optional uint32 hero_id = 1;		// hero ID
+	optional uint32 plugin_id = 2;		// 皮肤ID
+}
+
+message gc_change_hero_plugin_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd = 2;
+}
+
+//----------------------------寄售行---------------------------
+//根据物品类型请求正在出售的商品列表
+message ce_goods_selling_list_request
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+	optional uint32 item_type = 2;		//策划表里面的类型
+}
+
+message ec_goods_selling_list_reply
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+	optional uint32 item_type = 2;		//策划表里面的类型
+	repeated common.goods_info goods_info = 3;	//商品信息
+}
+
+//根据物品id请求正在出售的商品列表
+message ce_goods_selling_data_request
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+	optional uint32 rarity = 2;			//0为非珍品1为珍品
+	optional uint32 item_tid = 3;		//策划表里面的物品id
+}
+
+message ec_goods_selling_data_reply
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+	optional uint32 rarity = 2;			//0为非珍品1为珍品
+	optional uint32 item_tid = 3;		//策划表里面的物品id
+	repeated common.goods_single goods_bottom = 4;	//价格最便宜的指定数量的商品
+	repeated common.goods_single goods_top = 5;		//价格最贵的指定数量的商品（如果总数量小于等于指定数量不赋值）
+}
+
+//请求自己的关注商品
+message ce_goods_care_request
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+}
+
+message ec_goods_care_reply
+{
+	optional uint32 tab = 1;			//0为出售1为公示
+	repeated common.goods_single goods_self = 2;	//自己关注的商品
+	optional uint32 care_num = 3;		//已经关注的物品数量
+}
+
+//请求自己出售的商品
+message ce_goods_self_request
+{
+}
+
+message ec_goods_self_reply
+{
+	repeated common.goods_single goods_self = 1;	//自己出售的商品
+}
+
+//请求购买商品
+message cg_goods_buy_request
+{
+	optional string goods_uid = 1;				//商品唯一ID
+	optional uint32 item_tid = 2;				//物品ID
+	optional uint32 buy_count = 3;				//购买数量
+	optional uint32 price = 4;					//单价（用于校验，与服务器不一致会购买失败）
+}
+
+message gc_goods_buy_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;			
+}
+
+//请求出售物品
+message ce_goods_sell_info_request
+{
+	optional uint32 item_tid = 1;				//物品策划表ID
+}
+
+//请求出售物品
+message ec_goods_sell_info_reply
+{
+	optional uint32 item_tid = 1;				//物品策划表ID
+	optional uint32 price = 2;					//珍品成交平均价格
+}
+
+//请求出售物品
+message cg_goods_sell_request
+{
+	optional string item_uid = 1;				//物品唯一ID
+	optional uint32 sell_count = 2;				//出售数量
+	optional uint32 price = 3;					//出售价格
+}
+
+message gc_goods_sell_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;			
+}
+
+//请求取回物品
+message cg_goods_return_request
+{
+	optional string goods_uid = 1;				//商品唯一ID
+	optional uint32 item_tid = 2;				//物品ID
+	optional uint32 item_num = 3;				//数量
+}
+
+message gc_goods_return_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;			
+}
+
+//请求重新上架
+message cg_goods_resell_request
+{
+	optional string goods_uid = 1;				//商品唯一ID
+	optional uint32 sell_count = 2;				//出售数量
+	optional uint32 price = 3;					//出售价格
+}
+
+message gc_goods_resell_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;			
+}
+
+//请求关注商品
+message ce_goods_docare_request
+{
+	optional string goods_uid = 1;				//商品唯一ID
+	optional uint32 operation = 2;				//0为取消关注1为关注
+}
+
+message ec_goods_docare_reply
+{
+	optional uint32 reply_code = 1;		
+	optional string goods_uid = 2;				//商品唯一ID
+	optional uint32 heat = 3;					//热度
+	optional uint32 care = 4;					//0为未关注1为已关注
+}
+
+//请求一键清理关注
+message ce_goods_clear_care_request
+{
+	
+}
+
+message ec_goods_clear_care_reply
+{
+	optional uint32 reply_code = 1;		
+	repeated common.goods_single goods_self = 2;	//自己关注的商品
+}
+
+//请求下架商品
+message ce_goods_cancel_request
+{
+	optional string goods_uid = 1;				//商品唯一ID
+}
+
+message ec_goods_cancel_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//请求领取收益
+message cg_goods_profit_request
+{
+	
+}
+
+message gc_goods_profit_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;		
+}
+
+//----------------------------远征--------------------------
+//请求数据
+message cg_expedition_data_request
+{
+
+}
+
+message gc_expedition_data_reply
+{
+	optional common.expedition_data expedition_data = 1;
+}
+
+//请求攻打关卡
+message cg_expedition_fight_request
+{
+	optional uint32 stage_id = 1;		//关卡ID
+}
+
+message gc_expedition_fight_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 stage_id = 2;
+	optional uint32 pass_num = 3;
+}
+
+//请求刷新
+message cg_expedition_refresh_request
+{
+}
+
+message gc_expedition_refresh_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.expedition_data expedition_data = 2;
+}
+
+//求助
+message cg_expedition_help_request
+{
+	repeated string helper_list = 1;		//求助对象uid
+}
+
+message gc_expedition_help_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//神秘商店购买
+message cg_expedition_shop_request
+{
+	optional uint32 buy_style = 1;		//0为金币1为帮贡
+}
+
+message gc_expedition_shop_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;		
+}
+
+//领取关卡奖励
+message cg_expedition_award_request
+{
+	optional uint32 stage_id = 1;		//关卡ID
+}
+
+message gc_expedition_award_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//领取活跃度奖励
+message cg_expedition_box_request
+{
+	optional uint32 box_id = 1;		//宝箱ID
+}
+
+message gc_expedition_box_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+	repeated common.liveness_box box_list = 3; //活跃度宝箱
+}
+//------------------------------------------------------------------------------------------
+
+//请求章节信息
+message cg_section_request
+{
+	
+}
+
+message gc_section_reply
+{
+	optional uint32 reply_code = 1;		
+	repeated uint32 task_id = 2;					//任务ID
+	optional common.page_data page_list = 3;		//章节信息
+}
+
+
+message cg_section_pass_pve_request
+{
+	optional uint32 page_id = 1;							//章节ID
+	optional uint32 fight_id = 2;							//对阵ID
+	optional uint32 order_id = 3;							//顺序ID 
+}
+
+message gc_section_pass_pve_reply
+{
+	optional uint32 reply_code = 1;							
+}
+
+//请求领取章节奖励
+message cg_section_reward_request
+{
+	optional uint32 opt_type = 1;					//操作类型 0 通知关闭 1 领取奖励
+	optional uint32 get_type = 2;					//领取类型 1 章节任务 2 章节精英
+	optional uint32 id = 3;							//章节任务表 或者 精英挑战表 tid 
+}
+
+message gc_section_reward_reply
+{
+	optional uint32 reply_code = 1;		
+	optional common.role_change_data rcd = 2;					
+}
+
+//通知上线自动发放章节任务和章节精英没有领取的奖励
+message gc_section_online_reward_notify
+{
+	 optional common.role_change_data rcd    = 1; 
+}
+
+//完成章节任务 通知客户端
+message gc_section_task_finish_notify
+{
+	 repeated common.page_task_single task_info  = 1;	//已经通关的章节任务列表
+	 repeated uint32 pass_page_list = 2;				//已经通关的章节列表(章节ID)
+}
+
+//------------------------------------------------------------------------------------------------
+
+//组队跑商界面通知请求
+message cg_troop_trade_request
+{
+	optional uint32 trade_id = 1;				//打开的跑商ID		
+}
+
+message gc_troop_trade_notify
+{
+	optional uint32 reply_code = 1;	
+	optional uint32 trade_id = 2;				//打开的跑商ID		
+}
+
+//----------------------充值start-------------------------------------
+message cg_recharge_request
+{
+    optional uint32 tid         = 1; //充值表ID
+}
+
+message gc_recharge_reply
+{
+    optional uint32 reply_code              = 1;
+    optional common.role_change_data rcd    = 2; //发送元宝 和vip_level
+}
+
+//领取充值礼包
+message cg_recharge_reward_request
+{
+    
+}
+
+message gc_recharge_reward_reply
+{
+    optional uint32 reply_code              = 1;
+    optional common.role_change_data rcd    = 2; 
+}
+//----------------------充值end-------------------------------------
+
+//----------------------活跃奖励start-----------------------
+//请求获取活跃奖励任务信息列表
+message cg_active_reward_list_request
+{
+
+}
+
+message gc_active_reward_list_reply
+{
+	optional common.active_reward_data active_reward_list = 1;	//活跃奖励信息列表
+}
+
+message gc_active_reward_finish_notify
+{
+	 optional common.role_change_data rcd    = 1; 
+}
+
+message cg_get_active_reward_request
+{
+	optional uint32 tid = 1;			//活跃奖励tid
+}
+
+message gc_get_active_reward_reply
+{
+	optional uint32 reply_code				= 1;	
+	optional common.role_change_data rcd    = 2;
+	optional uint32 tid						= 3; //活跃奖励tid
+}
+//----------------------活跃奖励end-----------------------
+
+//----------------------随机商店-----------------------
+// 请求随机商店
+message cg_random_shop_info_request
+{
+	optional uint32 shop_id = 1;
+}
+
+message gc_random_shop_info_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.random_shop_data info = 2;
+}
+
+message cg_random_shop_buy_request
+{
+	optional uint32 shop_id = 1;
+	optional uint32 item_index = 2;
+}
+
+message gc_random_shop_buy_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 shop_id = 2;
+	optional uint32 item_index = 3;
+	optional common.role_change_data change_data = 4;	// 人物数据变化
+}
+
+message cg_random_shop_refresh_request
+{
+	optional uint32 shop_id = 1;
+}
+
+message gc_random_shop_refresh_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.random_shop_data info = 2;
+	optional common.role_change_data change_data = 3;	// 人物数据变化
+}
+
+//----------------------随机商店-----------------------
+
+//----------------------巡逻-------------------------
+message cg_patrol_request
+{
+	optional uint32 map_id = 1;		//目标场景ID，当前场景巡逻填0
+	optional uint32 patrol = 2;		//0为退出巡逻1为开始巡逻
+}
+
+message gc_patrol_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+message gc_patrol_notify
+{
+	optional uint32 patrol = 1;		//0为退出巡逻1为开始巡逻
+}
+
+//----------------------等级奖励-----------------------
+// 所有已经领奖的等级奖励
+message gc_level_reward_info_notify
+{
+	optional common.level_reward_recived_list list = 1;
+}
+
+message cg_get_level_reward_request
+{
+	optional uint32 id = 1;
+}
+
+message gc_get_level_reward_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 id = 2;
+	optional common.role_change_data change_data = 3;	// 人物数据变化
+}
+
+
+//----------------------精力系统-----------------------
+//请求开启关闭多倍状态
+message cg_change_multi_state_request
+{
+	optional uint32 open_or_close_type = 1;			//1 开 0 关
+}
+
+message gc_change_multi_state_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data change_data = 2;	// 人物数据变化
+}
+
+
+//----------------------查看别人信息-----------------------
+message ce_other_role_info_request
+{
+	optional string uid = 1;			//role_uid
+	optional uint32 type = 2;			//请求类型 1 请求全部的 0 基本信息
+}
+
+
+message ec_other_role_info_reply
+{
+	optional string uid = 1;						//other_role_uid
+	optional common.hero_data hero = 2;				//hero
+	optional common.item_data equip = 3;			//equip
+	repeated common.other_rank_data rank = 4;		//rank
+	optional common.role_base_data base_info = 5;	//基础信息
+	optional string did = 6;						//玩家did
+}
+
+// ----------------------武将攻略--------------------------------
+// 请求指定武将的攻略信息
+message ch_hero_strategy_hero_info_request
+{
+	optional uint32 hero_tid = 1;
+}
+
+// 请求指定武将的攻略信息回复
+message hc_hero_strategy_hero_info_reply
+{
+	optional common.hero_strategy_info hero_info = 1;
+	optional uint32 error_code = 2;		// 0 没有数据 1有数据
+}
+
+// 请求评论列表
+message ch_hero_strategy_get_comments_request
+{
+	optional uint32 hero_tid = 1;
+	optional uint32 comment_start_pos = 2;
+	optional uint32 comment_end_pos = 3;
+}
+
+// 请求评论列表回复
+message hc_hero_strategy_get_comments_reply
+{
+	repeated common.hero_strategy_comment_info comments = 1;
+}
+
+// 点赞
+message ch_hero_strategy_like_request
+{
+	optional uint32 hero_tid = 1;		// 武将TID
+	optional uint32 comment_pos = 2;	// 评论的索引
+	optional uint32 is_like = 3;		// 是否是点赞 1点赞 0踩
+}
+
+// 点赞回复
+message hc_hero_strategy_like_reply
+{
+	optional uint32 hero_tid = 1;			// 武将TID
+	optional uint32 comment_pos = 2;		// 评论的索引
+	optional uint32 like_num  = 3;			// 点赞数
+	optional uint32 dislike_num = 4;		// 踩数
+}
+
+// 评论
+message ch_hero_strategy_create_comment_request
+{
+	optional uint32 hero_tid = 1;			// 武将TID
+	optional string comment_info = 2;		// 评论内容
+} 
+
+// 评论回复
+message hc_hero_strategy_create_comment_reply
+{
+	optional uint32 reply_code = 1;			// 错误码
+	optional uint32 hero_tid = 2;			// 武将TID
+	optional common.hero_strategy_comment_info comment_info = 3;		// 评论内容
+} 
+
+//-------------------------------离线竞技--------------------------
+//获取离线竞技场数据
+message ce_offline_arena_data_request
+{
+	
+}
+
+message ec_offline_arena_data_reply
+{
+	optional common.offline_arena_single self_info = 1;		//自己的信息
+	repeated common.offline_arena_general enemy_info = 2;	//敌人信息
+}
+
+//获取对手详细信息
+message ce_offline_arena_enemy_data_request
+{
+	optional string role_uid = 1;							//玩家唯一ID
+}
+
+message ec_offline_arena_enemy_data_reply
+{
+	optional common.mirror_fight_data form_data = 1;		//阵容信息
+}
+
+//请求攻打对手
+message ce_offline_arena_fight_request
+{
+	optional uint32 self_rank = 1;							//自己的排名
+	optional uint32 object_type = 2;						//目标类型EM_SCENEOBJECT_TYPE
+	optional string role_uid = 3;							//玩家UID(如果是机器人直接给机器人阵容id)
+	optional uint32 enemy_rank = 4;							//目标的排名
+}
+
+message ec_offline_arena_fight_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//请求领取最高排名奖励
+message ce_offline_arena_record_award_request
+{
+	
+}
+
+message gc_offline_arena_record_award_reply
+{
+	optional common.role_change_data rcd = 1;
+}
+
+//请求领取积分奖励
+message ce_offline_arena_score_award_request
+{
+	optional uint32 score = 1;				//积分
+}
+
+message gc_offline_arena_score_award_reply
+{
+	optional common.role_change_data rcd = 1;
+}
+
+//扫荡
+message ce_offline_arena_sweep_request
+{
+	optional uint32 self_rank = 1;							//自己的排名
+	optional uint32 object_type = 2;						//目标类型EM_SCENEOBJECT_TYPE
+	optional string role_uid = 3;							//玩家UID(如果是机器人直接给机器人阵容id)
+	optional uint32 enemy_rank = 4;							//目标的排名
+	optional uint32 count = 5;								//次数
+}
+
+message ec_offline_arena_sweep_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+message gc_offline_arena_sweep_award_notify
+{
+	optional common.role_change_data rcd = 1;
+}
+
+//通知分段晋级奖励
+message gc_offline_arena_class_award_notify
+{
+	optional common.role_change_data rcd = 1;
+	optional uint32 cur_class = 2;					//当前分段
+}
+
+//请求购买攻打次数
+message cg_offline_arena_buy_request
+{
+	optional uint32 money = 1;						//花费
+}
+
+message gc_offline_arena_buy_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//请求排行榜
+message ce_offline_arena_rank_request
+{
+	optional uint32 offine_arena_class = 1;			//分段
+}
+
+message ec_offline_arena_rank_reply
+{
+	optional uint32 offine_arena_class = 1;			//分段
+	repeated common.offline_arena_general role_list = 2;	//玩家(机器人)数据
+	optional uint32 self_class = 3;					//自己的分段
+	optional uint32 self_rank = 4;					//自己的排名
+}
+
+//请求战报信息
+message ce_offline_arena_record_request
+{
+}
+
+message ec_offline_arena_record_reply
+{
+	optional common.offline_arena_record_data record_data = 1;
+}
+
+// 新角色请求战斗
+message cg_new_role_combat_notify
+{
+	optional uint32 against_id = 1;		// 对阵ID
+}
+
+//道具合成
+message cg_merage_item_request
+{
+	optional uint32 item_tid    = 1;		// 要合成的道具Id
+	optional uint32 mearge_type = 2;		// 合成道具数量的类型 1:1个， 2：5个
+	optional uint32 type		= 3;		// 合成类型 0 碎片合成 1 时装合成
+}
+
+message gc_merage_item_reply
+{
+	optional uint32 reply_code = 1;		
+	optional uint32 type		= 2;
+	optional common.role_change_data rcd = 3;
+}
+
+//注意：本协议只有在robot中使用
+message cg_set_gm_level
+{
+	optional uint32 gm_level = 1;		//0无， 1.gm  2.超级gm
+}
+
+//抓鬼任务提示环数结束
+message gc_zhuagui_task_over_reply
+{
+	optional uint32  type  = 1;		//完成类型 0 表示10次做完, 1表示30次做完
+	optional uint32  count = 2;		//完成次数/
+}
+
+//任务删除
+message gc_del_task
+{
+	optional uint32 task_id = 1;	//任务id
+}
+
+//请求祈福礼包信息
+message ce_get_wish_summon_info_request
+{
+}
+
+message ec_get_wish_summon_info_reply
+{
+	optional uint32	king_moeny							= 1;		
+	repeated common.wish_summon_info ws_list	= 2;	//许愿礼包列表
+}
+
+//玩家购买祈福礼包
+message ce_buy_wish_summon_request
+{
+	optional uint32 summon_id	= 1;		//礼包id
+}
+
+//玩家购买祈福礼包返回
+message gc_buy_wish_summon_reply
+{
+	optional uint32 summon_id	= 1;		//礼包id
+	optional uint32 reply_code = 2;			//0成功 ， 其他失败
+	optional common.role_change_data rcd	= 3;
+	repeated common.luckydraw_award award_list = 4;
+	optional common.luckydraw_client_data luckydraw = 5;
+}
+
+//国王开启祈福礼包
+message ce_open_summon_wish_request
+{
+	optional uint32 summon_id = 1;
+}
+
+//国王开启祈福礼包
+message ec_open_summon_wish_reply
+{
+	optional uint32 summon_id = 1;
+	optional uint32 reply_code = 2;			//0成功 ， 其他失败
+	optional common.wish_summon_info info = 3;
+	optional common.role_change_data rcd = 4;
+}
+
+//分解武将碎片
+message cg_sell_hero_chip_request 
+{
+	repeated common.hero_chip_info hero_chip_list = 1;	//武将碎片列表
+}
+
+//分解武将碎片返回
+message gc_sell_hero_chip_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd	= 2;
+}
+
+//请求国王信息
+message ce_get_king_info_request
+{
+}
+
+message ec_get_king_info_reply
+{
+	optional string role_uid = 1;//玩家UID
+	optional string name	 = 2; 
+	optional uint32 plugin	 = 3;// 模型ID
+}
+
+message ce_get_king_money_request
+{
+}
+
+message ec_get_king_money_reply
+{
+	optional uint32 reply_code = 1;	
+}
+
+
+//扫荡精英副本
+message cg_quick_fight_elite_page_request
+{
+	optional uint32 id   = 1;	//精英副本类型
+	optional uint32 type = 2;	//扫荡数量类型 1 1次 2, 5次
+}
+
+//扫荡精英副本返回
+message gc_quick_fight_elite_page_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd	= 2;
+	optional  uint32 num	= 3;		//挑战的次数
+	optional  uint32 reset	 = 4;		//重置次数
+	repeated common.item_num_info_list item_info_list = 5;	//扫荡的道具类型
+}
+
+//重置精英副本扫荡次数
+message cg_reset_quick_fight_elite_page_request
+{
+	optional uint32 id = 1;
+}
+
+//重置精英副本次数返回
+message gc_reset_quick_fight_elite_page_reply
+{
+	optional uint32 reply_code = 1;	
+	optional uint32 id  = 2;	
+	optional uint32 num = 3;		//当前重置次数
+	optional common.role_change_data rcd	= 4;
+}
+
+//请求摇钱树信息
+message cg_get_money_tree_request
+{
+}
+
+//返回摇钱树信息
+message gc_get_money_tree_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 level = 2;	//树的等级
+	optional uint32 count = 3;	//当前的摇过的次数
+}
+
+//摇钱树摇钱
+message cg_shake_money_tree_request
+{
+}
+
+message gc_shake_money_tree_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 crit_type  = 2;	//暴击类型 0 无暴击
+	optional common.role_change_data rcd = 3;
+}
+
+//摇钱树升级
+message cg_levelup_money_tree_request
+{
+}
+
+message gc_levelup_money_tree_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd	= 2;
+}
+
+
+//请求七日登录信息
+message cg_get_7d_login_request
+{
+}
+
+//返回七日登录奖励状态
+message gc_get_7d_login_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.sevenday_login_data_info  prize_info = 2;
+}
+
+//领取七日登录奖励
+message cg_get_7d_login_prize_request
+{
+	optional uint32 index	   = 1;
+}
+
+//领取七日登录奖励返回
+message gc_get_7d_login_prize_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 index	   = 2;
+	optional common.role_change_data rcd	= 3;
+}
+
+
+//-------------------------------人物精力-----------------------
+message cg_buy_vigour_request
+{
+}
+
+message gc_buy_vigour_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.role_change_data rcd = 2;
+}
+
+message gc_vigour_info_notify
+{
+	optional common.role_change_data rcd = 1; 
+}
+
+//-------------cdkey---------
+message ce_exchange_cdkey_request
+{
+	optional string key_code = 1;
+}
+
+message ec_exchange_cdkey_reply
+{
+	optional uint32 reply_code = 1;
+}
+
+//-----------------------------------头像-------------------------------
+//请求更换头像或者边框
+message cg_replace_head_request
+{
+	optional uint32 type = 1;			//1 :目标头像ID 2 :目标边框ID
+	optional uint32 id = 2;				//目标ID	
+}
+
+message gc_replace_head_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 head_info = 2;		//高低位格式: 高16位 头像ID 低16位 边框ID
+}
+
+//请求头像和边框数据(已经激活的)
+message cg_head_frame_list_request
+{
+
+}
+
+message gc_head_frame_list_reply
+{
+	optional uint32 head_frame_id = 1;			//当前头像和边框ID(高16位头像ID 低16位边框ID)
+	optional common.head_data head_info = 2;	//头像和边框数据
+}
+
+
+//--------
+// 多选礼包
+message cg_use_multiple_chosen_item_request
+{
+    optional string item_uid    = 1; //使用道具的ID
+	repeated uint32 chosen_list	= 2; //选择的道具
+}
+
+// 消耗道具回复
+message gc_use_multiple_chosen_item_reply
+{
+    optional uint32 reply_code              = 1; //0使用道具成功，1失败
+	optional common.role_change_data rcd	= 2; // 玩家数据变动
+	optional uint32 use_item_tid			= 3; // 使用的道具
+}
+
+//月卡系统
+message cg_get_month_card_info_request
+{
+}
+
+message gc_get_month_card_info_reply
+{
+	optional uint32 reply_code = 1;
+	repeated common.month_card_info month_card_list = 2;	//月卡列表
+}
+
+//购买月卡
+message cg_buy_month_card_request 
+{
+	optional uint32 card_id  = 1;	//月卡id
+}
+
+message gc_buy_month_card_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd	= 2;			//玩家数据变动
+	repeated common.month_card_info month_card_list = 3;	//月卡列表
+}
+
+//领取月卡奖励
+message cg_get_month_card_prize_request
+{
+	optional uint32 card_id  = 1;	//月卡id
+}
+
+message gc_get_month_card_prize_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 card_id    = 2;
+	optional common.role_change_data rcd	= 3;	//玩家数据变动
+}
+
+
+//----------------------单个任务自动完成------------------
+message cg_auto_complete_task_request
+{
+	optional uint32 task_id  = 1;
+	optional string item_uid = 2;
+}
+
+message gc_auto_complete_task_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 task_id = 2;
+}
+
+
+//自动购买道具
+message cg_auto_buy_task_item_request
+{
+	optional uint32 task_id = 1;
+}
+
+//自动购买道具返回
+message gc_auto_task_buy_item_reply
+{
+	optional uint32 reply_code = 1;	//成功还是失败
+	optional uint32 task_id = 2;	//任务id
+	optional string item_uid = 3;	//购买的道具
+}
+
+//-----------------------------------炼丹------------------------------------
+//请求炼丹炉信息
+message cg_liandan_data_request
+{
+	
+}
+
+message gc_liandan_data_reply
+{
+	optional common.liandan_data liandan_data = 1;	//炼丹炉信息
+}
+
+//请求解锁炼丹炉槽位
+message cg_liandan_unlock_request
+{
+	
+}
+
+message gc_liandan_unlock_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.liandan_data liandan_data = 2;	//炼丹炉信息
+	optional common.role_change_data rcd = 3;
+}
+
+//请求炼丹
+message cg_liandan_doing_request
+{
+	optional uint32 liandan_tid = 1;	//合成丹药ID(策划表合成ID)
+	optional uint32 count = 2;			//合成数量
+}
+
+message gc_liandan_doing_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.liandan_data liandan_data = 2;	//炼丹炉信息
+	optional common.role_change_data rcd = 3;
+	optional uint32 liandan_tid = 4;
+}
+
+//请求取回丹药
+message cg_liandan_return_request
+{
+	optional uint32 liandan_index = 1;	//槽位
+}
+
+message gc_liandan_return_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.liandan_data liandan_data = 2;	//炼丹炉信息
+	optional common.role_change_data rcd = 3;
+	optional uint32 liandan_index = 4;
+}
+
+//立即完成炼丹
+message cg_liandan_done_request
+{
+	optional uint32 liandan_index = 1;	//槽位
+}
+
+message gc_liandan_done_reply
+{
+	optional uint32 reply_code = 1;	
+	optional common.liandan_data liandan_data = 2;	//炼丹炉信息
+	optional common.role_change_data rcd = 3;
+	optional uint32 liandan_index = 4;
+}
+
+// ------------------武圣宝库----------------------
+// 请求活动商店信息
+message cg_activity_shop_get_info_request
+{
+	optional uint32 shop_type = 1;		// 枚举activity_shop_type
+}
+
+message gc_activity_shop_get_info_reply
+{
+	optional uint32 shop_type = 1;		// 枚举activity_shop_type
+	optional common.activity_shop_item_info shop_item_info = 2;		// 商店所有道具信息
+	optional common.role_change_data rcd = 3;
+}
+
+// 从活动商店购买
+message cg_activity_shop_buy_request
+{
+	optional uint32 shop_type = 1;		// 枚举activity_shop_type
+	optional uint32 buy_item_pos = 2;	// 1开始 0无效(随机类的不用填)
+	optional uint32 buy_item_num = 3;	// 数量
+}
+
+message gc_activity_shop_buy_reply
+{
+	optional uint32 shop_type = 1;				// 枚举activity_shop_type
+	optional uint32 error_code = 2;
+	optional common.role_change_data rcd = 3;
+	repeated uint32 roll_item_pos = 4;			// roll到的物品位置
+}
+
+//------------运营活动管理---------
+//获取所有开启的活动信息
+message gc_init_active_info_reply
+{
+	repeated common.business_active_info active_list = 1;
+}
+
+//单个活动开启
+message gc_active_start_reply
+{
+	optional common.business_active_info info = 1;
+}
+
+//单个活动结束
+message gc_active_stop_reply
+{
+	optional uint32 active_id = 1;
+}
+
+
+// 单个活动更新
+message gc_active_update_reply
+{
+	optional uint32 id  = 1;
+	optional uint32 red_num = 2;
+}
+
+//---------等级基金---------------------
+message cg_get_level_fund_info_request
+{
+
+}
+
+//---------等级基金信息--------------
+message gc_get_level_fund_info_reply
+{
+	optional uint32 buy_prize  = 1;		//购买价格
+	optional uint32 money_type = 2;		//货币里类型
+	optional uint32 rate      = 3;		//奖励倍数
+	optional uint32 limit_prize = 4;	//立即获得
+	optional uint32 total_money = 5;	//总钱数
+	optional uint32 buy_flag  = 6;		//购买标记， 0表示未购买 1，表示已购买
+	repeated common.level_fund_info info_list = 7;	//基金信息
+}
+
+//--------领取奖励---------
+message cg_get_level_fund_prize_request
+{
+	optional uint32  id = 1;
+}
+
+//--------领取奖励返回-------
+message gc_get_level_fund_prize_reply
+{
+	optional uint32 id  = 1;
+	optional uint32 reply_code = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+//---购买基金----------
+message cg_buy_level_fund_request
+{
+}
+
+//购买基金返回
+message gc_buy_level_fund_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd	= 2;	//玩家数据变动
+}
+
+//------------------------雇佣巡逻-------------------------------------------------
+//请求雇佣巡逻信息
+message cg_patrol_hire_info_request
+{
+}
+
+message gc_patrol_hire_info_reply
+{
+	optional common.patrol_hire_data info = 1;
+}
+
+message patrol_hire_rwd
+{
+	optional uint32 map_id = 1;
+	optional uint32 duration = 2;
+	optional common.role_change_data rcd = 3;	//玩家数据变动
+}
+
+message cg_get_patrol_hire_rwd_request
+{
+}
+
+message gc_get_patrol_hire_rwd_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.patrol_hire_data info = 2;
+	optional patrol_hire_rwd reward = 3;	//玩家数据变动
+}
+
+message cg_fast_patrol_hire_request
+{
+	optional uint32 map_id = 1;
+}
+
+message gc_fast_patrol_hire_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.patrol_hire_data info = 2;
+	optional patrol_hire_rwd reward = 3;	//玩家数据变动
+}
+
+message cg_change_patrol_hire_request
+{
+	optional uint32 map_id = 1;
+}
+
+message gc_change_patrol_hire_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.patrol_hire_data info = 2;
+	optional patrol_hire_rwd reward = 3;	//玩家数据变动
+}
+
+//---------------------------------装备方案---------------------------
+//获取装备方案数据
+message cg_equip_plan_data_request
+{
+}
+
+message gc_equip_plan_data_reply
+{
+	optional common.equip_plan_data equip_plan_data = 1;
+}
+
+//新建装备方案
+message cg_equip_plan_create_request
+{
+	optional string name = 1;		//名字
+	optional string weapon = 2;		//武器
+	optional string armor = 3;		//护甲
+	optional string talisman = 4;	//护符
+}
+
+message gc_equip_plan_create_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.equip_plan_data equip_plan_data = 2;
+}
+
+//修改装备方案
+message cg_equip_plan_modify_request
+{
+	optional string uid = 1;		//唯一ID
+	optional string name = 2;		//名字
+	optional string weapon = 3;		//武器
+	optional string armor = 4;		//护甲
+	optional string talisman = 5;	//护符
+}
+
+message gc_equip_plan_modify_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.equip_plan_data equip_plan_data = 2;
+}
+
+//删除装备方案
+message cg_equip_plan_delete_request
+{
+	optional string uid = 1;		//唯一ID
+}
+
+message gc_equip_plan_delete_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.equip_plan_data equip_plan_data = 2;
+}
+
+//应用装备方案
+message cg_equip_plan_use_request
+{
+	optional string equip_plan_uid = 1;		//方案唯一ID
+	optional string hero_uid = 2;			//武将唯一ID
+}
+
+message gc_equip_plan_use_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.equip_plan_data equip_plan_data = 2;
+	optional common.role_change_data rcd = 3;	
+}
+
+
+//----------------------兑换--------------
+//获取兑换信息
+message cg_get_exchange_info_request
+{
+}
+
+message gc_get_exchange_info_reply
+{
+	optional uint32 time_left = 1;	//剩余时间
+	repeated common.exchange_item_data data = 2;
+}
+
+//领取兑换奖励
+message cg_get_exchange_prize_request
+{
+	optional uint32 id = 1;
+}
+
+message gc_get_exchange_prize_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 id = 2;
+	optional common.role_change_data rcd = 3;	
+}
+
+
+//-----------七日限购---------------------------
+//获取限购数据
+message cg_get_limit_buy_info_request
+{
+}
+
+//限购数据返回
+message gc_get_limit_buy_info_reply
+{
+	optional uint32 day = 1;			//登录日期
+	repeated common.limit_buy_client_data data = 2;	
+}
+
+//购买限购道具
+message cg_buy_limit_request
+{
+	optional uint32 id = 1;
+}
+
+message gc_buy_limit_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 id = 2;
+	optional common.role_change_data rcd = 3;	
+}
+
+//-------------------------------------
+//七日目标
+message cg_get_sd_target_info_request
+{
+	optional uint32 day = 1;	//	
+}
+
+message gc_get_sd_target_info_reply
+{
+	optional uint32 cur_day = 1;
+	optional uint32 day = 2;					//第几天
+	repeated common.sd_target_info info = 3;	//目标信息
+}
+
+//红点
+message cg_get_sd_target_red_request
+{
+}
+
+//红点返回
+message gc_get_sd_target_red_reply
+{
+	optional uint32 cur_day = 1;
+	repeated common.sd_target_red_info info = 2;	//红点信息 
+}
+
+//领取奖励
+message cg_get_sd_target_prize_request
+{
+	optional uint32 index = 1;
+}
+
+//领取奖励返回
+message gc_get_sd_target_prize_reply
+{
+	optional uint32 reply_code = 1;	//返回码
+	optional uint32 index = 2;		//对应的id
+	optional common.role_change_data rcd = 3;
+}
+
+
+//--------------天下大势---------------
+//天下大势一级数据
+message cg_get_general_event_info_request
+{
+}
+
+message gc_get_general_event_info_reply
+{
+	optional    uint32 red_num = 1;					//红点数量
+	repeated	common.general_event_info info = 2;	//大势一级数据
+}
+
+//天下大势二级数据
+message cg_get_general_event_detail_request
+{
+	optional uint32 id = 1;
+}
+
+//天下大势二级数据返回
+message gc_get_general_event_detail_reply
+{
+	optional uint32 get_num = 1;	//达成玩家数量
+	optional uint32 time_left = 2;	//倒计时
+	optional uint32 speed_time = 3; //加速了多少时间
+	optional uint32 status = 4;		//状态
+	repeated	common.general_event_detail info = 5;	//大势二级数据
+}
+
+//领取天下大势奖励
+message cg_get_general_event_prize_request
+{
+	optional uint32 index = 1;		//天下大势对应的结构
+}
+
+message gc_get_general_event_prize_reply
+{
+	optional uint32 reply_code = 1;	//返回码
+	optional uint32 index = 2;		//对应的id
+	optional common.role_change_data rcd = 3;
+}
+
+message cg_get_server_level_limit_request
+{
+}
+
+message gc_get_server_level_limit_reply
+{
+	optional uint32 level = 1;
+}
+
+
+//////////////////////////////////////////////////////
+//获取家族技能
+message cg_family_skill_data_request
+{
+}
+
+message gc_family_skill_data_reply
+{
+	optional common.family_skill_data skill_data = 1;
+}
+
+//升级家族技能
+message cg_family_skill_levelup_request
+{
+	optional uint32 skill_id = 1;
+}
+
+message gc_family_skill_levelup_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.family_skill_single skill = 2;
+	optional common.role_change_data rcd = 3;
+}
+
+message ec_silence_role_ntf
+{
+	optional uint32 silence_time = 1;		//禁言到期时间
+}
+
+//成长历程
+message cg_career_award_request
+{
+	optional uint32 career_id = 1;		//成长历程id
+}
+
+//成长历程
+message gc_career_award_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+}
+
+//同步战斗中的血量(boss血量) 
+message gc_sync_enemy_hurt_hp
+{
+	optional common.hero_state_data hero_data = 1;	
+}
+
+//改名
+message cg_change_name_request
+{
+	optional string new_name = 1;			//新名字
+}
+
+message gc_change_name_reply
+{
+	optional uint32 reply_code = 1;
+	optional string new_name = 2;			//新名字
+	optional common.role_change_data rcd = 3;
+}
+
+//设置武将昵称
+message cg_hero_change_name_request
+{
+	optional string hero_uid = 1;
+	optional string new_name = 2;			//新名字
+}
+
+message gc_hero_change_name_reply
+{
+	optional uint32 reply_code = 1;
+	optional string hero_uid = 2;
+	optional string new_name = 3;			//新名字
+}
+
+//设置称号
+message cg_title_change_request
+{
+	optional uint32 title_id = 1;			//称号id
+}
+
+message gc_title_change_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 title_id = 2;			//称号id
+}
+
+//获取累充信息
+message cg_recharge_total_data_request
+{
+	
+}
+
+message gc_recharge_total_data_reply
+{
+	optional common.recharge_total_client_data recharge_total = 1;
+}
+
+//领取累充奖励
+message cg_recharge_total_award_request
+{
+	optional uint32 recharge_total_id = 1;	//累充ID
+}
+
+message gc_recharge_total_award_reply
+{
+	optional uint32 reply_code = 1;
+	optional common.role_change_data rcd = 2;
+	optional uint32 recharge_total_id = 3;	//累充ID
+}
+
+//获取黄金十连信息
+message cg_gold_luckydraw_data_request
+{
+	
+}
+
+message gc_gold_luckydraw_data_reply
+{
+	optional common.gold_luckydraw_client_data gold_luckydraw = 1;
+}
+
+//领取黄金十连奖励
+message cg_gold_luckydraw_award_request
+{
+	optional uint32 gold_luckydraw_id = 1;	//黄金十连ID
+}
+
+message gc_gold_luckydraw_award_reply
+{
+	optional uint32 reply_code = 1;
+	optional uint32 gold_luckydraw_id = 2;	//黄金十连ID
+}
+
+//每日特惠信息
+message cg_recharge_cheap_request
+{
+	
+}
+
+message gc_recharge_cheap_reply
+{
+	repeated common.cheap_day_client_single cheap_day = 1;			//每日特惠
+}
+
+//购买每日特惠( 测试消息，以后充值走支付SDK)
+message cg_recharge_cheap_buy_request
+{
+	optional uint32 cheap_id = 1;						//策划表ID
+}
+
+message gc_recharge_cheap_buy_reply
+{
+	optional uint32 reply_code = 1;						
+	optional common.role_change_data rcd = 2;					
+	repeated common.cheap_day_client_single cheap_day = 3;			//每日特惠
+}
+
+//个人冲榜
+message ce_rank_time_request
+{
+	
+}
+
+message ec_rank_time_reply
+{
+	repeated common.rank_time_single rank_list = 1;				//当前开放(即将开启)的排行榜
+}
+
+//逆命师
+message cg_office_data_request
+{
+	
+}
+
+message gc_office_data_reply
+{
+	optional common.office_client_data office_data = 1;
+}
+
+//每日奖励
+message cg_office_award_request
+{
+}
+
+message gc_office_award_reply
+{
+	optional uint32 reply_code = 1;		//客户端根据reply_code自行更改领取标记
+	optional common.role_change_data rcd = 2;
+}
+
+//升级通知
+message gc_office_levelup_notify
+{
+	optional common.office_client_data office_data = 1;
+	optional common.role_change_data rcd = 2;
+}

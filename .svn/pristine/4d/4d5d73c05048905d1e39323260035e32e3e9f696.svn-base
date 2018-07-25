@@ -1,0 +1,288 @@
+import "gm_common.proto";
+package proto.gm;
+
+// gmtool to gm_server
+enum tm_m_msg_id
+{
+	gm_msg_id_tm_test_request = 3301;
+}
+
+// gm_server to gmtool
+enum mt_m_msg_id
+{
+	mt_m_msg_id_mt_test_reply = 3401;
+}
+
+// 消息头
+message sg_msg_head
+{
+   optional uint32 msg_len = 1;
+   optional uint16 msg_cmd = 2;
+   optional uint16 msg_cmd_ex = 3;
+   optional uint16 msg_flags = 4;
+   optional int16 msg_unused = 5;
+}
+
+// 注: 所有的返回可在error_code中查找, 等于0表示成功, 其余都是失败
+// 如果error_code中找不到, 就直接显示失败, 并显示错误码
+
+//玩家监控：查看玩家信息-请求
+message tm_monitor_get_user_info_request
+{
+    optional string user_did                        = 1;    //玩家ID
+    optional string nick_name                       = 2;    //玩家昵称
+}
+//玩家监控：查看玩家信息-返回
+message mt_monitor_get_user_info_reply
+{
+    required uint32 reply_code                      = 1;
+    optional gm_common.user_base_info base_info     = 2;    //玩家基本信息
+}
+
+
+//玩家监控: 查看玩家充值统计
+message tm_monitor_get_recharge_count_request
+{
+    required uint64 user_uid                        = 1;
+    required uint32 page_num                        = 2;
+}
+//玩家监控: 查看玩家充值统计-返回
+message mt_monitor_get_recharge_count_reply
+{
+    required uint32 reply_code                          = 1;
+    optional gm_common.recharge_count_info statistics   = 2;
+    optional uint64 user_uid                            = 3;
+    optional uint32 total_pages                         = 4; //数据总页数
+}
+
+
+//修改玩家信息
+message tm_set_user_data_request
+{
+    required uint64 user_uid    = 1;
+    required int32  op_type     = 2; // 1.加  2.减   3.set
+    optional int32  gold        = 3; // 金币
+    optional int32  diamond     = 4; // 钻石
+    optional int32  exp         = 5; // 只允许修改在线玩家的经验
+    optional int32  level       = 6; // 必须和上面的exp同时设置发送
+    optional int32  ap          = 7; // 体力
+    optional int32  skill_point = 8; // 技能点
+    optional int32  pve_badge   = 9; // pve点数
+    optional int32  pvp_badge   = 10; //pvp点数
+    optional int32  fate        = 11; //气运值
+    optional int32  vip_exp     = 12; //vip经验
+    optional int32  vip_level   = 13; //vip等级
+}
+message mt_set_user_data_reply
+{
+    required uint32 reply_code                       = 1; // 0成功，非0失败
+    optional uint64 user_uid                         = 2;
+}
+
+
+//玩家监控：查看背包道具信息-请求
+message tm_monitor_get_item_info_request
+{
+    required uint64 user_uid                        = 1;
+}
+//玩家监控：查看背包道具信息-返回
+message mt_monitor_get_item_info_reply
+{
+    required uint32 reply_code                      = 1;
+    optional gm_common.item_data item_info          = 2;
+    optional uint64 user_uid                        = 3;
+}
+
+
+//玩家监控：查看武将信息-请求
+message tm_monitor_get_hero_info_request
+{
+    required uint64 user_uid                        = 1;
+}
+//玩家监控：查看武将信息-返回
+message mt_monitor_get_hero_info_reply
+{
+    required uint32 reply_code                      = 1;
+    optional gm_common.hero_data hero_info          = 2;
+    optional uint64 user_uid                        = 3;
+}
+
+
+//玩家监控: 玩家元宝消费记录查询-请求
+message tm_monitor_get_consume_record_request
+{
+    required uint64 user_uid                        = 1;
+    required uint32 type                            = 2; //消费途径, 0代表所有, 大于0代表特定的途径
+    required uint32 begin_time                      = 3; //查询起始时间, 采用unix时间戳的方式传输,即一个无符号的32位整型
+    required uint32 end_time                        = 4; //查询结束时间, 采用unix时间戳的方式传输,即一个无符号的32位整型
+    required uint32 page_num                        = 5; //页数(默认从1开始), 默认单次最多显示30条 
+}
+//玩家监控: 玩家元宝消费记录查询-返回
+message mt_monitor_get_consume_record_reply
+{
+    required uint32 reply_code                              = 1; //0为成功, 1为失败
+    optional gm_common.consume_record_data consume_info     = 2; //消费记录
+    optional uint64 user_uid                                = 3;
+    optional uint32 total_pages                             = 4; //数据总页数
+}
+
+
+//玩家监控：查看PVE统计信息-请求
+//后端废弃了page_num字段, 因为有些数据是分两步获取的, 无法控制每页的显示
+message tm_monitor_get_pve_info_request
+{
+    required uint64 user_uid                        = 1;
+    required int32  pve_type                        = 2;  // 0:普通副本  1:八卦阵   2:产出本   3:史诗副本
+    required uint32 page_num                        = 3;  // 页数(默认从1开始), 默认单次最多显示30条
+}
+//玩家监控：查看PVE统计信息-返回
+//后端废弃了total_pages字段
+message mt_monitor_get_pve_info_reply
+{
+    required uint32 reply_code                      = 1; //0为成功, 1为失败
+    optional gm_common.campaign_data campaign_info  = 2; //普通副本统计信息
+    optional gm_common.matrix_data matrix_info      = 3; //八卦阵统计信息
+    optional gm_common.produce_data produce_info    = 4; //产出本统计信息
+    optional uint64 user_uid                        = 5;
+    optional uint32 total_pages                     = 6; //总页数
+}
+
+
+// 发送邮件列表
+// 邮件required的字段必须塞
+message tm_send_mail_request
+{
+    required gm_common.global_mail_single mail_data = 1;
+}
+message mt_send_mail_reply
+{
+    required int32 reply_code                = 1; // 0成功，非0失败
+}
+
+//玩家监控：查看装备信息-请求
+message tm_monitor_get_equip_info_request
+{
+    required uint64 user_uid                        = 1;
+}
+//玩家监控：查看装备信息-返回
+message mt_monitor_get_equip_info_reply
+{
+    required uint32 reply_code                      = 1;
+    optional gm_common.equip_data equip_info        = 2;
+    optional uint64 user_uid                        = 3;
+}
+
+
+//玩家监控：查看PVP统计信息-请求
+message tm_monitor_get_pvp_info_request
+{
+    required uint64 user_uid                        = 1;
+}
+//玩家监控：查看PVP统计信息-返回
+message mt_monitor_get_pvp_info_reply
+{
+    required uint32 reply_code                      = 1;
+    optional uint32 history_top                     = 2; //最高排名
+    optional uint32 buy_challenge_times             = 3; //购买的挑战次数
+    optional uint32 challenge_times                 = 4; //挑战次数
+    optional uint32 last_challenge_time             = 5; //上次挑战时间
+}
+
+
+//玩家管理：批量封号-请求
+message tm_manage_ban_account_request
+{
+    repeated uint64 user_uids           = 1;    //玩家UID
+    required string ban_reason          = 2;    //封号原因
+    required int32  offset_time         = 3;    //封号的区间时间(单位s), 小于0表示永久封号, 不足5min按5min算
+}
+
+//玩家管理：批量封号-返回
+//reply_code和reply_data不可能同时设置, 但至少有一个
+//当reply_code被设置大于0时, 表示封号请求未进行就直接返回, 此时reply_data不设置
+//当reply_data有数据时, 存放失败玩家的uid和错误码, 此时reply_code不设置
+//当所有都成功的时候, reply_code=0 并且 reply_data不设置
+message mt_manage_ban_account_reply
+{
+    optional uint32 reply_code                         = 1;
+    repeated gm_common.ban_reply_single reply_data     = 2;
+}
+
+
+//玩家管理：封号解封-请求
+message tm_manage_ban_cancel_request
+{
+    repeated uint64  user_uids          = 1;    //玩家UID列表
+}
+
+//玩家管理：封号解封-返回
+message mt_manage_ban_cancel_reply
+{
+    optional uint32 reply_code                          = 1;
+    repeated gm_common.ban_reply_single reply_data      = 2;
+}
+
+//玩家管理：封号查询-请求
+//需要添加渠道字段
+message tm_manage_ban_state_query_request
+{
+    required uint32 page_num                            = 1;    //从1开始
+}
+
+//玩家管理：封号查询-返回
+message mt_manage_ban_state_query_reply
+{
+    required uint32 reply_code                          = 1;
+    repeated gm_common.ban_state_info ban_list          = 2;    //封号列表
+    optional uint32 total_pages                         = 3;
+}
+
+//玩家行为记录查询-请求
+message tm_monitor_get_behavior_records_request
+{
+    required uint64 user_uid                            = 1;
+    required uint32 type                                = 2; //1:签到  2:抽奖  3:元宝换金币  4:购买体力  5:商店刷新次数  6:商店购买物品数量
+    optional uint32 page_num                            = 3; //当type为1/2/3/4时, 需要设置此字段
+}
+//玩家行为记录查询-返回
+// 只有sign_records/draw_records/buy_records才设置total_pages
+message mt_monitor_get_behavior_records_reply
+{
+    required uint32 reply_code                          = 1;
+    optional uint64 user_uid                            = 2;
+    optional uint32 type                                = 3; //同请求里的type
+    repeated gm_common.sign_record_single sign_records  = 4;
+    repeated gm_common.draw_record_single draw_records  = 5;
+    repeated gm_common.buy_record_single  buy_records   = 6;
+    repeated gm_common.shop_record_single shop_records  = 7;
+    optional uint32 total_pages                         = 8;
+}
+
+//消息/功能屏蔽/取消屏蔽
+message ma_masked_msg_notify
+{
+	repeated uint32 masked_list							= 1; // 消息编号列表
+	required uint32	masked_flag							= 2; // 0 取消屏蔽 其他：屏蔽
+}
+
+//重新加载配置文件
+message mg_reload_config_notify
+{
+}
+
+//重新加载配置文件
+message ma_reload_config_notify
+{
+}
+
+//test
+message tm_test_request
+{
+	required uint32 test1 = 1;
+}
+
+message mt_test_reply
+{
+	required uint32 test1 = 1;
+}
+

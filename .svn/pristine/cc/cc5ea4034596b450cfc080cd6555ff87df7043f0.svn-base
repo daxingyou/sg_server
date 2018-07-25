@@ -1,0 +1,47 @@
+//import "gm_common.proto";
+//package proto.gm;
+
+// 注: 所有的返回可在error_code中查找, 等于0表示成功, 其余都是失败
+// 如果error_code中找不到, 就直接显示失败, 并显示错误码
+
+//邮件接受限制
+message mail_recv_limit 
+{
+    optional int32      level       = 1;    // 战队等级
+    optional int32      regist_type = 2;    // 0:注册前后都能收到 1：注册前才能收到(先注册) 2：注册后才能收到(后注册)
+}
+
+//邮件信息
+//全局邮件
+message global_mail_single
+{
+    optional string                 uid                 = 1;    // global uid
+    optional int32                  type                = 2;    // 0:系统公告 1:系统奖励
+    optional string                 title               = 3;    // 标题(20个字节)
+    optional string                 content             = 4;    // 内容(500个字节)
+    optional string                 send_name           = 5;    // 发件人名(20个字节)
+    optional int32                 send_time           = 6;    // 发送时间(unix时间戳), 必须小于当前时间 
+    optional int32                 over_time           = 7;    // 结束时间(unix时间戳) , 必须小于当前时间
+    optional int32                  send_type           = 8;    // 0:仅发送一次 1:每日第一次登陆发送 
+    optional int32                  send_hour           = 9;    // 每天几点发送 暂时不是实现！
+    optional int32                  recv_type           = 10;   // 接受类型 0：所有玩家 1：指定玩家
+    repeated string                 recv_did_list       = 11;   // 指定接受玩家 填显示账号 不受任何限制
+    optional int32                  client_valid_time   = 12;   // 有效期时间 单位为天 默认在客户端存放7天
+    optional string					items				= 13;   // 邮件附件
+    optional mail_recv_limit limit            = 14;   // 接受玩家的限制条件
+}
+
+
+// 发送邮件列表
+// 邮件optional的字段必须塞
+message tm_send_mail_request
+{
+    optional int32 reply_code             = 1; // 0成功，非0失败
+    //optional global_mail_single mail_data = 2;
+}
+message mt_send_mail_reply
+{
+    optional int32 reply_code                = 1; // 0成功，非0失败
+}
+
+

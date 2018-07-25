@@ -1,0 +1,38 @@
+
+配置文件路径     /etc/httpd/conf/httpd.conf
+ssl文件路径 	 /etc/httpd/conf.d/ssl.conf
+www存放路径     /var/www/html
+默认的证书路径     /etc/pki/tls/certs/
+默认的私钥路径     /etc/pki/tls/private/
+
+1.安装openssl
+yum install openssl -y
+
+2.创建私钥  
+openssl genrsa -out server.key 2048      //运行openssl命令，生成2048位长的私钥server.key文件。如果您需要对 server.key 添加保护密码，请使用 -des3 扩展命令。Windows环境下不支持加密格式私钥，Linux环境下使用加密格式私钥时，每次重启Apache都需要您输入该私钥密码（例：openssl genrsa -des3 -out server.key 2048）。 
+  
+2.1    生成证书请求（CSR）文件   
+openssl req -new -key server.key -out server.csr   
+Country Name：                           //您所在国家的ISO标准代号，中国为CN   
+State or Province Name：                 //您单位所在地省/自治区/直辖市   
+Locality Name：                          //您单位所在地的市/县/区   
+Organization Name：                      //您单位/机构/企业合法的名称   
+Organizational Unit Name：               //部门名称   
+Common Name：                            //通用名，例如：www.itrus.com.cn。此项必须与您访问提供SSL服务的服务器时所应用的域名完全匹配。   
+Email Address：                          //您的邮件地址，不必输入，直接回车跳过   
+"extra"attributes                        //以下信息不必输入，回车跳过直到命令执行完毕。 
+
+3.建立服务器证书
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+4.找一个合适的目录存放server.crt server.key server.csr 
+例: mkdir /etc/httpd/https_file mv server.* /etc/httpd/https_file/
+
+5.打开httpd.conf 搜索Include conf.d/  确保包含了conf.d/ 里的ssl.conf
+ 
+6.打开ssl.conf 在配置文件中查找以下配置语句    
+#SSLCertificateFile /etc/pki/tls/certs/localhost.crt	      注释掉原来的
+SSLCertificateFile /etc/httpd/https_file/server.crt           将服务器证书配置到该路径下   
+SSLCertificateKeyFile /etc/httpd/https_file/server.key        将服务器证书私钥配置到该路径下  
+查看 LoadModule ssl_module modules/mod_ssl.so 是否开启
+保存退出，并重启 service httpd restart(要确保启动无报错才可用)

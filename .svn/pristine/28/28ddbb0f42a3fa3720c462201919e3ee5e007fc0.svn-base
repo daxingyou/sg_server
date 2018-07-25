@@ -1,0 +1,533 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit|ie-comp|ie-stand">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+  <!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+  <title>后台监控</title>
+  <style type="text/css">
+    html,
+    body {
+      height: auto;
+    }
+
+    #suggest,
+    #suggest2 {
+      width: 200px;
+    }
+
+    .gray {
+      color: gray;
+    }
+
+    .ac_results {
+      background: #fff;
+      border: 1px solid #7f9db9;
+      position: absolute;
+      z-index: 10000;
+      display: none;
+    }
+
+    .ac_results li a {
+      white-space: nowrap;
+      text-decoration: none;
+      display: block;
+      color: #05a;
+      padding: 1px 3px;
+    }
+
+    .ac_results li {
+      border: 1px solid #fff;
+    }
+
+    .ac_over,
+    .ac_results li a:hover {
+      background: #c8e3fc;
+    }
+
+    .ac_results li a span {
+      float: right;
+    }
+
+    .ac_result_tip {
+      border-bottom: 1px dashed #666;
+      padding: 3px;
+    }
+
+    body {
+      overflow-y: scroll;
+    }
+  </style>
+
+</head>
+
+<body>
+  <nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span> 运营工具
+    <span class="c-gray en">&gt;</span> 玩家封禁
+    <a class="btn btn-primary radius r" onclick="removeIframe()" style="line-height:1.6em;margin:4px;" title="关闭">
+      <i class="Hui-iconfont">&#xe6a6;</a>
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);"
+      title="刷新">
+      <i class="Hui-iconfont">&#xe68f;</i>
+    </a>
+  </nav>
+  <div class="page-container">
+    <fieldset class="layui-elem-field layui-field-title" style="text-align: center;margin-top: 1px;height: 20px;">
+      <legend>玩家封停与禁言</legend>
+    </fieldset>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">玩家封禁</li>
+        <li>封禁记录</li>
+      </ul>
+      <div class="layui-tab-content" style="height: 10px;">
+        <div class="layui-tab-item layui-show">
+          <form class="layui-form" id="oper_send">
+            <div class="layui-form-item proSelect">
+              <label class="layui-form-label">渠道</label>
+              <div class="layui-input-inline" style="width: 300px;">
+                <select name="channel" lay-search>
+                  <option value="1" selected="">峰途</option>
+                </select>
+              </div>
+              <label class="layui-form-label">服务器列表</label>
+              <div class="layui-input-inline" style="width: 300px;">
+                <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                  <option value="0" selected=""></option>
+                </select>
+              </div>
+            </div>
+
+
+            <!-- <div class="layui-form-item">
+                            <label class="layui-form-label">操作范围</label>
+                            <div class="layui-input-inline">
+                                <input type="radio" name="range" value="Single" title="单人" checked="" id="Single" lay-filter="Single">
+                                <input type="radio" name="range" value="Batch" title="批量" id="Batch" lay-filter="Batch">
+                            </div>
+                        </div> -->
+
+            <div class="layui-form-item">
+              <!-- <label class="layui-form-label">角色名</label>
+                            <div class="layui-input-inline" id="Role_name" style="width: 400px;display:inline;">
+                              <input type="text" name="role_name" lay-verify="role_name" autocomplete="off" placeholder="请输入玩家名" class="layui-input" id="role_name"  layui-disabled="" onchange="Did_Or_Name_Input_Change(0)">
+                            </div> -->
+
+              <!-- <div class="layui-input-inline" id="role_name_B" style="width: 400px;display:none;">
+                                <button type="button" class="layui-btn" id="role_name_button"><i class="layui-icon"></i>上传文件</button>
+                            </div> -->
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">DID</label>
+              <div class="layui-input-inline" id="Role_uid">
+                <input type="text" name="role_uid" lay-verify="role_uid" autocomplete="off" placeholder="请输入玩家DID" class="layui-input" id="role_uid"
+                  layui-disabled="">
+              </div>
+
+              <!-- <div class="layui-input-inline" id="role_did_B" style="width: 400px;display:none;">
+                                <button type="button" class="layui-btn layui-btn-danger" id="role_did_button"><i class="layui-icon"></i>上传文件</button>
+                            </div> -->
+            </div>
+
+            <div class="layui-form-item proSelect">
+              <label class="layui-form-label">封禁类型</label>
+              <div class="layui-input-inline" style="width: 300px;">
+                <select name="option" lay-search lay-verify="opt_type" lay-filter="opt_type" id="opt_type">
+                  <option value="0" selected=""></option>
+                  <option value="1">永久封停</option>
+                  <option value="2">封停</option>
+                  <option value="3">解封</option>
+                  <option value="4">永久禁言</option>
+                  <option value="5">禁言</option>
+                  <option value="6">解禁</option>
+                </select>
+              </div>
+              <div class="layui-inline" id="select_time" style="width: 300px;display:none;">
+                <label class="layui-form-label">选择时间(分)</label>
+                <div class="layui-input-inline editWidth">
+                  <input type="text" name="opt_time" lay-verify="opt_time" autocomplete="off" placeholder="请输入时间" class="layui-input" id="opt_time"
+                    onchange="Intput_Show_Result('ban')">
+                  <b id="show_end_select_time"></b>
+                </div>
+              </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label ">操作原因</label>
+              <div class="layui-input-inline" style="width: 700px;">
+                <textarea placeholder="请输入操作原因" lay-verify="content" class="layui-textarea" id="content"></textarea>
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="send">发送</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="layui-tab-item">
+          <form class="layui-form">
+            <div class="layui-form-item proSelect">
+              <label class="layui-form-label">渠道</label>
+              <div class="layui-input-inline" style="width: 300px;">
+                <select name="channel_1" lay-search>
+                  <option value="1" selected="">峰途</option>
+                </select>
+              </div>
+              <label class="layui-form-label">服务器列表</label>
+              <div class="layui-input-inline" style="width: 300px;">
+                <select name="productList_1" lay-search lay-verify="zcySelect_1" id="zcySelect_1" lay-filter="zcySelect_1">
+                  <option value="0" selected=""></option>
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">日期范围</label>
+              <div class="layui-input-block">
+                <input type="text" lay-verify="date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})"
+                  id="logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                <input type="text" lay-verify="date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                  id="logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <!-- <label class="layui-form-label">角色名</label>
+                            <div class="layui-input-inline" id="Role_name_1" style="width: 200px;display:inline;">
+                              <input type="text" name="role_name_1" lay-verify="role_name_1" autocomplete="off" placeholder="请输入玩家名" class="layui-input" id="role_name_1"  layui-disabled="" onchange="Did_Or_Name_Input_Change(1)">
+                            </div> -->
+
+              <label class="layui-form-label">DID</label>
+              <div class="layui-input-inline" id="Role_uid_1" style="width: 200px;">
+                <input type="text" name="role_uid_1" lay-verify="role_uid_1" autocomplete="off" placeholder="请输入玩家DID" class="layui-input"
+                  id="role_uid_1" layui-disabled="">
+              </div>
+
+              <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query">查询</button>
+              </div>
+            </div>
+            <table class="layui-hide" id="record_table"></table>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+  <script type="text/javascript">
+
+    function page(json) {
+      layui.use('table', function () {
+        var table = layui.table;
+
+        table.render({
+          elem: "#record_table",
+          height: 500,
+          //width:'100%',
+          cols: [[ //标题栏
+            { field: 'server_id', title: '<font size="3" face="楷体">服务器ID</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'id', title: '<font size="3" face="楷体">玩家DID</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'manage_type', title: '<font size="3" face="楷体">操作类型</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'oper_time', title: '<font size="3" face="楷体">操作时间</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'expired_time', title: '<font size="3" face="楷体">封停截止时间</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'reason', title: '<font size="3" face="楷体">原因</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+            , { field: 'oper_name', title: '<font size="3" face="楷体">操作人</font>', align: 'center', style: 'background-color: #f2f2f2;' }
+          ]],
+          data: json,
+          page: true, //是否显示分页
+          limit: 10 //每页默认显示的数量
+        });
+      });
+    }
+
+    //重新渲染表单
+
+    $(function () {
+      //clear_localStorage();
+      $(document).ready(function () {
+        init_online_check_login_status();
+        var list = reload_select_list();
+        //console.log(list);
+        for (var i = 0; i < list.length; i++) {
+          $("#zcySelect").append("<option value='" + list[i].id + "'>" + list[i].name + "</option>");
+        }
+
+        for (var i = 0; i < list.length; i++) {
+          $("#zcySelect_1").append("<option value='" + list[i].id + "'>" + list[i].name + "</option>");
+        }
+        renderForm();
+
+      });
+    });
+
+    //$ = layui.jquery
+    layui.use(['layer', 'form', 'layedit', 'element', 'table'], function () {
+      var form = layui.form
+        , layer = layui.layer
+        , layedit = layui.layedit
+        , laytab = layui.element
+        , table = layui.table;
+
+      //自定义验证规则
+      form.verify({
+        zcySelect: function (value) {
+          if (value == 0) {
+            return "请选择服务器"
+          }
+        }
+        , zcySelect_1: function (value) {
+          if (value == 0) {
+            return "请选择服务器"
+          }
+        }
+        , opt_type: function (value) {
+          if (value == 0) {
+            return '请选择封禁类型'
+          }
+        }
+        , role_uid: function (value) {
+          if (value == "") {
+            return "请输入玩家DID";
+          }
+          var is_number = regex_number(value);
+          if (is_number == null) {
+            return "请输入正确的玩家DID";
+          }
+        }
+        , role_uid_1: function (value) {
+          if (value != "") {
+            var is_number = regex_number(value);
+            if (is_number == null) {
+              return "请输入正确的玩家DID";
+            }
+          }
+
+        }
+        , date_verify_min: function (value) {
+          var time_min = document.getElementById('logmin').value;
+          var time_max = document.getElementById('logmax').value;
+          if (time_max != '') {
+            if (time_min == '') {
+              return '请选择时间';
+            }
+          }
+        }
+        , date_verify_max: function (value) {
+          var time_min = document.getElementById('logmin').value;
+          var time_max = document.getElementById('logmax').value;
+          if (time_min != '') {
+            if (time_max == '') {
+              return '请选择时间';
+            }
+          }
+        }
+        , opt_time: function (value) {
+          var type = $('#opt_type').val();
+          console.log(type);
+          if (type == 2 || type == 5) {
+            var is_number = regex_number(value);
+            if (is_number == null) {
+              return "请输入格式正确的时间";
+            }
+          }
+        }
+      });
+
+      form.on('submit(send)', function (data) {
+        var server_id_list = $('#zcySelect').val();
+        if (server_id_list == 0) {
+          layer.msg("请从服务器列表选择服务器", { icon: 5, time: 2000 });
+          return false;
+        }
+        if (data.field.role_uid == "") {
+          layer.msg("请输入玩家UID", { icon: 5, time: 2000 });
+          return false;
+        }
+        var storage = window.localStorage;
+        if (storage.account == "" || storage.account == undefined) {
+          layer.msg("没有登录操作无效", { icon: 5, time: 2000 });
+          return false;
+        }
+
+        console.log(data.field);
+
+        var send = new Object();
+        send.sid = new Array(server_id_list);
+        if (data.field.role_uid != "") {
+          send.id = data.field.role_uid;
+        }
+
+        var manage_type = 100;
+        if (data.field.option == "1" || data.field.option == "2") {
+          manage_type = 0;
+        } else if (data.field.option == "4" || data.field.option == "5") {
+          manage_type = 2;
+        } else if (data.field.option == "3") {
+          manage_type = 1;
+        } else if (data.field.option == "6") {
+          manage_type = 3;
+        }
+        if (manage_type == 100) {
+          return false;
+        }
+        send.oper_name = storage.account;
+        send.manage_type = manage_type;
+        send.reason = ($('#content').val() == undefined ? "" : $('#content').val());
+        send.offset_time = (data.field.opt_time == "" ? 0 : parseInt(data.field.opt_time)) * 60;  //秒数
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/manage_role.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+            console.log(json);
+            layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+            console.log(er);
+            layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        $('#oper_send')[0].reset();
+        return false;
+      });
+
+
+      form.on('select(zcySelect)', function (data) {
+        document.getElementById('zcySelect_1').value = data.value;
+        renderForm();
+      });
+
+      form.on('select(zcySelect_1)', function (data) {
+        document.getElementById('zcySelect').value = data.value;
+        renderForm();
+      });
+
+      form.on('select(opt_type)', function (data) {
+        var select_time_div = document.getElementById("select_time");
+        document.getElementById('opt_time').value = "";
+        document.getElementById('show_end_select_time').innerText = '';
+        if (data.value == "2" || data.value == "5") {
+          select_time_div.setAttribute("style", "display");
+        } else {
+          select_time_div.setAttribute("style", "display:none");
+        }
+        form.render();
+      });
+
+      // form.on('radio(Single)', function(data){
+      //       //var Role_name_div = document.getElementById("Role_name");
+      //       var Role_uid_div = document.getElementById("Role_uid");
+      //       //var role_did_B_div = document.getElementById("role_did_B");
+
+      //       var val =  $('input:radio[name="range"]:checked').val();
+      //       if (val == "Single") {
+
+      //         //role_name_B_div.setAttribute("style","display:none");
+      //         //role_did_B_div.setAttribute("style","display:none");
+      //         //Role_name_div.setAttribute("style","display");
+      //         Role_uid_div.setAttribute("style","display");
+      //       }
+      //       form.render();
+      //       return false;
+      //   });
+
+      // form.on('radio(Batch)', function(data){
+      //       //var role_name_B_div = document.getElementById("role_name_B");
+      //       //var role_did_B_div = document.getElementById("role_did_B");
+      //       //var Role_name_div = document.getElementById("Role_name");
+      //       var Role_uid_div = document.getElementById("Role_uid");
+
+      //       var val =  $('input:radio[name="range"]:checked').val();
+      //       if (val == "Batch") {
+
+      //         //Role_name_div.setAttribute("style","display:none");
+      //         Role_uid_div.setAttribute("style","display:none");
+      //         role_name_B_div.setAttribute("style","display");
+      //         role_did_B_div.setAttribute("style","display");
+      //       }
+      //       form.render();
+      //       return false;
+      //   });
+
+      form.on('submit(query)', function (data) {
+        var server_id_list = $('#zcySelect_1').val();
+        if (server_id_list == 0) {
+          layer.msg("请从服务器列表选择服务器", { icon: 5, time: 2000 });
+          return false;
+        }
+        var send = new Object();
+        send.sid = new Array(server_id_list);
+        if (data.field.role_uid_1 != "") {
+          send.id = data.field.role_uid_1;
+        }
+        var time_min = document.getElementById('logmin').value;
+        var time_max = document.getElementById('logmax').value;
+        if (time_min != '' && time_max != '') {
+          send.start_time = get_msec_to_sec(time_min);
+          send.end_time = get_msec_to_sec(time_max);
+        }
+
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/select_manage_role.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+            console.log(json);
+            page(data_mod(json, 'ban'));
+            table.render();
+            layer.msg("成功", { icon: 6, time: 2000 });
+          },
+          error: function (er) {
+            console.log(er);
+            renderForm();
+            layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+      });
+    });
+  </script>
+</body>
+
+</html>

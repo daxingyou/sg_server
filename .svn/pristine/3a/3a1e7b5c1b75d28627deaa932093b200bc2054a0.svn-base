@@ -1,0 +1,4382 @@
+package proto.common;
+
+//服务器状态
+enum SERVER_STATE
+{
+	SERVER_STATE_DEL	= 0;//删除
+	SERVER_STATE_FREE	= 1;//空闲
+	SERVER_STATE_BUSY	= 2;//忙碌
+	SERVER_STATE_FIRE	= 3;//火爆
+	SERVER_STATE_CLOSE	= 4;//维护
+}
+
+//货币种类
+enum MONEY_TYPE 
+{
+	MONEY_TYPE_NONE 	= 0;		// 无效
+	MONEY_TYPE_YUANBAO 	= 1;		// 元宝
+	MONEY_TYPE_SILVER 	= 2;		// 银币
+	MONEY_TYPE_COPPER 	= 3;		// 铜币
+  	MONEY_TYPE_ENERGY 	= 4;		// 活力
+  	MONEY_TYPE_PRESTIGE = 5;		// 声望
+	MONEY_TYPE_ACHIEVE_POINT = 6;	// 成就积分
+	MONEY_TYPE_LIFEFORCE = 7;		// 命力值
+
+	MONEY_TYPE_LIFE_STONE = 9;		// 命石(充值币)
+	MONEY_TYPE_LIVENESS = 10;		// 活跃度
+	MONEY_TYPE_TRADE_POINT = 11;	// 贸易点
+	MONEY_TYPE_HEROSOUL	= 12;		// 将魂
+	MONEY_TYPE_HONOR	= 13;		// 荣誉
+	MONEY_TYPE_CONTRIBUTION = 14;	// 功勋
+	MONEY_TYPE_MULTI_POINT = 15;	// 多倍点数
+	MONEY_TYPE_ROLE_UNLOCK = 16;	// 主角解锁
+	MONEY_TYPE_VIGOUR = 17;			// 主角精力
+	MONEY_TYPE_FEATS  = 20;			// 功绩   
+	MONEY_TYPE_FAMILY_FUNDS = 21;	// 家族资金
+	MONEY_TYPE_COUNTRY_FUNDS = 22;	// 国家资金
+	MONEY_TYPE_FRIENDSHIP_POINT = 24;	//友情点
+  	MONEY_TYPE_EXP 		= 99;		// 角色经验，但不走money逻辑，还是独立的！！！
+  	MONEY_TYPE_END 		= 100;		// 增加新的货币种类加在这个之前顺便修改一下这个值
+}
+
+enum SYSHINT_TYPE
+{
+	SYSHINT_DEFAULT		= 0;
+	SYSHINT_SCENE		= 1;							// 当前场景
+	SYSHINT_WORLD		= 2;							// 世界
+	SYSHINT_COUNTRY		= 3;
+	SYSHINT_FAMILY		= 4;
+}
+
+enum SHOW_POSTION
+{
+	SHOW_TOP			= 0;
+	SHOW_TITLE			= 1;
+	SHOW_SUBTITLE		= 2;
+	SHOW_LOWRE			= 3;
+	SHOW_BOTTOM			= 4;
+	SHOW_MIDDLE			= 5;
+}
+
+enum EM_PK_MODE
+{
+	PK_PEACE = 1;		// 和平
+	PK_SLAUGHTER = 2;	// 杀戮
+	PK_FAMILY = 3;		// 家族
+	PK_COUNTRY = 4;		// 国家
+	PK_CAMP = 5;		// 阵营
+}
+
+enum EM_SCENEOBJECT_TYPE
+{
+	SCENEOBJECT_USER 			= 1;	// 玩家
+	SCENEOBJECT_MONSTER 		= 2;	// 怪物
+	SCENEOBJECT_CITYDOOR 		= 3;	// 城门
+	SCENEOBJECT_COLLECT_POINT 	= 4;	// 采集点
+	SCENEOBJECT_TUTOR			= 5;	// 导师
+	SCENEOBJECT_USERSHADOW		= 6;	// 化身
+}
+
+enum object_revive_type
+{
+	object_revive_normal = 1;		// 通用复活
+	object_revive_king_war = 2;		// 王城战复活
+	object_revive_dungeon = 3;		// 副本复活
+	object_revive_family_war = 4;	// 家族战复活
+}
+
+enum ActionType
+{
+	UNINIT = 0;
+	MOVE = 1;
+	WALK = 2;
+	ATTACK = 3;
+	REPEL = 4;
+}
+
+enum ROLE_MODE
+{
+	ROLE_MODE_USER = 1;				// 正常状态
+	ROLE_MODE_MACHINE = 2;			// 战车状态
+	ROLE_MODE_RIDE = 3;				// 骑马状态
+};
+
+enum rt_buff_change_statue
+{
+	rt_buff_add = 1;				// 增加
+	rt_buff_remove = 2;				// 删除
+	rt_buff_update = 3;				// 更新
+};
+
+enum chat_channel
+{
+	chat_channel_system = 1;			// 系统
+	chat_channel_vicinity = 2;			// 附近
+	chat_channel_world = 3;				// 世界
+	chat_channel_country = 4;			// 国家
+	chat_channel_family = 5;			// 军团
+	chat_channel_team = 6;				// 队伍
+	chat_channel_create_team = 7;		// 组队
+	chat_channel_team_hold = 8;			// 招募频道(组队)
+};
+
+enum chat_type
+{
+	chat_item = 1;
+	chat_task = 2;
+	chat_help = 3;
+	chat_hero = 4;
+};
+
+enum channel_state
+{
+	channel_free = 1;
+	channel_lively = 2;
+	channel_hot = 3;
+	channel_full = 4;
+};
+
+enum channel_type
+{
+	channel_type_public = 1;
+	channel_type_server = 2;
+	channel_type_features = 3;
+};
+
+
+//enum item_type
+//{
+//	item_type_task = 1;
+//	item_type_interior = 2;
+//	item_type_skill_book = 3;
+//	item_type_hero_advance_material = 4;
+//	item_type_hero_add_talent = 5;
+//	item_type_hero_level_up = 6;
+//	item_type_trade = 8;
+//	item_type_trade_use_book = 9;
+//};
+
+enum item_type
+{
+	item_type_can_use = 11;
+	item_type_other = 12;
+	item_type_activity = 13;
+	item_type_equip = 31;
+	item_type_equip_material = 32;
+	item_type_task = 51;
+	item_type_task_material = 52;
+	item_type_trade = 53;
+}
+
+// 物品使用类型
+enum item_use_type
+{
+	item_use_type_no = 0;
+	item_use_type_1 = 1;
+	item_use_type_2 = 2;
+	item_use_type_drop = 3;				// 礼包(道具)
+	item_use_type_trade_buy = 4;		// 跑商购买道具
+	item_use_type_mount = 5;			// 坐骑
+	item_use_type_treasure_item = 6;	// 寻宝
+	item_use_type_note_closed = 7;		// 寻宝
+	item_use_type_note_opened = 8;		// 寻宝
+	item_use_type_reduce_pk_value = 9;	// 减PK值
+	item_use_type_task = 10;			// 任务
+	item_use_type_story = 17;			// 剧情
+	item_use_type_plugin = 18;			// 武将皮肤
+	item_use_type_multi_time = 19;		// 多倍时长
+	item_use_type_source_package = 20;	// 礼包(资源)
+	item_use_type_vigour_pill = 21;		// 精力丹
+	item_use_type_add_role_buff = 22;	// 添加角色buff
+	item_use_type_add_title = 24;		// 添加称号
+	item_use_type_change_plugin = 26;	// 变身
+	item_use_type_key_gift = 27;		// 钥匙礼包
+	item_use_type_add_activity = 28;	// 增加活动次数
+}
+
+// 贸易购买类型
+enum trade_buy_type
+{
+	trade_buy_type_normal = 1;	// 正常购买
+	trade_buy_type_rebuy = 2;	// 补货购买
+}
+
+// 贸易事件类型
+enum trade_event_type
+{
+	trade_event_type_normal = 0;		// 正常
+	trade_event_type_popular = 1;		// 流行
+	trade_event_type_black = 2;			// 黑市
+	
+	trade_event_type_count = 3;			// 事件总数 必须要在最后一位 不能在后面添加新的事件
+}
+
+// 包裹类型
+enum package_type
+{
+	package_type_main = 0;		// 主包裹
+	package_type_trade = 1;		// 跑商行囊
+}
+
+// 坐骑状态
+enum mount_state_type
+{
+	mount_state_type_normal = 1;		// 正常状态
+	mount_state_type_use = 2;			// 使用
+	mount_state_type_unlock = 3;		// 未解锁
+	mount_state_type_turn = 4;			// 幻化
+	mount_state_type_use_and_turn = 5;	// 使用+幻化
+}
+
+// 改变下线玩家数据方式
+enum change_offline_data_type
+{
+	change_offline_data_type_mail = 1;		// 邮件
+	change_offline_data_type_db = 2;		// 发给DB
+}
+
+// 采集条件类型
+enum collect_cond_type
+{
+	collect_cond_type_task = 1;				// 任务
+	collect_cond_type_level = 2;			// 等级
+	collect_cond_type_king_war_family = 3;	// 是否是参战家族
+	collect_cond_type_family_war = 4;		// 是否是参战家族
+}
+
+// 采集条件类型
+enum collect_type
+{
+	collect_type_normal = 1;			// 普通采集物
+	collect_type_artifacts = 2;			// 王城战神器
+	collect_type_platform = 3;			// 家族战日月曜台
+}
+
+// 掉落系统类型
+enum drop_sys_type
+{
+	drop_sys_type_pve = 1;
+	drop_sys_type_task = 2;
+	drop_sys_type_luck_package = 3;
+	drop_sys_type_collect = 4;
+	drop_sys_type_gm = 5;
+	drop_sys_type_bounty = 6;
+	drop_sys_type_arena = 7;
+	drop_sys_type_equip = 8;
+	drop_sys_type_achieve = 9;
+	drop_sys_type_lifeforce = 10;
+	drop_sys_type_trade = 11;
+	drop_sys_type_expedition = 12;
+	drop_sys_type_page = 13;
+	drop_sys_type_dugeon = 14;
+	drop_sys_type_active_reward = 15;
+	drop_sys_type_hero_luckydraw = 16;
+	drop_sys_type_family_prayer = 17;
+	drop_sys_type_level_reward = 18;
+	drop_sys_type_offline_arena = 19;
+	drop_sys_type_tower = 20;
+	drop_sys_type_recharge_gift = 21;
+	drop_sys_type_month_card_prize = 22;
+	drop_sys_type_liandan_return = 23;
+	drop_sys_type_patrol_hire = 24;
+	drop_sys_type_activity_ws_rand = 25;
+	drop_sys_type_activity_ws_score = 26;
+	drop_sys_type_limit_buy = 27;
+	drop_sys_type_level_fund = 28;
+	drop_sys_type_sevenday_login=29;
+	drop_sys_type_sevenday_target =30;
+	drop_sys_type_career = 31;
+	drop_sys_type_relation_award = 32;
+	drop_sys_type_handbook = 33;
+}
+
+// 跨服类型
+enum role_cross_type
+{
+	role_cross_type_arena = 1;
+}
+
+// 武将系别类型
+enum hero_terry_type
+{
+	hero_terry_type_water = 1;		// 水
+	hero_terry_type_fire = 2;		// 火
+	hero_terry_type_wind = 3;		// 风
+	hero_terry_type_yin = 4;		// 阴
+	hero_terry_type_yang = 5;		// 阳
+}
+
+enum hero_rarity_type
+{
+	hero_rarity_type_normal = 0;	// N卡
+	hero_rarity_type_rare = 1;		// R卡
+	hero_rarity_type_super_rare = 2;// SR卡
+	hero_rarity_type_super_super_rare = 3;	// SSR卡
+}
+
+// 武将状态类型
+enum hero_state_type
+{
+	hero_state_type_none = 0;		// 无
+	hero_state_type_lock = 1;		// 未解锁
+}
+
+// 武将觉醒技能类型
+enum hero_wakeup_type
+{
+	hero_wakeup_type_add = 0;			// 增加
+	hero_wakeup_type_unlock = 1;		// 解锁
+	hero_wakeup_type_replace = 2;		// 替换
+}
+
+enum object_state_type
+{
+	object_state_none = 0;				/**< 无效状态 */
+	object_state_normal = 1;			/**< 普通状态（包括待机和移动） */
+	object_state_death = 2;				/**< 死亡状态 */
+	object_state_fighting = 3;			/**< 战斗状态 */
+	object_state_watch_fighting = 4;	/**< 观战状态 */
+	object_state_busy = 5;				/**< 忙碌状态 */
+	object_state_attack = 6;			/**< 正在攻击某个怪物（其他互斥）状态，目前王城战攻击龙脉使用 */
+	object_state_alert = 7;				/**< 警戒状态 */
+	object_state_arena_match = 8;		/**< 匹配状态 */
+	object_state_transmission = 9;		/**< 传送状态 */
+}
+
+// 角色外形状态
+enum role_mode_state
+{
+	role_mode_state_none = 0;			// 无效
+	role_mode_state_normal = 1;			// 普通
+	role_mode_state_mount = 2;			// 坐骑
+	role_mode_state_trade = 3;			// 跑商
+}
+
+message object_state_info
+{
+	optional object_state_type obj_state	= 1[default = object_state_none];		// 生物状态
+	optional role_mode_state mode_state 	= 2[default = role_mode_state_normal];	// 外观状态（只有人才有）
+	optional string obj_state_param			= 3;									// 角色状态辅助参数
+	optional uint32 alert_time				= 4;									// 警戒时间和警戒状态配合使用
+}
+
+// 怪物类型
+enum EM_MONSTER_TYPE
+{
+	EM_NONE = 0;			// 未知类型
+	EM_GENERAL = 1;			// 普通
+	EM_ELITE = 2;			// 精英
+	EM_FIELD_BOSS = 3;		// 野外boss
+	EM_ARENA_AI = 4;		// 竞技场AI
+	EM_AIR_WALL = 5;		// 空气墙怪物
+	EM_KING_WAR_LONNG = 6;	// 王城战龙脉
+	EM_FAMILY_WAR_LONNG = 7;// 家族战龙柱
+	EM_MONSTER_NPC = 8;		// 功能类型npc
+}
+
+enum obj_hp_change_type
+{
+	obj_hp_change_type_none = 0;	// 无效类型
+	obj_hp_change_type_add = 1;		// 加血
+	obj_hp_change_type_minus = 2;	// 减血
+}
+
+// 控制位 用于控制某些行为是否开启 按位存！！！最大到63位(如果填满64位redis会报错)
+enum function_code_type
+{
+	function_code_type_combat_fast 	= 0;		// 战斗加速
+	function_code_type_combat_auto 	= 1;		// 自动战斗
+	function_code_type_jump_map		= 2;		// 地图传送
+	function_code_type_equip		= 3;		// 装备制作
+	function_code_type_mount		= 4;		// 坐骑
+	function_code_type_luckydraw	= 5;		// 招募
+	function_code_type_form			= 6;		// 布阵
+	function_code_type_hero			= 7;		// 武将
+	function_code_type_role			= 8;		// 主公
+	function_code_type_family		= 9;		// 家族
+	function_code_type_country		= 10;		// 国家
+	function_code_type_Trading		= 11;		// 交易行
+	function_code_type_shop			= 12;		// 商城
+	function_code_type_achieve		= 13;		// 成就
+	function_code_type_activity		= 14;		// 活动
+	function_code_type_luckydraw_open = 15;	    // 招募开启
+	function_code_type_welfare              = 16;	        // 福利
+	function_code_type_firstchange          = 17;	        // 首充
+	function_code_type_feedback             = 18;	        // 回馈
+	function_code_type_strengthen           = 19;	        // 我要变强
+	function_code_type_escape               = 20;           // 战斗逃跑
+	function_code_type_show_lifeforceicon = 21;  // 命力图标
+	function_code_type_level_reward			= 24;// 等级奖励
+	function_code_type_pack			= 25;		// 背包
+	function_code_type_chat			= 26;		// 聊天
+	function_code_type_equip_grid	= 27;		// 装备格子
+	function_code_type_skill		= 28;		// 技能
+	function_code_type_tianxiadashi = 30;		// 天下大势
+	function_code_type_second_new_guide = 31;	// 新手引导剧情
+	function_code_type_czlc = 32;				// 成长历程
+	function_code_type_dungeon = 33;			// 副本
+	function_code_type_rechargetotal = 34;		// 累充
+}
+
+
+// 技能类型
+enum skill_type
+{
+	skill_type_atk = 0;						// 普攻
+	skill_type_sp_skill = 1;				// 怒气技能
+	skill_type_passive = 2;					// 被动技能
+	skill_type_equip_skill = 3;				// 装备技能
+	skill_type_activate = 4;				// 激活技能
+}
+
+// 布阵类型(最多10个)
+enum formation_type
+{
+	formation_type_role_1 = 1;			// 玩家布阵1
+	formation_type_role_2 = 2;			// 玩家布阵2
+	formation_type_role_3 = 3;			// 玩家布阵3
+	formation_type_family = 4;			// 家族布阵
+	formation_type_expedition = 5;		// 远征布阵
+	formation_type_offline_arena = 6;	// 离线竞技场布阵
+	formation_type_troop_2 = 7;			// 组队布阵2英雄
+	formation_type_troop_3 = 8;			// 组队布阵3英雄
+	formation_type_troop_leader_2 = 9;	// 组队布阵2英雄(队长)
+	formation_type_troop_leader_3 = 10;	// 组队布阵3英雄(队长)
+	formation_type_count = 11;			// 总计多少个布阵 新加布阵数字累加
+}
+
+// 活动商店类型
+enum activity_shop_type
+{
+	activity_shop_type_wusheng_rand = 1;		// 抽奖
+	activity_shop_type_wusheng_score = 2;		// 积分
+}
+
+// 设备信息
+message mobile_info
+{
+	optional string uuid                    = 1;
+	optional string device_model            = 2;
+	optional string device_sys_version      = 3;
+	optional string cpu_type                = 4;
+	optional int32 cpu_count                = 5;
+	optional int32 memory_size              = 6;
+	optional string grph_device_name        = 7;
+}
+
+message chat_param
+{
+	optional chat_type type = 1[default = chat_item];
+	optional string	value = 2; // 类型值
+};
+
+message server_info
+{
+	optional uint32	server_id			= 1; //服务器ID
+	optional string	server_name			= 2; //服务器名字
+	optional string	login_ip			= 3; //登录服务器IP
+	optional uint32	login_port			= 4; //登录服务器端口
+	optional SERVER_STATE server_state	= 5[default = SERVER_STATE_CLOSE]; //服务器状态SERVER_STATE
+	optional uint32 label				= 6; //服务器标签	0普通 1新服 2推荐
+	repeated account_role_data role_list= 7; //角色列表
+	optional string	new_role_id			= 8; //新角色ID（如果要创建新角色，把这个ID传给login）
+	optional uint32 can_create_new_role = 9; //0表示可以创建， 1表示不能创建
+}
+
+message account_role_data
+{
+	optional string uid					= 1; //common use
+	optional uint32 species				= 2; //common use
+	optional string name				= 3; //common use
+	optional uint32 create_time			= 4; //common use
+	optional uint32 level				= 5; //等级
+	optional uint32 plugin				= 6; //模型
+	optional uint32 channel_id			= 7; //渠道ID
+}
+
+message channel_general
+{
+    optional string uid					= 1; //渠道给的uid，开发阶段写账号
+    optional string session_id			= 2; //开发阶段写账号
+    optional string guid				= 3; //开发阶段不用填
+}
+
+message task_type_count
+{
+	optional uint32 type = 1;			//任务类型
+	optional uint32 count = 2;			//完成次数
+}
+
+message task_type_data
+{
+	repeated task_type_count type_count = 1; //任务完成次数
+}
+
+// 切磋数据
+message fight_study_data
+{
+	optional uint32 step = 1; 		// 阶段
+	optional uint32 step_time = 2; 	// 该阶段的起始时间
+	optional uint64 target = 3; 	// 目标
+	optional uint64 attacker = 4; 	// 发起者
+	optional uint32 study_time = 5; // 发起切磋时间
+}
+
+// 玩家战斗相关数据
+message role_fight_data
+{
+	optional uint64 fight_uid = 1; 			// 战斗ID
+	optional fight_study_data study = 2; 	// 切磋数据
+	optional uint32 auto_fight_flag = 3;	// 自动战斗标记
+	optional uint64 watching_fight_uid = 4;	// 观战战斗ID
+	optional uint32 ignore_lineup_flag = 5;	// 忽略布阵标记
+}
+
+// 玩家服务器数据
+message role_server_data
+{
+	optional uint32 server_id 	= 1;
+	optional uint32 gate 		= 2;
+	optional string server_name = 3;
+}
+
+// 上一次静态场景数据
+message last_static_map
+{
+	optional uint32 last_map_tid 	= 1;
+	optional float last_pos_x 		= 2;
+	optional float last_pos_y 		= 3;
+	optional float last_dir			= 4;
+}
+
+message role_data
+{
+    optional string uid								= 1; //common use
+	optional string did								= 2; //client use
+    optional string name							= 3; //common use
+	optional int32 gm								= 4; //common use
+    optional uint32 create_time						= 5; //common use
+    optional uint32 last_login_time					= 6; //server use
+    optional uint32 last_logout_time				= 7; //server use
+	optional uint32 level							= 8; //common use
+	optional uint32 map_tid							= 9; //common use
+	optional object_common_info obj_info			= 10; //九屏消息
+	optional personal_info per_info					= 11;//common use
+	optional interior_info interior					= 12;//common use
+	optional uint32 fighting            			= 13;//fighting
+	optional uint32 channel_id          			= 14;
+	optional uint32 role_type            			= 15;
+	optional role_trade_info trade_info 			= 16;
+	optional task_type_data ttd						= 17;
+	optional formation_data formation				= 18; // 布阵数据
+	optional role_fight_data fight					= 19; // 战斗数据
+	optional uint32	exp								= 20;
+	optional role_server_data server 				= 21; // 玩家服务器数据
+    optional uint32 continue_login_days				= 22; // 连续登录天数
+    optional uint32 cumulative_login_days 			= 23; // 累计登陆天数
+    optional bool is_new_role 						= 24; // 是否为新手
+	optional common.new_role_guide_data guide_data  = 25; // 待完成的新手引导列表
+	optional string function_code					= 26; // 功能编码
+	optional tactic_data tactic						= 27; // 阵法数据
+	optional role_buff_data role_buff				= 28; // BUFF数据
+	optional last_static_map last_map				= 29; // 记录最后静态场景信息
+	optional uint32 npc_code						= 30; // 控制npc的显示隐藏
+	optional uint32 collect_code					= 31; // 控制采集物的显示隐藏
+	optional common.page_data page_list				= 32; // 章节通关奖励领取列表
+	optional active_reward_task_data task_list		= 33; // 活跃奖励任务列表
+	optional uint32 current_tower					= 35; // 客户端要用 千层塔当前层数
+	optional uint32 update_day_time					= 36; // server use
+	optional uint32 update_week_time				= 37; // server use 
+	optional multi_time_data multi_time				= 38; // 精力多倍数据
+	optional uint32  mode_state						= 39; // 系统状态
+	optional life_info  life_data					= 40; // 命力相关
+	optional head_data  head_frame_info				= 41; // 头像相关
+	optional uint32 charm							= 43; // 魅力值
+	repeated uint32	compeleted_guide_id				= 44; //已完成的新手引导ID
+}
+
+message country_common
+{
+	optional uint32 country_id = 1;
+	optional uint32 country_flag = 2;
+	optional string country_name = 3;
+}
+
+//九屏消息
+message object_common_info 
+{
+	optional string object_id =					1;			// 对象Id
+	optional EM_SCENEOBJECT_TYPE  object_type =	2;			// 1 玩家 2 怪物 3 城门 4采集点
+	optional string object_name =				3;			// 对象名称
+	optional uint32 speed =						4;			// 速度
+	optional uint32 level =						5;			// 等级
+	optional country_common country =			6;			// 国家信息
+	optional object_state_info object_state =	7;			// 生物状态相关
+	optional uint32 plugin =					8;			// 主角英雄的模型(只提供给客户端表现)
+	optional uint32 country_officer =			9;			// 国家官职
+	optional uint32 mode_id =					10;
+	optional float current_x =					11;
+	optional float current_y =					12;
+	optional float direction =					13;
+	optional uint32 max_hp =					14;
+	optional uint32 current_hp =				15;
+	optional string family_id = 				16;			// 家族id
+	optional string family_name = 				17;			// 家族名字
+	optional uint32 fighting_value =			18;			// 战斗力
+	optional uint32 mount_tid =					19;			// 外形坐骑tid
+	optional uint32 npc_tid =					20;			// npc_id
+	optional uint32 collect_tid =				21;			// 采集点 tid
+	optional uint32 pk_value = 					23;			// PK值
+	optional string troop_id =					24;			// 队伍ID
+	optional bool is_leader =					25;			// 是否是队长
+	optional uint32 family_officer =			26;			// 家族职位
+	repeated uint32 role_buff				=	27;			// BUFF列表
+	optional uint32 state_level	 =				28;			// 命师称号等级
+	optional uint32 head =						29;			// 主角头像(只提供给客户端表现)
+	optional uint32 pk_mode	=					30;  		// PK模式
+	optional uint32 pk_ex = 					31;			// pk模式附加数据
+	optional uint32 cur_title =					32;			// 当前使用的称号
+}
+
+message personal_info 
+{
+	optional uint32 yuanbao						=	1;	//元宝
+	optional uint32 silver						=	2;  //银币
+	optional uint32 copper						=	3;	//铜币
+	optional uint32 pk_mode						=	7;  //PK模式 (废弃)
+	optional uint32 pk_punishment				=	8;	//惩罚时间
+	optional uint32 garrison_city				=	9;	//挂机关卡城市
+	optional uint32 offline_reward_calc_time	=	10;	//离线奖励时间计算点
+	optional string family_id					=	11;	//家族ID
+	optional uint32 city_id						=	12;	//场景ID
+	optional uint32 luck_gift_gold				=	18;	//发放的红包金额
+	optional string hero_uid					=	19;	//主公武将唯一ID
+	optional uint32 prestige					=	20;	//声望(可使用的)
+	optional uint32 prestige_total				=	21;	//声望累计点数
+	optional uint32	prestige_level				=	22;	//声望等级
+	optional uint32 cur_form_id					=	23;	//当前阵容编号
+	optional uint32 pk_value_reduce_time		=	24;	//还剩多少时间减少PK值
+	optional uint32 pk_value					=	25;	//PK值
+	optional uint32 pk_count					=	26;	//剩余发起PK次数
+	optional uint32 target_count				=	27;	//剩余被攻击次数
+	optional uint32 errantry					=	28;	//侠义值
+	optional uint32 energy						=	29;	//活力值
+	optional uint32 equip_smelt_value			=	30;	//装备熔炼值
+	repeated uint32 equip_smelt_box				=	31;	//已领取的熔炼宝箱
+	optional uint32 achieve_point				=	32;	//成就积分
+	optional uint32 achieve_level				=	33;	//成就等级
+	optional uint32 achieve_recv_reward_level	=	34;	//成就领取奖励等级 表示领取到第几级
+	optional uint32 lifeforce					=	35;	//命力值
+	optional uint32 lifestar_level				=	36;	//命星等级
+	optional uint32 lifestate_level				=	37;	//境界等级
+	optional uint32 plugin						=	38;	//模型
+	optional uint32	prestige_today				=	39;	//今日获得的声望
+	optional uint32 life_stone					=	40;	//命石(充值所得)
+	optional uint32 contribution				= 	43;	//功勋
+	optional uint32 herosoul					= 	44;	//将魂
+	optional uint32 honor						=	45;	// 荣誉
+	optional uint32 honor_week					=	46;	// 本周获得的荣誉
+	optional uint32 honor_limit					=	47;	// 本周获得的荣誉上限
+	optional uint32 patrol_count				=	48; //巡逻场次
+	optional uint32 multi_point					=	49; //多倍点数
+	optional uint32 equip_lucky					=	50;	//装备打造幸运值
+	optional uint32 role_unlock					=	51;	//主角解锁
+	optional uint32 vigour						= 	52;	//精力值
+	optional uint32 vigour_buy					= 	53; //精力购买次数
+	optional uint32 vigour_time					= 	54;	//上次精力增加时间
+	optional uint32 head_frame					=	55;	//头像和边框(高16位头像 低16位边框)
+	optional uint32 month_card_id				=   56; //激活的月卡id(只显示最高的那个)
+	optional uint32 wusheng_score				=   57;	//武圣宝库积分
+	optional uint32 wusheng_score_today			=   58;	//武圣宝库今日积分
+	optional uint32 wusheng_lucky				=   59;	//武圣宝库幸运值
+	optional uint32 patrol_point				=   60; //巡逻点数
+	optional uint32 patrol_hook					=   61; //巡逻挂机点数
+	optional uint32 feats						=   62; //功绩
+	optional uint32 ignore_lineup_flag			=   63; //忽略布阵标记
+	repeated uint32 career_id					=	64; //已经领取的成长历程奖励
+	optional uint32 change_name					=	65; //是否改过名字0为没改过
+	repeated uint32 title_id					=	66; //已经获得的称号
+	optional uint32 cur_title					=	67;	//当前使用的称号
+	optional uint32 friendship_point			=	69; //友情点
+	optional uint32 wusheng_today_buy			=	70; //武圣宝库今日购买次数
+	repeated uint32 handbook					=	71; //已经领取的收集图鉴奖励
+}
+
+message interior_info
+{
+	optional uint32 level =						1; //内政厅等级
+	optional uint32 task_id =					2; //当前派遣任务
+	optional uint32 star_level =				3; //任务星级
+	optional uint32 start_time =				4; //开始时间
+	optional uint32 span_time =					5; //持续时间
+	optional uint32 last_reward_time =			6; //上次大厅产出铜币时间
+	repeated uint32 hero_id_list =				7; //当前任务派遣的武将列表
+	optional uint32 left_times =				8; //剩余内政任务次数
+	optional uint32 is_start =					9; //是否开始
+	optional uint32 copper_left_time =			10;//剩余多长时间可获取铜币 client
+	optional uint32 copper_count =				11;//铜币产量 client
+	optional uint32 task_left_time =			12;//剩余多少时间完成该任务 client			
+}
+
+// 玩家跨服数据
+message role_cross_data
+{
+	optional role_data rd = 1;
+	optional hero_data hd = 2;
+	optional item_data item_data = 3;
+}
+
+// 镜像战斗数据
+message mirror_fight_data
+{
+	optional obj_single obj = 1;			// obj数据
+	optional hero_data heros = 2;			// 英雄数据
+	optional uint32 formation_id = 3;		// 阵型
+}
+
+// 属性
+message attr_single
+{
+	optional uint32 type 	= 1; // 类型
+	optional int32 value 	= 2; // 值
+}
+
+// 属性列表
+message attr_data
+{
+	repeated attr_single attrs = 1; // 属性列表
+}
+
+// 战斗中英雄状态
+message hero_state
+{
+	optional string hero_uid 	= 1; // 英雄唯一id
+	optional uint32 pos 		= 2; // 位置
+	optional uint32 hp 			= 3; // 血量
+}
+
+// 英雄状态列表
+message hero_state_data
+{
+	repeated hero_state states = 1; // 英雄状态列表
+}
+
+// 战斗属性
+message fight_attr
+{
+	optional attr_data attr 		= 1; // 属性列表
+	optional uint32 fighting 		= 2; // 战斗力
+	optional string master			= 3; // 主人
+	optional uint32 pos				= 4; // 位置
+	optional uint32 camp			= 5; // 阵营
+	optional hero_state start 		= 6; // 战斗初始状态
+	optional hero_state update 		= 7; // 战斗中更新状态
+	optional attr_data next_level	= 8; // 下一级属性
+	optional attr_data next_grade	= 9; // 下一阶属性
+	optional attr_data next_star	= 10; // 下一星属性
+	optional attr_data wakeup		= 11; // 觉醒属性
+	optional attr_data base_attr	= 12; // 基础属性
+	optional uint32 wave_num		= 13; // 波次
+}
+
+message hero_equip
+{
+	optional uint32 pos = 1;		//装备位置 对应装备表中的装备类型
+	optional string equip_uid = 2;	//装备唯一ID
+}
+
+message hero_skill_single
+{
+	optional uint32 skill_id = 1;		// 技能ID
+	optional uint32 skill_level = 2;	// 技能等级
+	optional uint32 skill_pos = 3;		// 技能位置
+	optional uint32 skill_index = 4;	// 技能序号
+}
+
+message hero_skill_data
+{
+	repeated hero_skill_single skill_list = 1;	// 技能列表
+}
+
+message base_attr
+{
+	optional uint32 type = 1;                   //0:主公  1：武将 2：怪物 3：召唤物
+	optional uint32 id  = 2;					//武将或者怪物id
+	optional string name =3 ;                   //名称
+	optional uint32 level = 4;                  //等级
+	optional uint32 exp = 5;                    //经验
+	optional uint32 species = 6;                //职业对应User表的creatureType,可以删除？
+	optional uint32 quality = 7;                //品质
+	optional uint32 in_form = 8;                //0不在阵,1在阵
+	repeated hero_equip equips = 9;                //穿戴装备
+	optional uint32 country = 10;                //武将阵营
+	optional uint32 grade = 11;					//武将品阶
+	optional uint32 talent_level = 12;          //觉悟等级
+	optional string unique_id = 13;              //武将一id
+	optional uint32 star = 14;					// 武将星级
+	optional uint32 degree = 15;				// 当前武将段位点数 10点为1段，当前星级多少段读表
+	optional uint32 talent_count = 16;        	// 天赋点数
+	optional uint32 talent_degree = 17;        	// 当前觉悟等级的段数
+	repeated uint32 famous = 18;				// 名将册
+	optional uint32 exp_today = 20;				//今日已获得的经验
+	optional uint32 talent_use = 21;			//已经使用的天赋点数
+	optional hero_skill_data skill_data = 22;	//技能数据
+	optional string last_equip_plan = 23;		//上次使用的装备方案
+	optional uint32 active_talent_use = 24;     // 觉醒已经使用的天赋点数
+	repeated uint32 plugins = 25;				//拥有的皮肤列表
+	optional uint32 current_plugin = 26;		//当前使用的皮肤
+	optional string fight_hero_uid = 27;		//战斗中的唯一id
+	optional string nick_name = 28;             //昵称
+	optional uint32 wakeup = 29;				//觉醒标识0为未觉醒1为已觉醒
+	optional uint32 delete_flag = 30;			//删除标记 0为存在 1为不存在
+	optional uint32 terry		= 31;			//怪物系别
+	optional uint32 grade_id	= 32;			//品阶表ID
+	optional uint32 debut		= 33;			//登场展示
+	optional uint32 resource_id = 34;			//美术资源ID
+	optional uint32	monster_type= 35;			//怪物类型
+	optional uint32 scale		= 36;			//模型放大比例
+	optional string	hero_name_id= 37;			//怪物名称id
+	optional uint32	boss_hp_plies = 38;			//boss血条层数
+	optional uint32	event_type	= 39;			//剧情触发条件
+	optional string event_param	= 40;			//剧情条件参数
+	optional uint32	plot_id		= 41;			//剧情对话ID
+	optional uint32	would_show	= 42;			//是否显示
+	optional uint32 hero_state = 43;			//武将状态类型 对应枚举 hero_state_type
+}
+
+message skill_single
+{
+	optional uint32 skill_id 	= 1;			//技能ID
+	optional uint32 skill_level = 2;			//技能等级
+	optional uint32 skill_cd	= 3;			//技能CD
+	optional string hero_uid = 4;			//英雄id 
+}
+
+message skill_data
+{
+	repeated skill_single skills = 1;
+}
+
+message item_data
+{
+    repeated common.item_single item_list	= 1;
+}
+message item_single
+{
+    optional string uid		= 1;
+    optional uint32 tid		= 2;
+    optional int32 num		= 3;
+	optional uint32 price   = 4;		// 价格 不需要的可以不填
+	optional uint32 package	= 5;		// 背包编号
+	optional int32 up_num 	= 6;		// 变化数 整数+ 负数-
+	optional uint32 pos 	= 7;		// 背包格子
+	optional uint32 param   = 8;		// 参数
+	optional uint32 param2   = 9;		// 参数
+	optional string find_role = 10;		// 发现人
+	optional equip_single equip_info = 11; //装备信息，非装备道具忽略
+	optional uint32 rarity = 12;		//1为珍品0为非珍品
+	optional uint32 state = 13;			//0为普通1为绑定2为冻结
+	optional uint32 expired_time = 14;	//冻结到期时间
+}
+
+message talent_single
+{
+	optional uint32 tid					= 1;//策划表ID
+	optional uint32 level				= 2;//天赋等级
+}
+
+message talent_data
+{
+	repeated common.talent_single talent_list = 1;  		       //天赋
+}
+
+// 布阵位置
+message formation_pair
+{
+	optional uint32 pos			= 1; //位置
+	optional string unique_id	= 2; //英雄唯一id
+	optional uint32 plugin 		= 3; //模型id
+	optional uint32 grade 		= 4; //英雄阶数
+	optional uint32 star		= 5; //英雄星级
+	optional uint32 level 		= 6; //英雄等级
+	optional string owner_id	= 7; //布阵唯一归属(组队判断)
+}
+
+// 一个阵容
+message formation_single
+{
+	optional uint32 formation_index = 1;
+	optional uint32 tactic_id = 2; // 阵法ID
+	repeated common.formation_pair formations = 3;
+}
+
+// 阵容列表
+message formation_data
+{
+	repeated common.formation_single formation_list = 1; // 阵容列表
+	optional uint32 cur_formation_id = 2;				 // 当前布阵ID 客户端在战前布阵需要用到
+}
+
+message fate_pair
+{
+	optional uint32 fate_tid                        = 1; //羁绊ID
+	optional int32 fate_level						= 2; //羁绊等级
+}
+
+message hero_single
+{
+    optional base_attr base_attr            = 1;	//基础属性
+    optional fight_attr fight_attr          = 2;	//战斗属性
+    optional talent_data talent_data        = 3;	//天赋数据
+	optional skill_data skill				= 4;	//技能数据
+	optional int32 save_hp					= 5;	//某些玩法保存的血量(-1表示没有保存过仍然使用fight_attr中的hp，0表示已经死亡不能上场)
+}
+
+message hero_data
+{
+    repeated common.hero_single hero_list	= 1;	//武将	
+}
+
+message fight_special_hero_single
+{
+	optional string uid = 1;              	//武将一id
+	optional uint32 tid = 2;              	//武将表tid
+	optional uint32 save_hp = 3;			//武将保存的血量
+	optional uint32 max_hp = 4;				//武将最大血量
+}
+
+message fight_special_hero_data
+{
+	repeated fight_special_hero_single hero_list = 1;		//武将列表
+}
+
+//武将已拥有被分解
+message luckydraw_award
+{
+	optional uint32 hero_tid = 1;		//武将ID
+	optional uint32 item_tid = 2;		//物品ID
+	optional uint32 item_count = 3;		//物品数量
+}
+
+message role_change_data
+{
+	optional personal_info per_info		= 1;	//玩家基本数据
+	optional item_data item				= 2;	//物品数据
+	optional hero_data hero				= 3;	//武将数据
+	optional role_trade_info trade_info = 5;	
+	optional role_trade_item trade_item = 6;
+	optional uint32 level				= 7;	
+	optional uint32 exp 				= 8;
+    optional mount_data mount           = 9;    // 坐骑数据	
+	optional multi_time_data multi_time	= 10;	// 精力多倍数据
+	optional recharge_data recharge		= 11;	// 充值数据
+	optional uint32 charm               = 12;   // 魅力值
+}
+
+//武将养成类型
+enum EM_CULTIVATE_TYPE
+{
+	EMCUTYPE_LEVEL = 0;				// 等级
+	EMCUTYPE_STARUP = 1;			// 升星
+	EMCUTYPE_ADVANCED = 2;			// 升阶
+	EMCUTYPE_TALENTUP = 3;			// 天赋升级
+	EMCUTYPE_TALENTADD = 4;			// 觉悟
+	EMCUTYPE_FATE = 5;				// 羁绊（缘分）激活升级
+	EMCUTYPE_SKILLUP = 6;			// 技能升级
+	EMCUTYPE_TALENTACTIVE = 7;		// 天赋激活
+	EMCUTYPE_TALENTRESET = 8;		// 天赋重置
+	EMCUTYPE_WAKEUP = 9;			// 觉醒
+	EMCUTYPE_SKILL_UNLOCK = 10;		// 技能解锁
+	EMCUTYPE_SKILL_REPLACE = 11; 	// 技能替换
+	EMCUTYPE_SMELT = 12; 			// 重生（回炉）
+	EMCUTYPE_FAMOUS = 13; 			// 激活名将册
+}
+
+message task_state
+{
+	optional uint32	id = 1; //任务id
+	optional string progress = 2; //任务进度格式为：任务目标类型:任务目标id:任务目标数量
+	optional uint32	state = 3;       //任务状态（0：进行中；1：可交付；2：已完成；3：未接）
+	optional uint32 circle_count = 4;	//当前环数（环任务有效）
+	optional uint32 max_circle_count = 5;	//最大环数（环任务有效）
+//	optional uint32	accept_time = 6; //任务接取时间
+	optional uint64 uid = 7;	//任务唯一ID（服务器使用 客户端不用理）
+	optional uint32 type = 8;	//任务类型
+	optional uint32 circle_id = 9;	//环任务ID
+	optional uint32 accept_level = 10;	//接取任务时的玩家等级（用于环任务奖励）
+	optional uint32 star = 11;	//试炼任务用
+}
+
+message task_data
+{
+	repeated task_state tasks = 1;	//任务数据
+	optional uint32 shilian_count = 2;	//试炼次数
+	repeated uint32 shilian_seq = 3;	//试炼随机序列
+	repeated uint32 circle_task_comp_list = 4;	//环任务完成记录
+	repeated uint32 comp_task_list = 5;
+	optional task_event event_data = 6;	//任务事件
+}
+
+// 传送类型
+enum transmission_type
+{
+	transmission_type_none = 0;	 // 无效
+	transmission_type_user = 1;	 // 客户端发起的传送
+	transmission_type_troop = 2; // 组队传送
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 家族消息
+message family_member
+{
+	optional string role_id 		= 1; 	// 玩家uid
+	optional string role_name 		= 2; 	// 玩家名字
+	optional uint32 officer 		= 3; 	// 官职
+	optional uint32 level 			= 4;	// 玩家等级
+	optional uint32 fighting 		= 5;	// 玩家战斗力
+	optional uint32 last_offline_time = 6;	// 离线时间
+	optional uint32 total_family_contribution = 7; 	// 历史家族贡献
+	optional uint32 left_family_contribution = 8; 	// 剩余家族贡献
+	optional uint32 plugin 			= 9;	// 模型id
+	optional uint32 glory			= 10;	// 荣耀值
+	optional uint32 prayer_contribution = 11; // 祈愿贡献
+}
+
+message family_data
+{
+	optional string id = 1;							// 家族id
+	optional string name = 2;						// 家族名称
+	optional uint32 level = 3;						// 家族等级
+	optional uint32 country = 4;					// 国家id
+	optional string patriarch = 5;					// 家族长id
+	optional string creator = 6;					// 家族创建人
+	optional uint32 money = 7;						// 家族资金
+	optional uint32 max_money = 8;					// 家族最大资金
+	optional uint32 matain_cost = 9;				// 家族维护费
+	optional string declaration = 10;				// 家族宣言
+	optional string notice = 11;					// 家族公告
+	optional uint32 prosperity = 12;				// 家族繁荣度
+	optional uint32 prestige = 13;					// 家族威望
+	optional uint32 territory = 14;					// 家族领地
+	optional bool auto_newbie = 15;					// 是否自动成为学徒
+	optional uint32 member_cnt_max = 16;			// 家族成员上限
+	optional uint32 loyalty = 17;					// 家族忠诚度
+}
+
+message family_list_info
+{
+	optional family_data base = 1;				// 基础信息
+	optional uint32 member_cnt = 2;				// 家族成员人数
+	optional string patriarch_name = 3;			// 族长名字
+	optional string patriarch_uid = 4;			// 族长uid
+}
+
+//家族建筑定义
+enum family_build_type
+{
+	family_build_type_congress = 1; // 议事厅
+	family_build_type_house = 2;// 民居
+	family_build_type_ploy = 3;// 计略府
+	family_build_type_barn = 4;// 仓库
+	family_build_type_shop = 5;// 商店
+}
+
+//家族建筑数据
+message family_build_data
+{
+	optional family_build_type type = 1;//建筑类型
+	optional uint32 level = 2;//等级
+	optional uint32 cd_time = 3;//cd时间
+}
+
+message family_apply_member
+{
+	optional string role_id 		= 1; 	// 玩家uid
+	optional string role_name 		= 2; 	// 玩家名字
+	optional uint32 level 			= 3;	// 玩家等级
+	optional uint32 fighting 		= 4;	// 玩家战斗力
+	optional uint32 plugin 			= 5;	// 模型id
+	optional uint32 apply_time		= 6;	// 申请时间
+}
+
+//家族成员类型定义
+enum family_member_type
+{
+	family_member_type_none = 0;//非家族成员
+	family_member_type_applay = 1;//家族申请者
+	family_member_type_newbie = 2;//学徒
+	family_member_type_formal = 3;//正式成员
+}
+
+// 家族祈愿数据
+// 赠予记录
+message family_gift_data
+{
+	optional string role_id 	= 1; 	// 玩家uid 
+	optional uint32 gift_times 	= 2;	// 赠与次数
+}
+
+message family_gift_data_list
+{
+	repeated family_gift_data gift_datas = 1;// 赠予记录
+}
+
+// 单条祈愿数据
+message family_prayer_data
+{
+	optional string role_id 		= 1; 	// 玩家uid
+	optional string role_name 		= 2; 	// 玩家名字
+	optional uint32 officer 		= 3; 	// 官职
+	optional uint32 plugin 			= 4;	// 模型id
+	optional uint32 level			= 5;	// 玩家等级
+	optional uint32 prayer_contribution = 6;// 祈愿贡献
+	optional uint32 hero_tid 		= 7; 	// 武将碎片id
+	optional uint32 hero_curr_num 	= 8; 	// 武将碎片当前数量
+	optional uint32 hero_max_num 	= 9; 	// 武将碎片最大数量
+	optional uint32 start_time 		= 10;	// 开始时间
+	optional uint32 complete_time	= 11;	// 下次清理时间
+	optional family_gift_data_list list = 12;// 赠予记录
+}
+
+message family_prayer_list
+{
+	repeated family_prayer_data lists = 1;	// 祈愿数据
+}
+
+message family_prayer_record_data
+{
+	optional string role_id 		= 1; 	// 玩家uid
+	optional string role_name 		= 2; 	// 玩家名字
+	optional uint32 officer 		= 3; 	// 官职
+	optional uint32 plugin 			= 4;	// 模型id
+	optional uint32 time 			= 5;	// 时间
+	optional uint32 hero_tid 		= 6; 	// 武将碎片id
+	optional uint32 hero_num 		= 7; 	// 武将碎片数量
+	optional uint32 level			= 8;	// 等级
+}
+
+message family_prayer_record_list
+{
+	repeated family_prayer_record_data gift_list = 1;	// 赠送记录
+	repeated family_prayer_record_data receive_list = 2; // 获赠记录
+}
+
+message family_invite_result
+{
+	optional uint32 result = 1;							// 邀请回复 0：拒绝 1：同意
+	optional string family_uid = 2;						// 邀请的家族
+	optional string inviter_uid = 3;					// 邀请的人
+}
+
+message family_shop_item
+{
+	optional uint32 shop_item = 1;	// 唯一id
+	optional uint32 sold_count = 2;	// 已经出售数量
+}
+
+message family_shop_data
+{
+	optional uint32 next_refresh_time = 1;	// 下次刷新时间
+	repeated family_shop_item items = 2;	// 道具列表
+}
+
+message family_shop_personal_item
+{
+	optional uint32 shop_index = 1;	// 列表索引
+	optional uint32 buy_count = 2;	// 已经购买数量
+}
+
+message family_shop_personal_data
+{
+	optional uint32 next_refresh_time = 1;			// 下次刷新时间(也是唯一标识)
+	repeated family_shop_personal_item items = 2;	// 道具列表
+}
+
+// 弹劾数据（未处理）
+message family_impeach_data
+{
+	optional string impeacher = 1;//弹劾发起人
+	optional uint32 approve_impeach_cnt = 2;//弹劾响应人数
+	optional uint32 time_left = 3;//弹劾剩余时间
+}
+/////////////////////////////////////////////////////////////////////////////////////
+// 家族战状态
+enum family_war_state
+{
+	family_war_state_end = 0;			// 结束
+	family_war_state_init = 1;			// 公告
+	family_war_state_prepare = 2;		// 备战
+	family_war_state_start = 3;			// 开始
+}
+
+// 家族战胜负情况
+enum family_war_result
+{
+	family_war_result_none = 0;		// 未知
+	family_war_result_win = 1;		// 胜利
+	family_war_result_failure = 2;	// 失败
+}
+
+// 家族战数据
+message family_war_data
+{
+	optional string family_id = 1; // 家族id
+	optional string family_name = 2; // 家族名称
+	optional uint32 family_prestige = 3; // 家族历史威望
+	optional uint32 family_score = 4; // 家族积分
+	optional uint32 family_rank = 5; // 家族排名
+	optional family_war_result result = 6[default = family_war_result_none]; // 胜负情况
+}
+
+// 家族对战数据
+message family_against_data
+{
+	optional family_war_data left_side = 1;
+	optional family_war_data right_side = 2;
+}
+
+// 家族战怪物位置
+message family_object_pos
+{
+	optional uint32 pos_x = 1;
+	optional uint32 pos_y = 2;
+}
+
+message family_against_list
+{
+	repeated common.family_against_data data_list = 1;
+}
+
+message family_war_history_data
+{
+	repeated common.family_war_data data = 1; // 数据
+}
+
+enum family_war_hero_type
+{
+	family_war_hero_none = 0;		// 无效
+	family_war_hero_normal = 1;		// 正常可以使用
+	family_war_hero_death = 2;		// 死亡需要复活
+}
+
+enum family_war_platform_type
+{
+	family_war_platform_none = 0;		// 无效
+	family_war_platform_sun = 1;		// 日台
+	family_war_platform_moon = 2;		// 月台
+}
+
+message family_war_hero_data
+{
+	optional string hero_uid = 1;			// 武将uid
+	optional family_war_hero_type type = 2;	// 状态
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// 国家数据
+enum country_period_type
+{
+	country_period_none = 0;				// 未开启
+	country_period_establish = 1;			// 立国倒计时
+	country_period_hegemony = 2;			// 争霸
+}
+
+message country_base_data
+{
+	optional uint32 id = 1;					// 国家id
+	optional string king_name = 2;			// 国王名字
+	optional string king_family = 3;		// 国王家族的名字
+	optional string notice = 4;				// 公告
+	optional string name = 5;				// 国家名称
+	optional uint32 flag = 6;				// 旗帜
+	optional string year_name = 7;			// 年号
+}
+
+message country_officer_data
+{
+	optional string uid = 1;				// uid
+	optional string name = 2;				// 名字
+	optional uint32 type = 3;				// 官职
+	optional uint32 plugin = 4;				// 头像边框
+	optional uint32 refresh = 5;			// 下次任命的刷新时间
+	optional uint32 level = 6;				// 等级
+	optional uint32 fighting = 7;			// 战斗力
+	optional uint32 hero_plugin = 8;		// 模型id
+}
+
+enum country_level_type
+{
+	country_level_normal = 0;
+	country_level_weak = 1;
+	country_level_strong = 2;
+	country_level_overlord = 3;
+}
+
+message country_info_data
+{
+	optional country_base_data base = 1;	// 基础信息
+	optional uint32 money = 2;				// 国家资金
+	optional uint32 power = 3;				// 国力
+	optional uint32 level_type = 4; 		// 国家实力
+	optional uint32 free_times = 5;			// 免费修改名称次数
+	optional uint32 free_times2 = 6;		// 免费修改年号次数
+}
+
+message country_family_data
+{
+	optional string family_uid = 1;
+	optional string family_name = 2;
+	optional string patriarch = 3;
+	optional uint32 level = 4;
+	optional uint32 prestige = 5;
+	optional uint32 loyalty = 6;
+}
+
+message country_family_list
+{
+	repeated country_family_data datas = 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+// 跨服聊天频道
+message server_channel_single
+{
+	optional uint32 uid = 1;			// 频道uid
+	optional string name = 2;			// 频道名字
+	optional channel_type type = 3;		// 类型
+	optional channel_state state = 4[default = channel_free];	// 状态
+}
+
+message fh_channel_role_list
+{
+	repeated uint64 notify_role_arrary = 1;			// 广播的user列表
+}
+// 跨服聊天频道列表
+message server_channel_data
+{
+	repeated common.server_channel_single server_channel_single = 1;
+}
+
+message chat_syn_user_info
+{
+	optional uint64 uid					= 1;
+	optional uint32 gate_id             = 2;
+	optional string nickname			= 3;
+	optional uint32 country_id			= 4;
+	optional uint64 family_id			= 5;
+	optional uint32 channel_id			= 6;
+}
+
+//聊天验证统一的广播数据
+message chat_common_data
+{
+	optional common.chat_channel chat_channel = 1[default = chat_channel_vicinity];	// 频道类型
+	required string src_uid				= 2;		// 发起玩家UID
+	required string src_name			= 3;		// 发起玩家姓名
+	required string chat_info			= 4;		// 聊天内容
+	required uint32 head_icon_id        = 5;		// 头像
+	required uint32 role_level			= 6;		// 角色等级
+	optional string param				= 7;		// 附加参数
+	optional string tar_role_id			= 8;		// 目标玩家UID
+}
+
+message chat_common_role_info
+{
+	repeated common.item_single item_single = 1;		// 道具信息
+	repeated common.hero_single hero_single = 2;		// 英雄信息
+}
+
+/////////////////////////////////////////////////////////
+
+enum troop_state_type
+{
+	troop_state_normal = 0;	 	// 正常状态
+	troop_state_leave = 1;		// 玩家暂离状态
+	troop_state_offline = 2;	// 玩家离线状态
+}
+
+//队伍成员信息
+message user_troop_member
+{
+	optional string id = 1;		// uid
+	optional string name = 2;	// 名字
+	optional uint32 plugin = 3;	// 模型id
+	optional uint32 fighting = 4; // 玩家战斗力
+	optional uint32 level = 5;	// 等级
+	optional uint32 state = 6;	// 状态
+	optional EM_SCENEOBJECT_TYPE object_type = 7[default = SCENEOBJECT_USER]; // 类型
+	optional uint32 fight_times = 8; // 战斗次数（化身才用到）
+	optional string owner_uid = 9; // 所有者
+}
+
+//队伍数据
+message troop_data
+{
+	optional string id = 1;//队伍id
+	optional uint32 type = 2;//队伍类型
+	optional bool is_free_join = 3;//是否允许自动加入
+	optional string leader = 4;//队长
+	repeated user_troop_member members = 5;//成员列表
+	optional uint32 level_min = 7;//成员最小等级
+	optional uint32 level_max = 8;//成员最大等级
+	optional uint32 fighting = 9;//队伍战斗力
+	optional task_state zg_task_info = 10; //抓鬼任务信息
+}
+
+//某大类型所有队伍类型
+message troop_type
+{
+	optional uint32 big_type = 1; //大类型
+	repeated uint32 types = 2;//队伍类型
+}
+
+//队伍成员的英雄列表
+message user_troop_member_hero_list
+{
+	optional string role_id = 1;//玩家uid
+	optional string role_name = 2;//玩家名字
+	repeated hero_single heroes = 3;//英雄列表
+}
+
+
+// 城市基本信息
+message city_base_info
+{
+	optional uint32 city_id				= 1;
+	optional uint32 prosperity_value 	= 2;		// 繁荣度
+	optional uint32 city_hold_value		= 3;		// 占有度
+	optional uint32 hold_country_id		= 4;		// 占领国家
+	optional uint32 prosperity_level 	= 5;		// 繁荣度等级
+}
+
+// 贸易(跑商)
+////////////////////////////////////////////////////////////////////////////////////
+// 角色贸易信息
+message role_trade_info
+{
+	optional uint32 trade_point				= 1;		// 贸易点数
+	optional uint32 trade_bag_weight		= 2;		// 贸易背包负重
+	optional uint32 last_reset_buy_num_time = 3;		// 上次重置购买数量时间
+	optional uint32 total_week_gain			= 4;		// 本周累计盈利
+	optional uint32 rank					= 5;		// 本服排行
+}
+
+message role_trade_item_single
+{
+	optional uint32 item_tid 				= 1;		//物品ID
+	optional uint32 item_buy_num			= 2;		//物品购买数量
+	optional uint32 item_max_buy_num		= 3;		//物品最大购买数量
+	optional uint32 item_buy_price 			= 4;		//物品购买价格
+	optional uint32 item_max_buy_num_addi	= 5;
+}
+
+message role_trade_item
+{
+	repeated role_trade_item_single		trade_item_list = 1;
+}
+
+// 城市贸易商店物品信息
+message city_trade_shop_item_info
+{
+	optional uint32 item_tid				= 1;		// 物品tid
+	optional uint32 can_buy_max_num			= 2;		// 可以购买的最大数量
+	optional uint32 item_buy_price			= 3;		// 购买价格
+	optional uint32 item_sell_price			= 4;		// 出售价格
+	optional int32  trade_market			= 5;		// 贸易行情波动 万分比 正数代表向上行情 负数代表向下行情 0代表没有波动
+	optional int32  new_trade_market		= 6;		// 最新贸易行情
+	optional uint32 city_buy_max_num		= 7;		// 此城市可购买的物品数量上线
+}
+
+// 城市贸易商店信息
+message city_trade_shop_info
+{
+	optional city_base_info city_info			 = 1;	// 城市基本信息
+	repeated city_trade_shop_item_info item_list = 2;	// 商店物品列表
+	optional uint32 trade_id					 = 3;	// 跑商ID
+	optional uint32 event_item_id				 = 4;	// 当前跑商贸易事件货物ID
+}
+
+// 城市贸易事件信息
+message city_trade_event_info
+{
+	optional uint32 city_tid 					 = 1;
+	optional trade_event_type event_type		 = 2[default = trade_event_type_normal];	// 事件类型
+	optional uint32 trade_event_param			 = 3;	// 事件参数(货物ID)
+	optional uint32 trade_event_param2			 = 4;	// 事件参数(推荐贸易货物出售地)
+}
+
+// 补货通知数据
+message trade_supplement_info
+{
+	optional uint32 item_tid 					 = 1;		//补货物品ID
+	optional uint32 item_num					 = 2;		//补货物品数量
+}
+
+//****************战斗**********************************
+
+// 一个格子数据
+message grid_single
+{
+	optional uint32 index 		= 1; // 格子索引
+	optional attr_data attr		= 2; // 阵法属性
+	optional uint32	type		= 3; // 格子类型 0代表普通 1代表阵眼
+}
+
+// 格子列表
+message grid_data
+{
+	repeated grid_single grid = 1; // 格子列表
+}
+
+// 战斗类型
+enum fight_type
+{
+	fight_type_none 		= 0;
+	fight_type_study		= 1; 	// 切磋，学习
+	fight_type_field_boss 	= 2; 	// 野外boss
+	fight_type_task			= 3; 	// 任务战斗
+	fight_type_dark_monster = 4; 	// 暗雷战斗
+	fight_type_against 		= 5; 	// 对阵战斗
+	fight_type_cross_arena_rank	= 6; // 跨服战斗(竞技场排位)
+	fight_type_cross_arena_train = 7; // 跨服战斗(竞技场练习)
+	fight_type_pk			= 8; 	// 强行PK
+	fight_type_light_monster = 9; 	// 明雷战斗
+	fight_type_challenge	= 10; 	//皇城约战
+	fight_type_world_cup	= 11; 	//演武大赛
+	fight_type_tower		= 12; 	//爬塔
+	fight_type_expedition	= 13; 	//远征
+	fight_type_family_war 	= 14; 	// 家族战龙柱
+	fight_type_family_pk 	= 15; 	// 家族战pk
+	fight_type_page_pass_pk = 16; 	// 章节通过战斗
+	fight_type_offline_arena= 17; 	// 离线竞技
+}
+
+// 暗雷战斗的参数
+message fight_dark_param
+{
+	optional uint32 monster_id = 1;	// 怪物id
+	optional uint32 task_id = 2;	// 如果战斗是因为任务引起，设置任务id
+}
+
+// 明雷战斗的参数
+message fight_light_param
+{
+	optional uint32 monster_id = 1;	// 怪物id
+	optional string object_id = 2;	// 唯一id
+}
+
+message cross_arena_ex
+{
+	optional uint32 rank_lv = 1;
+	optional uint32 score = 2;
+}
+
+// 竞技场AI
+message cross_arena_param
+{
+	optional cross_arena_ex obj1 = 1;
+	optional cross_arena_ex obj2 = 2;
+	optional uint32 arena_ai_id = 3;
+	optional uint32 monster_id = 4;
+}
+
+// 战斗参数
+message fight_param
+{
+	optional fight_type type		= 1; // 战斗类型
+	optional fight_state start		= 2; // 初始英雄状态
+	optional fight_dark_param dark	= 3; // 暗雷战斗参数
+	optional fight_light_param light = 4; // 明雷战斗参数
+	optional cross_arena_param cross_arena = 5; // 竞技场参数
+	optional uint32 stage_id		= 6; //远征关卡ID
+	optional uint32 against_id		= 7; // 对阵ID
+	optional uint64 trigger_id		= 8; //爬塔隐藏关卡id，0为普通关卡
+	optional uint32 prepare_time	= 9; // 部署时间
+	optional uint32 offline_arena_class = 10; //离线竞技场分段（用来做胜利失败结算）
+	optional uint32 page_id			= 11; // 章节ID
+	optional uint32 max_rounds		= 12; // 最大回合数
+}
+
+// 战斗公共数据
+message fight_common
+{
+	optional string fight_id 			= 1; // 每场战斗唯一ID
+	optional fight_param param			= 2; // 战斗其他参数
+	optional uint32 self_position_id 	= 3; // 我方站位ID
+	optional uint32 enemy_position_id 	= 4; // 敌方站位ID
+	optional string fight_initiator 	= 5; // 战斗发起人
+	
+}
+
+// 战斗单位(玩家或者NPC)
+message obj_single
+{
+	optional string object_uid 					= 1; 	// 唯一ID
+	optional EM_SCENEOBJECT_TYPE object_type 	= 2[default = SCENEOBJECT_USER]; // 类型
+	optional uint32 monster_id					= 3; 	// 是怪物的话填写怪物类型
+	optional uint32 camp						= 4; 	// 阵营
+	optional uint32 auto_fight					= 5; 	// 是否自动战斗
+	optional uint32 sp 							= 6; 	// 怒气
+	optional string name 						= 7; 	// 名字
+	optional uint32 level						= 8; 	// 等级
+	optional uint32 head_id						= 9; 	// 头像ID
+	optional uint32 country						= 10;	// 国家
+	optional string family_name					= 11;	// 家族
+	optional uint32 fighting					= 12;	// 战力
+	optional uint32 life_level					= 13;	// 命力等级
+	optional uint32 team_member_size			= 14;	// 队友数量
+	optional int32  team_member_pos				= 15;	// 队友位置
+	optional uint32 auto_ignore_lineup  		= 16;	// 自动忽略布阵
+}
+
+// 战斗单位列表
+message obj_data
+{
+	repeated obj_single obj = 1; // 战斗单位列表
+}
+
+// 战斗阵营(敌我双方任意一方的数据)
+message fight_camp
+{
+	optional obj_data objs		= 1; // 单位信息
+	optional hero_data heroes	= 2; // 武将信息
+	optional uint32 camp		= 3; // 阵营
+	optional uint32 tactic		= 4; // 阵法ID
+	optional uint32 tactic_switch = 5; // 阵法开关 0：关闭 其他值：开启
+	optional hero_data help_heroes	= 6; // 辅助武将信息
+	
+}
+
+// 战斗状态
+message fight_state
+{
+	optional hero_state_data self 	= 1; // 己方英雄状态
+	optional hero_state_data enemy 	= 2; // 敌方英雄状态
+}
+
+// 一场战斗的初始数据
+message fight_data
+{
+	optional fight_common common 	= 1; // 战斗其他数据
+	optional fight_camp self		= 2; // 己方
+	optional fight_camp enemy		= 3; // 敌方
+}
+
+// 战斗恢复数据 战斗单位
+message fight_recovery_obj_single
+{
+	optional string id = 1;
+	optional uint32 sp = 2;		// 怒气
+}
+
+// 战斗恢复数据 全部战斗单位
+message fight_recovery_obj_data
+{
+	repeated fight_recovery_obj_single objs = 1;
+}
+
+// 战斗恢复数据 BUFF
+message fight_buff_single_data
+{
+	optional uint32 buff_id = 1;
+	optional string attacker = 2;
+	optional uint32 layer = 3;
+	optional uint32 round = 4;
+	optional uint32 buff_tid = 5;
+}
+
+// 战斗数据 全部BUFF
+message fight_buff_data
+{
+	repeated fight_buff_single_data buff_list = 1;	// 所有buff
+}
+
+// 战斗数据 技能
+message fight_hero_skill_single_data
+{
+	optional uint32 skill_id = 1;
+	optional uint32 skill_cd = 2;
+}
+
+// 全部战斗行为数据
+message combat_all_action_data
+{
+	repeated combat_action_data action_data = 1; // 全部战斗行为数据	
+}
+
+// 战斗录像
+message fight_video_data
+{
+	optional fight_data data 	= 1;  		// 战斗初始数据
+	optional combat_all_action_data action_data = 2;	// 全部战斗行为数据
+	optional combat_count_data result = 3; // 战斗结果数据
+}
+
+// 战斗数据 全部技能
+message fight_hero_skill_data
+{
+	//repeated fight_hero_skill_single_data skill_list = 1;
+	repeated skill_single skill_list = 1;
+}
+
+// 战斗数据 单个武将属性
+message fight_hero_attr_single_data
+{
+	optional uint32 id = 1;			// 属性ID
+	optional int32 value = 2;		// 属性值
+}
+
+// 战斗数据 武将属性
+message fight_hero_attr_data
+{
+	repeated fight_hero_attr_single_data attr_list = 1;	//属性
+}
+
+// 战斗恢复数据 武将
+message fight_recovery_hero_single_data
+{
+	optional string id = 1;
+	optional uint32 cur_hp = 2;		// 当前血量
+	optional fight_buff_data buff_data = 3;	// buff数据
+	optional uint32 mark_id = 4;	// 标记
+	optional fight_hero_skill_data skill_data = 5;	// 技能
+	optional uint32 speed = 6;		// 先攻值
+	optional fight_hero_attr_data attrs = 7;	// 属性
+}
+
+// 战斗恢复数据 全部武将
+message fight_recovery_hero_data
+{
+	repeated fight_recovery_hero_single_data hero_list = 1;
+}
+
+// 战斗恢复数据
+message fight_recovery_data
+{
+	optional fight_recovery_obj_data objs		= 1; 	// 单位信息
+	optional fight_recovery_hero_data heroes 	= 2;	// 武将信息
+	optional formation_single self_formation_data = 3;	// 敌方布阵数据
+	optional formation_single enemy_formation_data = 4;	// 敌方布阵数据	
+}
+
+// 战斗过程
+message fight_process
+{
+	optional fight_state state = 1; // 结果英雄状态
+}
+
+// 战斗结果
+message fight_result
+{
+	optional string fight_id 		= 1; // 每场战斗唯一ID
+	optional fight_process process 	= 2; // 战斗过程
+	optional uint32 result			= 3; // 战斗结果（1:胜利 0:失败 ）
+}
+
+enum city_type
+{
+	city_type_imperial = 1;
+	city_type_bussiness = 2;
+	city_type_war = 3;
+	city_type_assemble = 4;
+	city_type_attacker_assemble = 5;
+	city_type_near_king = 6;
+}
+
+//***************rank begin*****************
+
+message rank_role_base
+{
+	optional uint32 level = 1;	// 玩家等级
+	optional uint32 plugin = 2;	// 模型id
+	optional uint32 head_frame_id = 3;	//头像和边框ID(高16位头像ID 低16位边框ID)
+}
+
+message rank_family_base
+{
+	optional string id = 1;		// 家族id
+	optional string name = 2;	// 家族名字
+	optional uint32 level = 3;	// 家族等级
+}
+
+message rank_score_tower
+{
+	optional uint32 cost_day = 1;	// 消耗天数
+	optional uint32 level = 2;		// 战队等级
+}
+
+message rank_score_achievement
+{
+	optional uint32 level = 1;		// 成就等级
+}
+
+message rank_data_extra
+{
+	optional rank_score_tower tower = 1;	// 爬塔排行榜数据
+	optional rank_score_achievement achieve = 2;// 成就等级
+}
+
+message rank_single_data
+{
+	optional string id 			= 1;	// uid
+	optional string name 		= 2;	// 名字
+	optional uint32 key			= 4;	// 用来排序的字段
+	optional uint32 index 		= 5;	// 排名
+	optional rank_role_base role_data = 6;		// 玩家信息
+	optional rank_family_base family_data = 7;	// 家族信息
+	optional country_common country_data = 8;	// 国家信息
+	repeated string custom_data	= 10;	//各个排行榜额外数据
+}
+
+//***************rank end*******************
+
+// 坐骑数据
+message mount_data_single
+{
+	optional uint32 mount_tid = 1;
+	optional mount_state_type mount_state = 2;
+}
+
+message mount_data
+{
+	repeated mount_data_single mount_data_list = 1;
+}
+
+//****************野外boss**********************************
+// 伤害排行榜
+message field_boss_rank
+{
+	optional uint32 rank = 1;	// 排名
+	optional string name = 2;	// 名字
+	optional uint32 hurt = 3;	// 伤害
+}
+
+// boss状态
+enum em_field_boss_state
+{
+	FIELD_BOSS_STATE_NONE = 1;	// 未开始
+	FIELD_BOSS_STATE_START = 2; // 已刷新
+	FIELD_BOSS_STATE_KILL = 3;	// 被击杀
+	FIELD_BOSS_STATE_GONE = 4;	// 已撤离
+}
+
+// boss状态
+message filed_boss_one_state
+{
+	optional uint32 id = 1;
+	optional uint32 monster_tid = 2; // 怪物tid
+	optional em_field_boss_state state = 3[default=FIELD_BOSS_STATE_NONE]; // 当前状态
+	optional string name = 4; 	// 击杀者名字
+	optional uint32 map_id = 5;
+	optional uint32 pos_x = 6;	// 坐标x
+	optional uint32 pos_y = 7;	// 坐标y
+}
+
+// boss状态
+message filed_boss_state
+{
+	optional uint32 id = 1;	// 排序编号
+	repeated filed_boss_one_state states = 2;
+}
+
+// boss位置信息
+enum em_field_boss_pos
+{
+	FIELD_BOSS_POS_ADD = 1;	// 添加
+	FIELD_BOSS_POS_DEL = 2; // 删除
+}
+
+// boss位置信息
+message field_boss_pos_info
+{
+	optional em_field_boss_pos pos_act = 1;	// 添加还是删除
+	optional string object_id = 2;			// 对象id
+	optional uint32 monster_id = 3;			// 怪物表id
+	optional uint32 pos_x = 4;				// 坐标
+	optional uint32 pos_y = 5;				// 坐标
+}
+
+//****************邮件**********************************
+// 邮件类型
+enum em_mail_type
+{
+	MAIL_TYPE_NONE		= 0;	// 无效类型
+	MAIL_TYPE_SYS		= 1;	// 系统邮件
+	MAIL_TYPE_NORMAL	= 2;	// 普通邮件
+}
+
+// 邮件状态
+enum em_mail_state
+{
+	MAIL_STATE_NONE		= 0;	// 无效类型
+	MAIL_STATE_NEW		= 1;	// 新邮件
+	MAIL_STATE_OPENED	= 2;	// 被打开
+	MAIL_STATE_REMOVE	= 3;	// 已删除
+}
+
+// 附件状态
+enum em_mail_addenda
+{
+	MAIL_ADDENDA_NONE	= 0;	// 没有附件
+	MAIL_ADDENDA_NEW	= 1;	// 附件没被领取
+	MAIL_ADDENDA_GOT	= 2;	// 附件已被领取
+}
+
+// 批量处理行为
+enum em_mail_batch
+{
+	MAIL_BATCH_GET		= 1;	// 一键领取
+	MAIL_BATCH_CLEAR	= 2;	// 一键清理
+}
+
+// 邮件获得途径
+enum em_mail_get_type
+{
+	MAIL_GET_TYPE_NONE			= 0;	// 无效类型
+	MAIL_GET_TYPE_SYS			= 1;	// 系统获得
+	MAIL_GET_TYPE_GLOBAL_MAIL	= 2;	// 全局邮件获得
+	MAIL_GET_TYPE_GM			= 3;	// GM获得
+	MAIL_GET_TYPE_ARENA			= 4;	// 竞技场排位
+	MAIL_GET_TYPE_DROP			= 5;	// 掉落
+	MAIL_GET_TYPE_ADD_HERO		= 6;	// 添加武将
+	MAIL_GET_TYPE_FAMILY_PRAYER	= 7;	// 家族祈愿
+	MAIL_GET_TYPE_FIELD_BOSS	= 8;	// 野外首领
+	MAIL_GET_TYPE_LEVEL_REWARD  = 9;	// 等级奖励邮件
+	MAIL_GET_TYPE_TOWER_OVER    = 10;	// 扫荡完成邮件
+	MAIL_GET_TYPE_LUCKYDRAW_KING_MONEY = 11; //国王领取抽卡奖金
+	MAIL_GET_TYPE_CDKEY			= 12;	//cdkey兑换
+	MAIL_GET_TYPE_KING_WAR  = 13;	// 王城战奖励
+	MAIL_GET_TYPE_FAMILY_WAR  = 14;	// 家族战奖励
+	MAIL_GET_TYPE_RANK  = 15;		// 排行榜奖励
+}
+
+// 邮件通用信息
+message mail_common_info
+{
+	optional string id 					= 1;	// 邮件唯一id
+	optional em_mail_type type			= 2;	// 邮件类型
+	optional em_mail_state state 		= 3;	// 邮件状态
+	optional em_mail_addenda addenda 	= 4;	// 附件状态
+}
+
+// 邮件基础信息
+message mail_base_info
+{
+	optional mail_common_info common_info 	= 1;	// 通用信息
+	optional uint32 content_id 				= 2;	// 内容id（系统邮件）
+	optional string from_name				= 3;	// 发送者名字
+	optional string title					= 4;	// 标题
+	optional uint32 create_time 			= 5;	// 创建时间
+	optional uint32 del_time 				= 6;	// 删除时间
+}
+
+// 邮件道具
+message mail_item_obj
+{
+	optional uint32 item_id = 1;		// 道具id
+	optional uint32 item_num = 2;		// 道具数量
+}
+
+
+//****************新的回合制战斗**********************************
+
+// 战斗效果类型
+enum combat_act_type
+{
+	combat_act_type_NULL		= 0; // NULL
+	combat_act_type_skill 		= 1; // 技能
+	combat_act_type_buff 		= 2; // 加buff(buffid,剩余层数)
+	combat_act_type_buff_remove = 3; // 删buff
+	combat_act_type_tactic_on 	= 4; // 阵法激活
+	combat_act_type_tactic_off 	= 5; // 阵法失效
+	combat_act_type_dodge 		= 6; // 闪避
+	combat_act_type_heal 		= 7; // 治疗(变化hp,剩余hp)
+	combat_act_type_heal_crit 	= 8; // 治疗暴击(变化hp,剩余hp)
+	combat_act_type_damage 		= 9; // 伤害(变化hp,剩余hp)
+	combat_act_type_ext			= 10; // 额外伤害(变化hp,剩余hp)
+	combat_act_type_crit		= 11; // 暴击(变化hp,剩余hp)
+	combat_act_type_absorb		= 12; // 吸收
+	combat_act_type_reflect		= 13; // 反伤(变化hp,剩余hp)
+	combat_act_type_leech		= 14; // 吸血(变化hp,剩余hp)
+	combat_act_type_share_damage= 15; // 分摊伤害(变化hp,剩余hp)
+	combat_act_type_relive		= 16; // 复活(变化hp,剩余hp)
+	combat_act_type_block		= 17; // 格挡
+	combat_act_type_counter 	= 18; // 反击
+	combat_act_type_combo	 	= 19; // 连击
+	combat_act_type_follow	 	= 20; // 追击
+	combat_act_type_att_speed_inc 		= 21; // 行动条增加(变化sp,剩余sp)
+	combat_act_type_att_speed_dec 		= 22; // 行动条减少(变化sp,剩余sp)
+	combat_act_type_kill_leech 	= 23; // 击杀后吸血(变化hp,剩余hp)
+	combat_act_type_recover		= 24; // 恢复hp(变化hp,剩余hp)
+	combat_act_type_syn_cd 		= 25; // 同步cd
+	combat_act_type_syn_hp 		= 26; // hp同步 波次转换时用(变化hp,剩余hp)
+	combat_act_type_syn_wave	= 27; // 波次同步 波次转换时用(当前波次)
+	combat_act_type_beheaded 	= 28; // 斩杀(变化hp,剩余hp)
+	combat_act_type_syn_atk_count = 29; // 同步出手次数
+	combat_act_type_buff_damage = 30;	// buff伤害(变化hp,剩余hp)
+	combat_act_type_buff_heal	= 31;	// buff治疗(变化hp,剩余hp)
+	combat_act_type_buff_dot = 32;	// 中毒伤害
+	combat_act_type_accept_damage = 33;	// 承担伤害
+	combat_act_type_steal_buff  = 34;	// 偷BUFF
+	combat_act_type_be_share_damage = 35;	// 被分摊伤害(变化hp,剩余hp)
+	combat_act_type_special_skill 	= 36; // 特殊技能
+	combat_act_type_immuno = 37;			// 免疫
+	combat_act_type_spurting = 38;			// 溅射
+	combat_act_type_camera = 39;			// 镜头
+	combat_act_type_buff_immuno	= 41;		// buff免疫
+	combat_act_type_buff_oppose = 42;		// buff抵抗
+	combat_act_type_buff_update = 43; 		// 更新buff(buffid,剩余层数)
+	combat_act_type_summon		= 44;		// 召唤
+	combat_act_type_pincer_attack = 45;		// 夹击
+	combat_act_type_trigger_skill = 46;		// 触发技能
+	combat_act_type_attr_inc	  = 47;		// 增加某项属性数值
+	combat_act_type_attr_dec	  = 48;		// 减少某项属性数值
+	combat_act_type_activation_skill	= 51;	// 激活技能
+	combat_act_type_unactivation_skill	= 52;	// 取消激活
+	combat_act_type_change_model	= 53;	// 变身
+	combat_act_type_continue_heal	= 54;	// 持续治疗
+	combat_act_type_hero_attack 	= 55;	// 武将出手
+	combat_act_type_story_play		= 56;	// 剧情播放
+	combat_act_type_rand_damage		= 57;	// 随机伤害
+	combat_act_type_bomb            = 58;	// 炸弹伤害
+	combat_act_type_suck_attr = 59;			//吸收属性
+	combat_act_type_turn_attr = 60;			//转换属性
+	combat_act_type_protect_almost_dead = 61;	//保护差点死亡
+	combat_act_type_detonate = 62;			//引爆
+	combat_act_type_dispel_buff = 63;		//驱散BUFF
+	combat_act_type_death_guard = 64;		//不死事件
+	combat_act_type_death_skill = 65;		//死亡释放技能
+	combat_act_type_add_skill   = 66;		//转变技能(变身)
+	combat_act_type_count_left_of_buff = 67;//buff剩余移除次数
+	combat_act_type_one_att_total_hurt = 68;//多段攻击的总伤害
+	combat_act_type_count_of_trigger_skill = 69;//技能触发计数
+}
+
+// 攻击过程步骤
+enum combat_act_step
+{
+	combat_act_step_none					= 0;
+	combat_act_step_round_start				= 1; // 回合开始
+	combat_act_step_before_attack			= 2; // 出手
+	combat_act_step_before_attack_target	= 3; // 攻击一个目标
+	combat_act_step_before_attack_phase		= 4; // 开始一段攻击
+	combat_act_step_after_attack_phase		= 5; // 结束一段攻击
+	combat_act_step_after_attack_target		= 6; // 攻击一个目标结束
+	combat_act_step_after_attack			= 7; // 出手结束
+	combat_act_step_round_end				= 8; // 回合结束
+}
+
+// 阵营
+enum combat_camp
+{
+	combat_camp_1	= 0; // 阵营1
+	combat_camp_2	= 1; // 阵营2
+	combat_camp_3	= 2; // 观众
+	combat_camp_none = 3; // 无阵营
+}
+
+// 行为或者效果
+message combat_act
+{
+	optional combat_act_type act_type 	= 1[default = combat_act_type_skill]; // 类型
+	optional uint32 act_value 			= 2; // 值或者ID
+	repeated string target				= 3; // 目标或者宿主
+	optional string attacker			= 4; // 释放者
+	optional combat_state step			= 5; // 行为时机
+	optional uint32 remain_value		= 6; // 剩余值
+	optional uint32 remain_value2		= 7; // 剩余值2
+	optional uint32 param				= 8; // 参数0
+	optional uint32 param1				= 9; // 参数1
+}
+
+// 回合制战斗行为数据
+message combat_action_data
+{
+	repeated combat_act actions = 1; // 回合制战斗行为数据
+}
+
+// 回合制战斗进程
+enum combat_step
+{
+	combat_step_loading = 1; // loading阶段
+	combat_step_form    = 2; // 战前布阵	
+	combat_step_round	= 3; // 循环回合战斗阶段
+	combat_step_end		= 4; // 战斗结束
+}
+
+// 回合状态
+enum combat_state
+{
+	combat_state_prepare 	= 1; // 准备阶段，倒计时30，部署阶段
+	combat_state_play       = 2; // 战斗播放阶段(放技能之前)
+	combat_state_fight		= 3; // 战斗回合完成
+	combat_state_story		= 4; // 战斗播放剧情
+}
+
+// 战斗玩家状态
+enum combat_obj_state
+{
+	combat_obj_state_none			= 0;
+	combat_obj_state_loading 		= 1;
+	combat_obj_state_loading_end 	= 2;
+	combat_obj_state_prepare 		= 3;
+	combat_obj_state_prepare_end 	= 4;
+	combat_obj_state_play			= 5;
+	combat_obj_state_play_end 		= 6;
+}
+
+// 武将出手顺序信息
+message combat_hero_att_order_single
+{
+	optional string hero_uid = 1;	// 武将UID
+	optional uint32 att_speed = 2;	// 先攻值
+	optional uint32 att_more_speed = 3; // 拉条溢出值
+}
+
+// 武将出手顺序
+message combat_hero_att_order
+{
+	repeated combat_hero_att_order_single hero_list = 1;	// 武将list
+}
+
+//提前结束
+message combat_end_ahead
+{
+	optional uint32 cond_type = 1;
+	optional uint32 param1 = 2;
+	optional uint32 param2 = 3;
+	optional uint32 param3 = 4;
+	optional uint32 param4 = 5;
+}
+
+
+// 回合制战斗数据
+message combat_data
+{
+	optional string fight_uid 	= 1; // 战斗唯一ID
+	optional combat_step step	= 2; // 战斗进程
+	optional uint32 round 		= 3; // 回合数
+	optional combat_state state = 4[default = combat_state_prepare]; // 回合状态
+	optional combat_action_data action_data = 5; // 战斗行为数据
+	optional fight_data data 	= 6;  // 战斗初始数据
+	optional uint32 remain_time = 7; // 剩余时间
+	optional combat_hero_att_order att_order = 8;	// 出手顺序
+	optional string cur_att_hero_uid = 9;		// 当前攻击的英雄UID
+	optional uint32 hero_att_round = 10;		// 武将攻击回合
+	optional fight_hero_skill_data skill_data = 11;	// 当前攻击的英雄技能信息
+	optional combat_hero_att_order first_att_order = 12;	// 先手队列
+	optional uint32 watching_role_num	= 13;			// 观战人数
+	optional uint32 cur_wave_num	    = 14;			// 当前波次
+}
+
+// 部署参数
+message combat_form_single
+{
+	optional string attacker 	= 1; // 攻击者
+	optional uint32 skill 		= 2; // 技能
+	optional string target 		= 3; // 目标
+}
+
+// 部署参数
+message combat_form_data
+{
+	repeated combat_form_single forms = 1; // 部署参数
+}
+
+// 战斗胜利类型
+enum combat_fight_result
+{
+	combat_fight_result_none 		= 0;
+//	combat_fight_result_perfect		= 1; // 完胜
+//	combat_fight_result_victory		= 2; // 胜利
+//	combat_fight_result_win			= 3; // 小胜
+//	combat_fight_result_initiative	= 4; // 先手胜
+//	combat_fight_result_enemy_escape= 5; // 敌人逃跑
+//	combat_fight_result_all_lose	= 6; // 全输
+
+	combat_fight_result_win			= 1; // 胜利
+	combat_fight_result_all_lose	= 2; // 全输
+	combat_fight_result_enemy_escape= 3; // 敌人逃跑
+}
+
+// 战斗达成目标类型
+enum combat_finish_task_type
+{
+	combat_finish_task_type_none			= 0;
+	combat_finish_task_type_first_attack 	= 1;	// 先手胜
+	combat_finish_task_type_enemy_all_die 	= 2;	// 敌方全死
+	combat_finish_task_type_alive_more 		= 3;	// 存活数量多
+}
+
+// 战斗达成的单一目标
+message combat_finish_single_task
+{
+	optional combat_finish_task_type finish_task = 1[default = combat_finish_task_type_none];	// 完成的目标
+}
+
+// 战斗中阵营达成的目标
+message combat_camp_finish_task
+{
+	repeated combat_finish_single_task finish_tasks = 2;	// 完成的所有目标
+}
+
+// 战斗结果
+message combat_result
+{
+	optional uint32 win_camp = 1;
+	optional combat_fight_result result = 2[default = combat_fight_result_none];	// 战斗结果
+	optional combat_camp_finish_task win_camp_tasks = 3;
+	optional combat_camp_finish_task lose_camp_tasks = 4;
+}
+
+// 战斗单一英雄数据统计
+message combat_count_data_single_hero
+{
+	optional uint32 hero_tid = 1;			// 武将tid
+	optional uint32 pos = 2;				// 站位
+	optional uint32 heal = 3;				// 治疗
+	optional uint32 damage = 4;				// 伤害
+	optional uint32 accept_damage = 5;		// 承受伤害
+	optional uint32 plugin = 6;				// 模型id
+}
+
+// 战斗单位的所有英雄的数据统计
+message combat_count_data_heroes_obj
+{
+	optional string obj_uid = 1;
+	repeated combat_count_data_single_hero hero_list = 2;		// 参战英雄列表
+}
+
+// 战斗的数据统计
+message combat_count_data
+{
+	repeated combat_count_data_heroes_obj obj_list = 1;	// 战斗中所有的单位(玩家or怪)
+}
+
+// 玩家状态
+message fight_obj_state
+{
+	optional string object_uid 		= 1; // 唯一ID
+	optional combat_obj_state state = 2[default = combat_obj_state_none]; // 玩家状态
+}
+
+// 玩家状态列表
+message fight_obj_state_data
+{
+	repeated fight_obj_state states = 1;
+}
+
+//悬赏任务
+message bounty_single
+{
+	optional uint32	bounty_id	= 1; //悬赏ID
+	optional uint32 state		= 2; //进度（0为未接取，1-3为正在进行第几个子任务，4为已完成）
+	optional uint32 star		= 3; //星级
+}
+//星级宝箱
+message star_box
+{
+	optional uint32 star		= 1; //星级
+	optional uint32 state		= 2; //状态（0为未达到领取条件 1为达到领取条件未领取 2为已领取）
+}
+//国家悬赏信息
+message country_bounty_data
+{
+	optional uint32 accept_count		= 1; //已接取次数
+	optional uint32 max_accept_count	= 2; //最大可接取次数
+	optional uint32 refresh_count		= 3; //剩余刷新次数
+	optional uint32 star_count			= 4; //已完成的星数
+	repeated star_box box_list			= 5; //星级宝箱
+	repeated bounty_single bounty_data	= 6; //悬赏任务信息
+	optional uint32 accept_level		= 7; //接取等级
+}
+
+// 物品限制校验信息
+message item_limit_data
+{
+	optional uint32 item_tid = 1;
+	optional uint32 item_num = 2;
+	optional uint32 last_give_time = 3;		// 上次发放时间
+}
+
+//好友类型定义
+enum friend_type
+{
+	friend_type_none = 0;				// 无效好友类型
+	friend_type_stranger = 1;			// 陌生人
+	friend_type_troop_stranger = 2;		// 组队队友
+	friend_type_one_side_friend = 3;	// 单向好友
+	friend_type_two_side_friend = 4;	// 双向好友
+	friend_type_black = 5;				// 黑名单
+}
+
+//亲密度变化原因
+enum change_friendliness_reason
+{
+	change_reason_be_friends = 1;
+	change_reason_be_no_friends = 2;
+	change_reason_send_gift = 3;
+	change_reason_send_friend_point = 4;
+	change_reason_fight_together = 5;
+	change_reason_treasure = 6;
+}
+
+//好友成员信息
+message friend_member
+{
+	optional string friend_uid = 1;//好友uid
+	optional uint32 contact_time = 2;//最近联系时间
+	optional friend_type ftype = 3;//好友类型
+	optional uint32 is_top = 4;//是否置顶
+	optional uint32 top_time = 5;//置顶时间
+	optional uint32 time = 6;//加好友时间
+	optional user_info info = 7;//好友信息
+	optional uint32 shadow_time = 8;//化身时间
+	optional uint32 shadow_count = 9;//化身次数
+	optional int32 friendliness = 10;//亲密度
+	optional uint32 friendliness_added_today = 15;//今日增加的亲密度
+	optional uint32 friendliness_refresh_time = 16;//上次刷新日增亲密度的时间 
+	optional uint32 can_get_friendship_point = 11;//可领取友情点
+	optional uint32 last_get_fp_time = 12;//上次领取友情点时间戳
+	optional uint32 last_sent_fp_time = 13;//上次赠送友情点时间戳
+}
+
+//羁绊界面数据
+message relation_interface_data
+{
+	optional uint32 level = 1;//羁绊等级
+	optional uint32 friends_quantity = 2;//达成条件的好友数量
+	optional bool has_got = 3;//是否已领取
+}
+
+//推荐来源定义
+enum recommend_source
+{
+	recommend_source_country_top = 1;	// 第一等：国家高手
+	recommend_source_top = 2;			// 第二等：本服高手
+	recommend_source_family = 3;		// 第三等：同家族
+	recommend_source_country = 4;		// 第四等：同一国家
+	recommend_source_same_level = 5;	// 第五等：相似等级在线玩家
+	recommend_source_rand = 6;			// 第六等：缘分
+}
+
+//推荐列表成员信息
+message recommend_member
+{
+	optional user_info info = 1;//玩家信息
+	optional uint32 src = 2;//推荐来源
+}
+
+//玩家信息
+message user_info
+{
+	optional string uid = 1;//玩家uid
+	optional string name = 2;//玩家名字
+	optional uint32 level = 3;//玩家等级
+	optional country_common country = 4;//玩家国家
+	optional string family = 5;//玩家家族
+	optional uint32 offline_time = 6;//玩家离线时间
+	optional uint32 fighting = 7;//玩家战斗力
+	optional uint32 plugin =8;//模型ID
+	optional uint32 charm = 9; //魅力值
+}
+
+message luck_gift_info
+{
+	optional uint32 luck_gift_uid = 1;
+	optional string src_role_uid = 2;
+	optional string src_role_name = 3;
+}
+
+message gift_single
+{
+	optional string uid = 1;			// 抢过玩家UID
+	optional string name = 2;			// 抢过玩家名字
+	optional uint32	value = 3;			// 金额
+}
+
+message gift_data
+{
+	optional string src_uid = 1;			// 发红包玩家ID
+	optional string src_name = 2;			// 发红包玩家名字
+	optional uint32 gift_count = 3;			// 红包数量
+	optional uint32 gift_value = 4;			// 红包金额
+	optional uint32 finish_time = 5;		// 结束时间
+	repeated common.gift_single gift_single = 6;		// 已抢红包信息
+}
+
+//活动信息结构
+message activity_single
+{
+	optional uint32 activity_id = 1;	//活动id
+	optional uint32 count = 2;			//完成次数
+	optional uint32 last_reset_time = 3;//上次重置次数的时间
+	optional uint32 add_count = 4;		//额外增加的次数
+}
+
+//活跃度宝箱
+message liveness_box
+{
+	optional uint32 liveness	= 1; //活跃度
+	optional uint32 state		= 2; //状态（0为未达到领取条件 1为达到领取条件未领取 2为已领取）
+}
+
+//活动信息
+message activities_data
+{
+	optional uint32 liveness			= 1; //活跃度
+	repeated liveness_box box_list		= 2; //活跃度宝箱
+	repeated activity_single activity_data	= 3; //活动信息
+}
+
+//玩家竞技场排行信息
+message arena_role_rank_info
+{
+	optional string uid = 1; 			//玩家uid
+	optional uint32 score = 2;			//玩家竞技积分
+	optional uint32 stage = 3;			//玩家段位
+	optional uint32 time = 4;			//最近积分更新时间
+	optional uint32 server_id = 5;		//玩家所在服id
+	optional uint32 rank = 6;			//玩家在排行榜中的名次，0表示未上榜
+	optional uint32 num = 7;			//当前赛季期数
+	optional string name = 8;			//玩家名称
+	optional hero_data fight_heroes = 9;	//战斗的武将
+	optional item_data hero_equips = 10;	//武将的装备
+	optional uint32 fighting_value = 11;	// 战斗力
+	optional string server_name = 12;		// 服务器名
+}
+
+// 竞技场排行榜数据
+message arena_rank_info_array
+{
+	repeated arena_role_rank_info info_list = 1;
+}
+
+// 玩家竞技场数据
+message arena_role_data
+{
+	optional uint32 win_times = 1;			// 赢的次数
+	optional uint32 lose_times = 2;			// 输的次数
+	optional uint32 is_start = 3;			// 是否开始竞技场活动
+	optional uint32 score = 4;				// 积分
+	optional uint32 arena_level = 5;		// 段位
+	optional uint32 all_fight_times = 6;	// 总战斗场次
+	optional uint32 all_win_times = 7;		// 总胜利场次
+	optional uint32 honor = 8;				// 本周获得的荣誉
+	optional uint32 honor_limit = 9;		// 本周获得的荣誉上限
+	optional uint32 rank = 10;				// 排名
+	optional uint32 best_win_times = 11;	// 单轮最高胜场
+	optional uint32 last_reset_time = 12;	// 最近一次更新积分的时间，服务器用来判断是否需要更新，客户端不用
+}
+
+//玩家寻宝数据
+message treasure_single
+{
+	optional string uid = 1;			//玩家uid
+	optional uint32 item_tid = 2;		//寻宝道具id
+}
+
+//寻宝道具信息
+message treasure_data
+{
+	repeated treasure_single treasure_list = 1; //队伍寻宝道具信息
+	optional uint32 treasure_id = 2;			//生成的藏宝制造id
+}
+
+// 系统通知类型
+enum system_notice_type
+{
+	SYS_NOTICE_DEFAULT	= 0;	// 系统广播（电视区）
+	SYS_NOTICE_LANTERN	= 1;	// 走马灯区
+	SYS_NOTICE_HORN		= 2;	// 喇叭区
+	SYS_NOTICE_CHANNEL	= 3;	// 系统频道
+	SYS_NOTICE_ADVANCED	= 4;	// 高级公告
+}
+
+// 系统通知
+message sys_notice_data
+{
+	optional system_notice_type type 	= 1[default = SYS_NOTICE_DEFAULT];	// 系统通知类型
+	optional uint32 priority 			= 2;	// 优先级（配表）
+	optional string text				= 3;	// 文字信息
+	optional string role_id				= 4;	// 相关人物
+	optional string family_id			= 5;	// 相关家族
+	optional string country_id			= 6;	// 相关国家
+	optional uint32 label				= 7;	// 标签类型
+	optional string default_text		= 8;	// 文字模板(client use)
+	optional uint32 table_type_id		= 9;	// 系统频道类型ID
+	optional uint32 param				= 10;	// 相关参数
+	repeated string param_str_list		= 11;	// string类型列表
+}
+
+// 商店类型
+enum shop_type
+{
+	shop_type_none = 0;		// 无效类型
+	shop_type_gold = 1;		// 金币商城
+	shop_type_silver = 2;	// 银币商城
+	shop_type_exchange = 3;	// 兑换商城
+}
+
+// 限购刷新类型
+enum shop_refresh_type
+{
+	shop_refresh_type_none = 0;		// 无效类型
+	shop_refresh_type_day = 1;		// 每天刷新
+	shop_refresh_type_week = 2;		// 每周刷新
+	shop_refresh_type_month = 3;	// 每月刷新
+	shop_refresh_type_forever = 4;	// 永不刷新
+}
+
+// 购买条件
+enum shop_buy_condition
+{
+	shop_buy_condition_none	= 0;	// 无条件
+	shop_buy_condition_level = 1;	// 等级
+	shop_buy_condition_task = 2;	// 任务条件
+	shop_buy_condition_pvp = 3;		// pvp段位
+}
+
+// 商店货物数据
+message shop_goods
+{
+	optional uint32 goods_id 			= 1; // 货物id
+	optional uint32 buy_count 			= 2; // 全服已购买数量
+	optional uint32 start_time 			= 3; // 上架时间
+	optional uint32 end_time 			= 4; // 下架时间
+	optional uint32 last_refresh_time 	= 5; // 全服购买数量刷新时间
+}
+
+// 商店列表，只发送有限制的
+message shop_goods_list
+{
+	repeated shop_goods goods_list 		= 1; // 商店物品列表
+}
+
+// 玩家购买货物数据
+message user_goods
+{
+	optional uint32 goods_id 			= 1; // 货物id
+	optional uint32 buy_count 			= 2; // 已购买数量
+	optional uint32 last_refresh_time 	= 3; // 购买数量刷新时间
+}
+
+// 玩家限购，只发送有限制的
+message user_goods_list
+{
+	repeated user_goods goods_list 		= 1; // 商店物品列表
+}
+
+// 用户购买信息
+message user_buy_goods
+{
+	optional uint32 goods_id					= 1;	// 物品id
+	optional uint32 goods_num					= 2;	// 物品数量
+}
+
+message challenge_info
+{
+	optional string challenge_uid		= 1; //唯一ID
+	optional string challenger_name	= 2; //发起方名字
+	optional string target_name			= 3; //应战方名字
+	optional string challenge_time		= 4; //约战时间
+	optional uint32 result				= 5; //challenge_state
+}
+
+//约战状态
+enum challenge_state
+{
+	challenge_state_process	= 0;	// 等待对方应战中
+	challenge_state_accept	= 1;	// 已应战
+	challenge_state_refuse	= 2;	// 应战方已拒绝
+	challenge_state_win_without_fight = 3;	//应战方没有到场约战方不战而胜
+	challenge_state_lose_without_fight = 4; //约战方没有到场约战方不战而败
+	challenge_state_draw	= 5;	// 双方都没到场
+	challenge_state_win		= 6;	// 约战方胜利
+	challenge_state_lose	= 7;	// 约战方失败
+}
+
+//队伍事件
+enum troop_event
+{
+	troop_event_create		= 0;	//创建队伍
+	troop_event_join		= 1;	//加入队伍
+	troop_event_quit		= 2;	//离开队伍
+	troop_event_kick		= 3;	//踢出队伍
+	troop_event_leave		= 4;	//暂离队伍
+	troop_event_leader		= 5;	//队长变更
+	troop_event_modify		= 6;	//修改设置
+	troop_event_back		= 7;	//返回队伍
+	troop_event_apply		= 8;	//申请入队（只发给队长）
+	troop_event_update		= 9;	//队员信息更新
+	troop_event_online		= 10;	//队员上下线
+	troop_event_dissolve	= 11;	//队伍解散
+	troop_event_transmission = 12;	//队伍传送
+	troop_event_zhuagui_task = 13;  //抓鬼任务
+	troop_event_escape 		= 14;  	//逃跑
+	troop_event_shadow_quit	= 15;	//化身消失
+}
+
+// 布阵位置
+message troop_formation_pair
+{
+	optional uint32 pos			= 1; //位置
+	optional string unique_id	= 2; //英雄唯一id
+	optional string owner_id	= 3; //玩家id
+}
+
+message troop_formation
+{
+	optional uint32 tactic_id = 1; // 阵法ID
+	repeated common.troop_formation_pair formations = 2;
+}
+
+//----------------------王城争夺战-------------------------------------
+// 天下大势
+message king_war_country_sign_up_single
+{
+	optional country_base_data country_base	= 1; 	// 国家信息
+	optional uint32 money = 2;						// 国家资金
+	optional uint32 power = 3;						// 国力
+	optional uint32 family_number = 4;				// 家族数量
+	optional uint32 sign_up_number = 5;				// 已经报名的数量
+	optional bool is_sign_up = 6;					// 是否报名
+}
+
+message king_war_country_sign_up_info
+{
+	optional uint32 end_time = 1;					// 报名结束时间
+	repeated king_war_country_sign_up_single countries = 2; // 国家报名信息
+}
+
+message king_war_family_info
+{
+	optional string family_id = 1;					// 家族id
+	optional string family_name = 2;				// 家族名字
+	optional bool is_king_family = 3;				// 是否是国王
+	optional string friend_family_id = 4;			// 家族id
+	optional string friend_family_name = 5;			// 家族名字
+	optional string notice_user = 6;				// 战前宣言的玩家名称
+	optional uint32 family_officer = 7;				// 职位
+	optional string notice = 8;						// 宣言
+	optional uint32 like_num = 9;					// 点赞
+	optional uint32 dislike_num = 10;				// 踩数
+	optional bool is_like = 11;						// 是否已经点过赞或踩
+}
+
+message king_war_country_pre_single
+{
+	optional uint32 country_id = 1;
+	optional king_war_family_info left_family = 2;
+	optional king_war_family_info right_family = 3;
+}
+
+message king_war_country_pre_info
+{
+	optional uint32 fight_time = 1;					// 开战时间
+	repeated king_war_country_pre_single countries = 2; // 国家报名信息
+}
+
+//  王城争夺战状态
+enum king_war_state
+{
+	king_war_state_end = 0;			// 未开启
+	king_war_state_sign_up = 1;		// 报名
+	king_war_state_pre = 2;			// 预告
+	king_war_state_prepare = 3;		// 备战
+	king_war_state_start = 4;		// 开始了
+}
+
+message country_king_war_info
+{
+	optional uint32 state = 1[default = 0];	// 状态
+	optional king_war_country_sign_up_info sign_up_info = 2; // 国家报名信息
+	optional king_war_country_pre_info pre_info = 3; 		// 国家预告信息
+}
+
+message family_war_info
+{
+	optional family_war_state state = 1[default = family_war_state_end];
+	optional family_against_data data = 2;
+	optional uint32 war_time = 3;				// 家族战时间
+}
+
+// 报名信息
+message king_war_sign_up_data
+{
+	optional string family_name = 1;	// 家族名字
+	optional string patriarch_name = 2;	// 族长名字
+	optional uint32 time = 3;		// 报名时间
+}
+
+// 助战状态
+enum king_war_help_state
+{
+	king_war_help_none = 0;			// 默认
+	king_war_help_invited = 1;		// 已经邀请
+	king_war_help_refused = 2;		// 已拒绝
+	king_war_help_fighted = 3;		// 已参战
+}
+
+// 助战信息
+message king_war_help_family
+{
+	optional family_list_info info = 1;
+	optional king_war_help_state state = 2;
+}
+
+// 助战通知
+message king_war_helf_info
+{
+	optional string family_uid = 1;
+	optional string family_name = 2;
+	optional uint32 country = 3;
+	optional uint32 fight_time = 4;
+}
+
+message king_war_long_info
+{
+	optional string object_id = 1;		// 龙脉id
+	optional uint32 monster_tid = 2;	// tid
+	optional uint32 curr_x = 3;			// 位置x
+	optional uint32 curr_y = 4;			// 位置y
+	optional uint32 curr_hp = 5;
+	optional uint32 max_hp = 6;
+	optional uint32 long_type = 7;		// 龙脉类型
+	optional string occupy_family = 8;	// 龙脉属于哪个家族
+	optional string occupy_help = 9;	// 龙脉属于哪个家族
+}
+
+message king_war_role_pos
+{
+	optional float pos_x = 1;
+	optional float pos_y = 2;
+}
+
+message king_war_side_roles
+{
+	repeated king_war_role_pos roles = 1;
+}
+
+message king_war_rank_single
+{
+	optional string role_name = 1;			// 名称
+	optional string family_name = 2;		// 家族名字
+	optional uint32 kill_count = 3;			// 击杀数
+	optional uint32 death_count = 4;		// 死亡数
+	optional uint32 continued_kill = 5;		// 连杀
+	optional uint32 exploits = 6;			// 战功
+}
+
+message king_war_rank_list
+{
+	repeated common.king_war_rank_single ranks = 1;
+}
+
+//----------------------------------------装备----------------------------------
+message equip_single
+{
+	optional string hero_uid = 1;		//已穿戴为所属武将uid，没穿戴为0
+	repeated equip_attr attr = 2;		//基础属性
+	repeated uint32 exattr = 3;			//判词（附加属性）策划表id
+	repeated uint32 remake_exattr = 4;	//判词重铸
+	optional uint32 remake_exattr_bonus = 5;//判词重铸记录的次数（一定次数触发保底）
+	optional uint32 score = 6;//分数
+	optional uint32 name = 7;			//词缀ID
+	optional uint32 special = 8;		//特技ID
+	optional uint32 strengthen_level = 9;	//强化等级
+	optional uint32 strmaster_level = 10;	//强化大师等级
+	optional uint32 remake_material = 11;	//洗练材料
+	optional uint32 lock_material = 12;		//洗练锁定材料
+	optional uint32 strengthen_material = 13;	//强化材料
+	optional uint32 strengthen_material_ex = 14;		//高级强化材料
+	optional uint32 strengthen_money = 15;	//强化消耗的铜币
+	optional uint32 remake_score = 16;	//重铸分数
+	optional uint32 remain_remake_count = 17; //剩余改造次数
+	optional uint32 add_remake_count = 18;	//已经增加过几次改造次数
+}
+
+message equip_attr
+{
+	optional uint32 type = 1;			//属性类型
+	optional uint32 value = 2;			//属性值
+}
+
+
+//熔炼值宝箱
+message equip_smelt_box
+{
+	optional uint32 equip_smelt_value	= 1; //熔炼值
+	optional uint32 state				= 2; //状态（0为未达到领取条件 1为达到领取条件未领取 2为已领取）
+}
+
+//---------------------------演武大赛------------------------
+enum world_cup_round
+{
+	world_cup_round_16th_final = 1;			//十六分之一
+	world_cup_round_8th_final = 2;			//八分之一
+	world_cup_round_quarter_final = 3;		//四分之一
+	world_cup_round_semi_final = 4;			//半决赛
+	world_cup_round_final = 5;				//决赛
+}
+
+enum world_cup_battle_state
+{
+	world_cup_battle_state_none = 0;		
+	world_cup_battle_state_bet = 1;			//投注中
+	world_cup_battle_state_playing = 2;		//进行中
+	world_cup_battle_state_end = 3;			//已结束
+}
+ 
+message world_cup_player
+{
+	optional string uid = 1;				//玩家唯一ID
+	optional string name = 2;				//玩家名
+	optional string family_id = 3;			//所在家族ID
+	optional string family_name = 4;		//所在家族名
+}
+
+message world_cup_battle
+{
+	optional string uid = 1;				//唯一ID
+	optional uint32 round = 2;				//轮次 world_cup_round
+	optional uint32 battle_id = 3;			//对战编号
+	optional world_cup_player player_a = 4;		//玩家1
+	optional uint32 score_a = 5;			//玩家1 的分数
+	optional world_cup_player player_b = 6;		//玩家2
+	optional uint32 score_b = 7;			//玩家2 的分数
+	optional string winner = 8;				//胜利者
+	optional uint32 state = 9;				//world_cup_battle_state
+	optional world_cup_bet self_bet = 12;	//自己的投注信息（没有的话就填充uid为0）
+}
+
+message world_cup_data
+{
+	optional uint32 season = 1;		//赛季
+	repeated world_cup_battle battle_list = 2;	//对战数据
+}
+
+message world_cup_bet
+{
+	optional string uid = 1;				//唯一ID
+	optional string battle_uid = 2;			//投注场次唯一ID
+	optional string player_uid = 3;			//投注玩家唯一ID
+	optional string winner = 4;				//投注内容（谁赢）
+	optional uint32 odds = 5;				//投注赔率
+	optional uint32 bet = 6;				//赌注
+	optional uint32 result = 7;				//结果world_cup_bet_result
+	optional uint32 state = 8;				//状态(0为待领取1为已领取)
+}
+
+enum world_cup_bet_result
+{
+	world_cup_bet_result_none = 0;			//比赛结果还未产生
+	world_cup_bet_result_win = 1;			//赢
+	world_cup_bet_result_lose = 2;			//输
+	world_cup_bet_result_draw = 3;			//和（战斗未发生没有胜利者）
+}
+
+message world_cup_odds
+{
+	optional uint32 odds_a = 1;			//投注玩家1的赔率
+	optional uint32 odds_b = 2;			//投注玩家2的赔率
+	optional uint32 bet_a = 3;			//投注玩家1的总注
+	optional uint32 bet_b = 4;			//投注玩家2的总注
+	optional uint32 vote_a = 5;		//投注玩家1的总支持人数
+	optional uint32 vote_b = 6;		//投注玩家2的总支持人数
+}
+//----------------------------------------成就----------------------------------
+
+
+//成就状态信息
+message achieve_finish_info_single
+{
+	optional uint32	level = 1;			//成就等级
+	optional uint32 time  = 2;			//完成时间
+}
+message achieve_finish_info
+{
+	repeated achieve_finish_info_single achieve_finish_info_list  = 1;				
+}
+
+
+//成就个人历程
+message achieve_record_single
+{
+	optional uint32 tid = 1;
+	optional string achieve_person_record = 2;					//成就个人历程
+}
+message achieve_record
+{
+	repeated achieve_record_single achieve_record_list = 1;
+}
+
+//成就
+message achieve_data_single
+{
+	optional string uid	= 1;								//唯一ID  (server)
+	optional uint32	tid = 2;								//成就ID  (common)
+	optional uint32	level = 3;								//成就等级(common) 
+	optional uint32 count = 4;								//成就进度(common)
+	optional string finish_info_list  = 5;					//成就完成信息列表 level:time|level:time.... (server)
+	optional achieve_finish_info finish_list = 6;			//成就完成信息列表(client)
+}
+message achieve_data
+{
+	repeated achieve_data_single achieve_data_list = 1;
+}
+
+
+enum Achieve_Event_Type
+{
+	ACHIEVE_EVENT_TYPE_BEGIN = 0;							///start
+	
+	ACHIEVE_MAIN_ROLE_LEVEL = 1;							///主角等级
+	ACHIEVE_MAIN_ROLE_FIGHT = 2;							///主角战斗力
+	ACHIEVE_EQUIP_TYPE_NUMBER = 3;							///获得[n]件[某]品质的装备
+	
+	ACHIEVE_EQUIP_TYPE_SAME = 4;								///集齐[某]品质套装
+	ACHIEVE_EQUIP_RECAST = 5;								///重铸[n次]装备
+	ACHIEVE_EQUIP_EXATTR_NUMBER_STAR = 6;						///装备同时拥有[n]个[n]星判词
+	
+	ACHIEVE_HERO_NUMBER = 7;								///拥有[n]名武将
+	ACHIEVE_HERO_NUMBER_LEVEL = 8;							///拥有[n]名[n]级武将
+	ACHIEVE_HERO_NUMBER_TYPE = 9;							///拥有[n]品质武将[n]名
+	
+	ACHIEVE_HERO_NUMBER_STAR = 10;							///拥有[n]名[n]星级武将
+	ACHIEVE_HERO_NUMBER_TALENT_LEVEL = 11;					///将[n]名武将天赋提升至[n]级
+	ACHIEVE_HERO_NUMBER_SKILL_LEVEL = 12;					///将[n]名武将技能提升至[n]级
+	
+	ACHIEVE_TOTAL_COPPER = 13;								///累计获得[n]个铜币
+	ACHIEVE_SHOP_BUY_NUMBER = 14;							///在[n]类商店购物[n]次
+	ACHIEVE_MOUNT_NUMBER_TYPE = 15;							///获得[n]品质坐骑[n]匹
+	
+	ACHIEVE_TASK_FINISH_NUMBER = 16;						///完成[]个任务
+	ACHIEVE_TASK_FINISH_COUNTRY_NUMBER = 17;				///完成国家任务[]次
+	ACHIEVE_TASK_FINISH_FAMILY_NUMBER = 18;					///完成家族任务[]次
+	
+	ACHIEVE_TRADE_NUMBER = 19;								///完成跑商[]次
+	ACHIEVE_TRADE_TOTAL_GAIN_NUMBER = 20;					///跑商累计利润[]
+	ACHIEVE_COUNTRY_BOUNTY_STAR_NUMBER = 21;				///完成X星级的国家悬赏Y次
+	
+	ACHIEVE_TREASURE_ACTIVITY_NUMBER = 22;					///完成寻宝活动[]次
+	ACHIEVE_TREASURE_ACTIVITY_SPECIAL_EVENT_NUMBER = 23;	///寻宝活动遭遇[]次特殊事件
+	ACHIEVE_CHANNEL_CHAT = 24;								///使用[]频道[n]次
+	
+	ACHIEVE_FAMILY = 25;									///加入一个家族:包括担任官职
+	ACHIEVE_COUNTRY = 26;										///加入一个国家:包括担任官职
+	ACHIEVE_EMPIRE_CITY_CHALLENGE_NUMBER = 27;				///进行[]次皇城约战
+	
+	ACHIEVE_PK_VALUE = 28;									///PK值达到100
+	ACHIEVE_TASK_FINISH_TRIAL_NUMBER = 29;					///完成[]次试炼任务
+	ACHIEVE_PACKAGE_COPPER_NUMBER = 30;						///包裹内持有[]铜币
+
+	ACHIEVE_HAVE_FRIEND_NUMBER = 31;						///累计添加[n]好友
+	ACHIEVE_TRADE_SINGLE_GAIN = 32;							///跑商单次利润达到[]
+	ACHIEVE_TASK_FINISH_STAR_TRIAL_NUMBER = 33;				///完成[m]星试炼任务[n]次
+	
+	ACHIEVE_TOTAL_LOGIN = 34;								///累计登陆
+	ACHIEVE_SUCCESSION_LOGIN = 35;							///连续登陆
+	ACHIEVE_TASK_FINISH_CHASE_GHOST_NUMBER = 36;			///捉鬼任务完成[]次
+	
+	ACHIEVE_CHASE_GHOST_CIRCLE_NUMBER = 37;					///捉鬼任务完成环[]数
+	ACHIEVE_FIELD_BOSS_KILL_NUMBER = 38;					///野外BOSS击杀[]数
+	ACHIEVE_ARENA_BATTLE_SINGLE_WIN_NUMBER = 39;			///跨服竞技单次[]胜
+	
+	ACHIEVE_ARENA_BATTLE_TOTAL_WIN_NUMBER = 40;				///跨服竞技总计[]胜	
+	ACHIEVE_TOWER_LEVEL = 41;								///千层塔达到[]层
+	ACHIEVE_EXPEDITION_SINGLE_POINT = 42;					///远征单次积分达到[]
+	
+	ACHIEVE_EXPEDITION_STORE_BUY_NUMBER = 43;				///远征在神秘商店购买[]次货物
+	ACHIEVE_EXPEDITION_STORE_TOTAL_COST_HONOUR = 44;		///神秘商店累计消耗[]荣耀值
+	ACHIEVE_EXPEDITION_HELP_OTHERS = 45;					///远征帮助他人[]次
+	
+	ACHIEVE_EXPEDITION_CHALLENGE_PASS_NUMBER = 46;			///远征挑战15次关卡[M]次
+	ACHIEVE_FAMILY_WAR_NUMBER = 47;							///参加家族战[]次
+	ACHIEVE_FAMILY_WAR_KILL_PLAYER_NUMBER = 48;				///家族战击杀玩家[]次
+	
+	ACHIEVE_FAMILY_WAR_DRAGON_HARM = 49;					///家族战中对龙柱造成伤害[]
+	ACHIEVE_FAMILY_WAR_OCCUPIED_SUN_OR_MOON_NUMBER = 50;	///家族战中占领日月曜台[]次
+	ACHIEVE_KING_WAR_NUMBER = 51;							///王城战[]次数
+	
+	ACHIEVE_KING_WAR_KILL_PLAYER_NUMBER = 52;				///王城战击杀玩家[]次
+	ACHIEVE_KING_WAR_DRAGON_HARM = 53;						///王城战中对龙脉造成伤害[]
+	ACHIEVE_KING_WAR_QUICK_REVIVE = 54;						///王城战中立即复活[]次
+	
+	ACHIEVE_KING_WAR_START_WEAPON = 55;						///王城战中启动神器[]次
+	ACHIEVE_GRADE_PASS_DUNGEON_NUMBER = 56;					///以[]评分通关副本[]次
+	ACHIEVE_DUNGEON_TOTAL_PASS = 57;						///名将挑战累计通过[]次
+	
+	ACHIEVE_RANK_TYPE_LEVEL = 58;								///[]排行榜达到[]名次
+	ACHIEVE_TASK_FINISH_EXP_CIRCLE_NUMBER = 59;				///经验环任务完成[]次
+	ACHIEVE_TASK_EXP_CIRCLE_ITEM_QUALITY_NUMBER = 60;		///经验环中提交X品质的物品Y次
+
+	ACHIEVE_HERO_UP_LEVEL_NUMBER = 61;						///提升武将等级x次
+	ACHIEVE_STRENGTHEN_EQUIP_NUMBER = 62;					///强化x次装备
+	ACHIEVE_TOWER_NUMBER = 63;								///爬塔x次层patrol
+	ACHIEVE_PATROL_KILL_MONSTER_GROUP_NUMBER = 64;			///巡逻中击杀x组怪
+	ACHIEVE_OPEN_GENERAL					= 65;			///开启天下大势成就
+
+	ACHIEVE_OFFLINE_BATTLE_TOTAL_POINT    = 66;				///离线竞技场获得x积分
+	ACHIEVE_ARENA_BATTLE_TOTAL_NUMBER  = 67;				///跨服竞技场战斗x次
+	ACHIEVE_BASE_PASS_DUNGEON_NUMBER		= 68;			///通关指定副本n次
+
+	ACHIEVE_FIELD_BOSS_ATTACK_NUMBER = 69;					///参与X次魔王入侵魔王入侵战斗
+	ACHIEVE_EXPEDITION_WIN_NUMBER = 70;						///荣耀远征战斗胜利X次
+	ACHIEVE_ELITE_PAGE_QUICK_FIGHT_NUMBER = 71;				///精英副本扫荡X次
+	ACHIEVE_TOWER_QUICK_FIGHT_NUMBER = 72;					///爬塔扫荡X次
+
+	
+
+	ACHIEVE_HONOR		= 101;	//荣誉
+	ACHIEVE_HERO_TUPO	= 102;	//武将突破xx;
+	ACHIEVE_FAMILY_LEVEL = 103;	//家族等级
+	ACHIEVE_COUNTY_NUM   = 104;	//国家数量
+
+	ACHIEVE_EVENT_TYPE_END = 105;							///end
+}
+
+
+
+
+//---------------------------爬塔---------------------------
+message tower_trigger
+{
+	optional string uid = 1;			//唯一id
+	optional uint32 tid = 2;			//隐藏层id
+	optional string finder_name = 3;	//发现者名字
+	optional uint32 expired_time = 4;	//到期时间 0表示已打过
+}
+
+message tower_trigger_data
+{
+	repeated tower_trigger self_trigger = 1; //自己发现的隐藏层
+	repeated tower_trigger other_trigger = 2;//他人发现的隐藏层
+}
+
+message tower_data
+{
+	optional uint32 record_tower = 1;	//最高层数
+	optional uint32 current_tower = 2;	//当前层数
+	optional uint32 reset_count = 3;	//重置次数
+	optional uint32 max_reset_count = 4;//最大重置次数
+	optional uint32 auto_fight_time = 5;	//扫荡结束时间
+	optional uint32 current_achieve = 6;//当前爬塔成就（是否可以领取根据最高层数判断）
+	optional uint32 first_day = 7;		//通关第一层的时间（服务器用来做排行榜显示，客户端不管）
+	optional tower_trigger_data tower_trigger = 8;	//隐藏关卡数据
+	optional uint32 trigger_count = 9;	//剩余触发次数
+	optional uint32 trigger_fight_count = 10;	//剩余攻打次数
+	optional uint32 send_mail_flag = 11;		//发送邮件标记
+}
+
+//---------------------------红点提示---------------------------
+//红点类型
+enum RED_POINT_TYPE
+{
+	RED_POINT_TYPE_BEGIN = 0;						//类型开始
+	RED_POINT_FRIEND_APPLY_LIST = 1;				//好友申请列表
+	RED_POINT_PRIVATE_CHAT = 2;						//私聊信息
+	RED_POINT_MAIL = 3;								//邮件信息
+	RED_POINT_FAMILY_APPLY_LIST = 4;				//家族申请列表
+	RED_POINT_ACTIVITY_FIRST_ONCE_ENTER = 5;		//日常活动首次进入条件
+	RED_POINT_LIVENESS_GET_TREASURE = 6;			//活跃度满足可领取宝箱的值
+	RED_POINT_TEAM_APPLY_LIST = 7;					//队伍申请列表
+	RED_POINT_ADD_MOUNT = 8;						//新增一条坐骑
+	RED_POINT_GOODS = 9;							//寄售行红点
+	RED_POINT_PAGE = 10;							//章节红点
+	RED_POINT_PAGE_ELITE = 11;						//章节精英副本红点
+	RED_POINT_ACHIEVE_LEVEL_REWARD = 12;			//玩家成就等级奖励红点
+	RED_POINT_OFFLINE_ARENA = 13;					//离线竞技场红点
+	RED_POINT_TYPE_FULI = 14;						//福利大厅红点	
+	RED_POINT_TYPE_MONTH_CARD = 15;					//月卡
+	RED_POINT_TYPE_GENERAL_EVENT = 16;				//天下大势
+	RED_POINT_TYPE_GENERAL_DETAIL = 17;				//天下大势详细数据红点
+	RED_POINT_TYPE_RECHARGE_TOTAL = 18;				//累充红点
+	RED_POINT_TYPE_RELATION_AWARD = 19;				//羁绊奖励
+	RED_POINT_TYPE_PATROL_HIRE = 20;				//巡逻红点
+	RED_POINT_TYPE_TIME_RANK = 21;				//个人冲榜红点
+	RED_POINT_TYPE_END = 100;
+}
+
+message red_point_single
+{
+	optional RED_POINT_TYPE red_type = 1;			//红点类型
+	optional uint32 red_point_state = 2;			//红点状态(client 1 显示红点 0 不显示)
+	optional string red_point_send_list = 3;		//红点发送列表
+}
+
+message red_point_data
+{
+	repeated red_point_single red_info_list = 1;	//红点数据列表
+}
+
+//---------------------------新手引导---------------------------
+message new_role_guide_single
+{
+	optional uint32	tid 	= 1;
+	optional uint32	status 	= 2; //0:待完成 1:已完成 只是服务器记录，不需要发送给客户端
+	optional uint32	event_type 	= 3; //1:新手引导 2:剧情
+}
+message new_role_guide_data
+{
+	repeated new_role_guide_single guide_list = 1;
+}
+
+//----------------------------抽卡------------------------
+enum luckydraw_type
+{
+	luckydraw_type_none = 0;
+	luckydraw_type_junior = 1;			//普通抽卡
+	luckydraw_type_senior = 2;			//高级抽卡
+	luckydraw_type_wish	  = 3;			//许愿抽卡
+	luckydraw_type_general = 4;			//天下大势卡包
+	luckydraw_type_gold = 5;			//黄金十连
+}
+
+message luckydraw_data
+{
+	repeated luckydraw_info lucky_draw_list = 1;		//抽卡序列信息
+	optional uint32 lucky = 2;					//气运值
+	optional uint32 lucky_ex = 3;				//附加气运值
+}
+
+message luckydraw_info
+{
+	optional uint32 type			= 1;		//抽卡类型
+	optional uint32 senior_count	= 2;		//抽卡次数
+	repeated uint32 senior_seq		= 3;		//高级抽卡序列
+	optional uint32 today_count		= 4;		//当日次数
+}
+
+message luckydraw_client_single
+{
+	optional uint32 type			= 1;		//抽卡类型
+	optional uint32 today_count		= 2;		//当日次数
+	optional uint32 card_id			= 3;		//当前卡包ID
+}
+
+message luckydraw_client_data
+{
+	repeated luckydraw_client_single client_data = 1;		//抽卡次数信息
+	optional uint32 remain_time = 2;						//天下大势抽卡剩余时间 0为未开启
+	optional uint32 lucky = 3;					//气运值
+	optional uint32 lucky_ex = 4;				//附加气运值
+	optional uint32 gold_luckydraw_expired_time = 5;	//黄金十连活动到期时间，不在活动中为0
+	optional uint32 today_count = 6;			//当日抽卡次数
+	optional uint32 today_count_limit = 7;		//当日抽卡次数上限
+}
+
+//---------------------------副本系统---------------------------
+// 副本数据
+message role_dungeon_monster
+{
+	optional uint32 monster_tid = 1;
+	optional uint32 num = 2;
+}
+
+message role_dungeon_data
+{
+	optional uint32 dungeon_id = 1;				// 副本id
+	optional uint32 total_pass_time = 2;		// 通关总次数
+	repeated role_dungeon_monster monsters = 3;	// 进度怪物
+	optional uint32 refresh_time = 4;			// 刷新时间
+	optional uint32 best_score = 5;				// 历史最佳分数
+	optional uint32 best_pass_time = 6;			// 历史最佳通关时间
+	optional uint32 best_death_value = 7;		// 历史最佳死亡数
+}
+
+message role_dungeon_times_data
+{
+	optional uint32 dungeon_type = 1;				// dungeon_type表的ID
+	optional uint32 remain_fight_time = 2;			// 剩余进入次数
+	optional uint32 today_buy_time = 3;				// 已经购买的次数
+}
+
+message role_all_dungeon_data
+{
+	repeated common.role_dungeon_data datas = 1;	// 副本数据
+}
+
+message role_all_dungeon_times_data
+{
+	repeated common.role_dungeon_times_data datas = 1;	// 副本次数数据
+}
+
+enum dungeon_condition_type
+{
+	dungeon_condition_type_none = 0; // 无效
+	dungeon_condition_type_task = 1; // 任务条件
+	dungeon_condition_type_pass = 2; // 通关某些副本
+}
+
+message role_dungeon_condition
+{
+	optional uint32 type = 1;		// 类型
+	optional uint32 param = 2;		// 参数
+	optional bool is_pass = 3;		// 是否完成
+}
+
+message role_client_dungeon_data
+{
+	optional uint32 dungeon_id = 1;	// 副本id
+	repeated role_dungeon_condition cond = 2; // 完成条件
+	optional role_dungeon_data data = 3;	// 玩家副本数据
+}
+
+message role_all_client_dungeon_data
+{
+	repeated common.role_client_dungeon_data datas = 1;	// 副本数据
+	repeated common.role_dungeon_times_data times_datas = 2;	// 副本次数数据
+}
+
+enum team_check_type
+{
+	team_check_type_none = 0;					// 未确认
+	team_check_type_confirm = 1;				// 确认
+	team_check_type_give_up = 2;				// 放弃
+}
+
+message teamcheck_data
+{
+	optional string uid = 1;
+	optional team_check_type type = 2;
+}
+
+message dungeon_schedule_data
+{
+	optional uint32 monster_tid = 1;
+	optional uint32 curr_num = 2;
+	optional uint32 max_num = 3;
+	optional uint32 pos_x = 4;
+	optional uint32 pos_y = 5;
+}
+
+enum dungeon_state_type
+{
+	dungeon_state_none = 0;			// 无效类型
+	dungeon_state_wait = 1;			// 集合
+	dungeon_state_start = 2;		// 开启
+	dungeon_state_stop = 3;			// 停止状态
+}
+
+enum dungeon_result_type
+{
+	dungeon_result_none = 0;				// 无效
+	dungeon_result_success = 1;				// 成功
+	dungeon_result_failed_time_long = 2;	// 挑战超时
+	dungeon_result_failed_fight = 3;		// 挑战失败
+}
+
+//-------------------------------阵法-----------------------
+message tactic_single
+{
+	optional uint32 tactic_id = 1;			//阵法ID
+	optional uint32 tactic_level = 2;		//阵法等级
+}
+
+message tactic_data
+{
+	repeated tactic_single tactics = 1;
+}
+
+//-------------------------------role_buff------------------
+message role_buff_single
+{
+	optional uint32 buff_id = 1;			//buff ID
+	optional uint32 remain_time = 2;		//剩余时间
+}
+
+message role_buff_data
+{
+	repeated role_buff_single role_buffs = 1;
+}
+
+//---------------------------------goods----------------------
+enum goods_state
+{
+	goods_state_none = 1;					//
+	goods_state_public = 2;					//公示
+	goods_state_selling = 3;				//出售中
+	goods_state_selled = 4;					//已售出
+	goods_state_cancel = 5;					//已下架
+	goods_state_return = 6;					//已取回
+}
+
+//寄售行商品数据
+message goods_single
+{
+	optional string uid = 1;				//唯一ID
+	optional string seller_uid = 2;			//出售人ID
+	optional string seller_name = 3;		//出售人角色名
+	optional uint32 item_tid = 4;			//物品ID
+	optional uint32 item_num = 5;			//物品数量
+	optional equip_single equip_info = 6;	//装备信息
+	optional uint32 item_price = 7;			//物品单价
+	optional uint32 selled_num = 8;		//已出售的数量
+	optional uint32 profit = 9;			//收益
+	optional uint32 state = 10;				//状态 goods_state
+	optional uint32 expired_time = 11;		//到期时间
+	optional uint32 care = 12;				//0为未关注1为已关注
+	optional uint32 heat = 13;				//热度
+	optional uint32 rarity = 14;			//1为珍品0为非珍品
+}
+	
+//珍品成交数据
+message rarity_price_single
+{
+	optional string uid = 1;				//唯一ID
+	optional uint32 item_tid = 2;			//物品ID
+	repeated uint32 deal_price = 3;			//最近成交价格
+}
+
+message goods_info
+{
+	optional uint32 item_tid = 1;			//物品ID
+	optional uint32 selling_num = 2;		//出售数量
+}
+
+message goods_item
+{
+	optional uint32 item_tid = 1;				//物品ID
+	optional uint32 item_num = 2;				//数量
+	optional equip_single equip_info = 3;		//装备信息
+	optional uint32 rarity = 4;					//1为珍品0为非珍品
+}
+
+message trade_item_info
+{
+	optional uint32 item_tid = 1;		//货物ID
+	optional uint32 scene_id = 2;		//场景ID
+	optional uint32 trade_id = 3;		//热销跑商ID
+	optional uint32 sour_trade_id = 4;	//来源跑商ID
+}
+
+//-----------------------远征-----------------------
+// 玩家竞技场阵容数据（用于远征离线匹配）
+message arena_fight_data
+{
+	optional uint32 update_time = 1;	//最近一次更新时间，服务器用来判断是否活跃
+	optional mirror_fight_data fight_data = 2;	//最近一次战斗的阵型数据用于离线匹配
+	optional uint32 fight_value = 3;		//玩家战斗力用于离线匹配
+}
+
+message expedition_stage_single
+{
+	optional uint32 stage_id = 1;		//关卡ID
+	optional uint32 pass_num = 2;		//当前关卡已经完成的次数
+	repeated mirror_fight_data stage_info = 3;	//关卡信息
+	optional uint32 award_num = 4;		//可以领的奖励份数
+}
+
+message expedition_data
+{
+	repeated expedition_stage_single stage_list = 1;	//关卡列表
+	optional uint32 pass_num = 2;		//共完成次数
+	optional uint32 refresh_count = 3;	//刷新次数
+	optional fight_save_data save_data = 4;	//玩家保存数据
+	optional uint32 call_help_count = 5;	// 求助次数
+	optional uint32 help_count = 6;		// 帮助别人的次数
+	optional uint32 glory = 7;			//荣耀值
+	repeated uint32 buy_count = 8;		//剩余购买次数
+	repeated liveness_box box_list = 9; //活跃度宝箱
+	optional uint32 liveness = 10;		//活跃度
+	optional uint32 shop_id = 11;		//神秘商店ID
+	optional uint32 is_selled = 12;		//是否已经卖出
+}
+
+message fight_save_data
+{
+	repeated hero_save_data hero_list = 1;	//玩家保存数据
+}
+
+message skill_save_data
+{
+	optional uint32 skill_id = 1;		//技能ID
+	optional uint32 cd = 2;				//技能CD
+}
+
+message hero_save_data
+{
+	optional uint64 hero_uid = 1;		//武将唯一ID
+	optional uint32 hp = 2;				//当前血量百分比
+	repeated skill_save_data skill_list = 3;	//技能数据
+}
+
+//---------------------------章节奖励---------------------------
+//章节任务
+message page_task_single
+{
+	optional uint32	id 	= 1;	 //章节任务表tid
+	optional uint32	status 	= 2; //0:未领取 1:已领取
+}
+
+//精英副本
+message page_elite_single
+{
+	optional uint32	id 			 = 1; //精英奖励表tid
+	optional uint32	status 		 = 2; //0:未领取 1:已领取
+	optional uint32 num			 = 3; //可扫荡次数
+	optional uint32 reset		 = 4; //可重置次数
+}
+
+message page_elite_data
+{
+	repeated uint32	can_fight_list = 1;				//开启战斗的章节精英列表(精英挑战表tid)
+	repeated page_elite_single pass_elite_list = 2;	//已经通关的章节精英列表
+}
+
+message page_data
+{
+	repeated uint32 pass_page_list = 1;					//已经通关的章节列表(章节ID)
+	repeated page_task_single task_info = 2;			//已经通关的章节任务列表
+	repeated page_quick_fight_data	quick_data = 3;		//扫荡的章节次数
+	repeated page_reset_quick_fight_data reset_data= 4;	//重置副本次数
+	optional page_elite_data elite_data = 5;			//精英副本数据
+}
+
+message page_quick_fight_data
+{
+	optional uint32	id 			 = 1; //精英奖励表tid
+	optional uint32	num			 = 2; //已扫荡次数
+}
+
+message page_reset_quick_fight_data
+{
+	optional uint32	id 			 = 1; //精英奖励表tid
+	optional uint32	num			 = 2; //已重置次数
+}
+
+//---------------------------活跃奖励---------------------------
+
+
+//---------------------------活跃奖励---------------------------
+
+//活跃奖励数据
+message active_reward_data_single
+{
+	optional string uid	= 1;								//唯一ID  (server)
+	optional uint32	tid = 2;								//ID(common)
+	optional uint32 type = 3;								//类型(server)
+	optional uint32 event_id = 4;							//事件ID(server)
+	optional uint32 count = 5;								//进度(common)
+	optional bool is_finish = 6;							// 是否完成(common)
+	optional bool is_grant = 7;								// 是否领取(common)
+}
+
+message active_reward_data
+{
+	repeated active_reward_data_single active_reward = 1;	//活跃奖励数据
+}
+
+message active_reward_task_data
+{
+	repeated uint32 task_list = 1;							//活跃奖励任务列表
+}
+
+//每日特惠
+message cheap_day_single
+{
+	optional uint32 id = 1;								//充值ID
+	optional uint32 count = 2;							//次数
+}
+
+//每日特惠详细信息
+message cheap_day_client_single
+{
+	optional uint32 id = 1;								//充值ID
+	optional uint32 pay = 2;							//充值金额
+	optional uint32 count = 3;							//充值次数
+	optional uint32 limit = 4;							//充值次数上限
+	optional string name = 5;							//礼包名字
+	optional string desc = 6;							//礼包描述
+	optional string display = 7;						//礼包预览
+	optional string pic = 8;							//预览礼包图片
+}
+
+message recharge_data
+{
+	optional uint32 total_cny = 1;						//累计充值金额
+	optional uint32 recharge_flag = 2;					//充值次数
+	optional uint32 vip_level = 3;						//vip等级
+	optional uint32 recharge_reward_flag = 4;			//充值奖励领取标记位
+	repeated cheap_day_single cheap_day = 5;			//每日特惠
+}
+
+//---------------------------随机商店---------------------------
+// 商店信息
+enum random_shop_state
+{
+	random_shop_state_none = 0; 	// 无效
+	random_shop_state_normal = 1; 	// 可购买
+	random_shop_state_sold = 2; 	// 已经出售
+}
+
+message random_shop_item
+{
+	optional uint32 shop_item = 1;	// 唯一id
+	optional random_shop_state state = 2[default = random_shop_state_none];	// 状态
+}
+
+message random_shop_data
+{
+	optional uint32 shop_id = 1;		// 商店id	
+	optional uint32 free_refresh = 2;	// 免费刷新剩余次数（如果不是限制刷新）
+	optional uint32 pay_refresh = 3;	// 付费刷新剩余次数（如果不是限制刷新）
+	optional uint32 next_refresh_time = 4;	// 下次刷新时间
+	repeated random_shop_item items = 5;	// 道具列表
+}
+
+message role_random_shop_data
+{
+	repeated random_shop_data datas = 1;
+}
+
+message pve_hero_exp
+{
+	optional string hero_uid = 1;
+	optional uint32 exp = 2;
+}
+
+//----------------------等级奖励-----------------------
+message level_reward_recived_list
+{
+	repeated uint32 data = 1;
+}
+
+//等级奖励邮件
+message level_reward_mail_recived_list
+{
+	repeated uint32 data = 1;
+}
+
+
+//-----------------------------------玩家离线数据----------------------------
+//目前只有爬塔隐藏关卡的触发用到了离线数据，以后其他功能模块需要用到离线数据直接往结构里面添加即可
+message offline_role_data
+{
+	optional tower_trigger_data tower_trigger = 1;	//爬塔隐藏关卡数据
+}
+
+enum sys_notify_type
+{
+	sys_notify_type_none = 0;					// 无效
+	sys_notify_type_finish_achieve = 1;			// 完成成就
+	sys_notify_type_activity = 2;				// 开启活动
+	sys_notify_type_add_hero = 3;				// 获得武将
+	sys_notify_type_role_level = 4;				// 角色升级
+	sys_notify_type_hero_up_level = 5;			// 武将升级
+	sys_notify_type_hero_break = 6;				// 武将突破
+	sys_notify_type_hero_star = 7;				// 武将升星
+	sys_notify_type_add_exp = 8;				// 增加经验
+	sys_notify_type_add_gold = 9;				// 增加金币
+	sys_notify_type_add_sliver = 10;			// 增加银币
+	sys_notify_type_add_copper = 11;			// 增加铜币
+	sys_notify_type_add_energy = 12;			// 增加活力
+	sys_notify_type_add_prestige  = 13;			// 增加声望
+	sys_notify_type_add_achieve_point = 14;		// 增加成就积分
+	sys_notify_type_add_lifeforce = 15;			// 增加命力值
+	sys_notify_type_add_item = 16;				// 增加道具
+	sys_notify_type_add_equip = 17;				// 增加装备
+	sys_notify_type_add_mount = 18;				// 增加坐骑
+	sys_notify_type_add_forge = 19;				// 打造
+	sys_notify_type_family = 20;				// 家族
+	sys_notify_type_life_stone = 22;			// 充值币
+	sys_notify_type_liveness = 23;				// 活跃度
+	sys_notify_type_xiuwei = 24;				// 修为
+	sys_notify_type_herosoul = 25;				// 将魂
+	sys_notify_type_honor = 26;					// 荣誉
+	sys_notify_type_contribution = 27;			// 功勋
+	sys_notify_type_hero_wakeup = 28;			// 武将觉醒
+	sys_notify_type_tower_trigger = 29;			// 千层塔发现隐藏关卡
+	sys_notify_type_create_family = 30;			// 创建家族
+	sys_notify_type_leave_family = 31;			// 离开家族
+	sys_notify_type_join_family = 32;			// 加入家族
+	sys_notify_type_field_boss = 33;			// 世界boss
+	sys_notify_type_draw_hero = 34;				// 抽卡获得武将
+	sys_notify_type_merage_item = 35;			// 道具合成
+	sys_notify_type_vigour = 36;				// 精力
+	sys_notify_type_money = 38;					// 货币资源类统一类型
+	sys_notify_type_wstreasury = 39;			// 武圣宝库
+	sys_notify_type_charm = 40;					// 魅力值
+	sys_notify_type_friendliness = 41;			// 亲密度
+	sys_notify_type_friendliness_limit = 42;		// 亲密度上限
+}
+
+//系统广播数据
+message sys_notity_single
+{
+	optional string uid	= 1;					//唯一ID
+	optional uint32 type = 2;					//事件类型
+	optional uint32 param = 3;					//相关参数
+	optional uint32 count = 4;					//广播次数
+}
+
+message sys_notity_data
+{
+	repeated sys_notity_single sys_notity_data_list = 1;
+}
+
+//---------------------精力系统数据------------------------
+
+message public_struct
+{
+	optional uint32 type = 1;
+	optional uint32 param = 2;
+}
+
+message multi_time_data
+{
+	repeated public_struct time_long_list = 1; //时长列表
+	optional uint32			state = 2;         //开启状态 默认是0 关闭状态 1为开启状态
+}
+
+//---------------------红包系统---------------------------
+//单个领取信息
+message draw_single
+{
+	optional string role_uid = 1;				//玩家UID
+	optional string role_name = 2;				//玩家名
+	optional uint32 money = 3;					//领到的金额
+}
+
+//领取信息
+message draw_data
+{
+	repeated draw_single draw_info = 1;			//领取信息
+}
+
+//红包信息
+message redbag_data
+{
+	optional string uid = 1;					//红包唯一ID
+	optional string sender_uid = 2;				//发送者UID
+	optional string sender_name = 3;			//发送者名字
+	optional uint32 count = 4;					//数量
+	optional uint32 money = 5;					//总金额
+	optional uint32 rest_count = 6;				//剩余数量
+	optional uint32 rest_money = 7;				//剩余总金额
+	optional uint32 send_time = 8;				//发送时间
+	optional uint32 finish_time = 9;			//抢完消耗时间
+	optional draw_data draw_data = 10;			//领取信息
+}
+
+//---------------------查看其它人信息获取排行榜数据------------------------
+//排行榜信息
+message other_rank_data
+{
+	optional uint32 type				= 1;//排行榜类型
+	optional uint32 value				= 2;//排行基础值
+	optional uint32 level				= 3;//排行榜等级
+}
+//玩家基础信息
+message role_base_data
+{
+	optional uint32 role_level = 1;				//等级
+	optional string name = 2;					//名字
+	optional string family_name = 3;			//家族名
+	optional uint32 head_info = 4;				//头像和边框ID
+	optional string country_name = 5;			//国家名
+	optional uint32 fighting = 6;				//战斗力
+	optional string team_id = 7;				//队伍ID
+	optional uint32 country_flag = 8;			//国家旗帜
+	optional uint32 charm = 9;					//魅力值
+}
+//简易数据结构
+message role_simple_data
+{
+	optional common.role_base_data base	= 1;	//玩家基础信息
+	optional common.hero_data hero		= 2;	//武将数据(上阵)
+	optional common.item_data item		= 3;	//武将相关装备信息
+}
+
+//可以在下面加其他的需要类似存blob的数据
+message role_blob_data
+{
+	optional role_simple_data simple	= 1;	//玩家简易信息
+}
+//可以在下面加其他的需要类似存blob的数据的类型
+enum role_data_type
+{
+	simple_info_type = 1;							// 简易数据类型
+}
+
+
+//----------------------武将攻略的武将装备信息------------------------------
+message hero_strategy_info
+{
+	optional uint32 hero_tid 		= 1;			// 武将ID
+	optional uint32 hero_use_rate 	= 2;			// 武将使用率
+	optional uint32 hero_use_hot	= 3;			// 武将热度
+	repeated hero_strategy_single role_list = 4;	// 展示的全部玩家信息
+}
+
+message hero_strategy_single
+{
+	optional string role_name 		= 1;					// 角色名
+	optional uint32	role_rank		= 2;					// 竞技场排名
+	optional uint32 role_score		= 3;					// 竞技场分数
+	optional uint32 server_id		= 4;					// 服务器id
+	optional string server_name 	= 5;					// 服务器名
+	optional hero_strategy_equip_info equip_info_list = 6;	// 装备搭配列表
+	optional hero_strategy_hero_info  hero_info_list = 7;	// 武将搭配列表
+}
+
+// 武将攻略的武将装备信息
+message hero_strategy_equip_info
+{
+	repeated item_single equip_list = 1;	// 装备信息
+}
+
+// 武将攻略的阵容搭配信息
+message hero_strategy_hero_info
+{
+	repeated uint32 hero_tid_list = 1;	// 武将ID
+}
+
+// 武将攻略的评论信息
+message hero_strategy_comment_info
+{
+	optional uint32 hero_tid = 1;			// 武将TID
+	optional string comment_info = 2;		// 评论内容
+	optional string role_info = 3;			// 发表评论人信息
+	optional uint32 like_num  = 4;			// 点赞数
+	optional uint32 dislike_num = 5;		// 踩数
+	optional uint32 time = 6;				// 发表时间
+}
+
+// 离线竞技数据
+message offline_arena_single
+{
+	optional string role_uid = 1;			// 玩家UID
+	optional uint32 cur_class = 2;			// 当前级别
+	optional uint32 cur_rank = 3;			// 当前排名
+	optional uint32 old_record_rank = 4;	// 旧的最高排名
+	optional uint32 record_rank = 5;		// 当前最高排名
+	optional uint32 old_class = 6;			// 旧的级别（用于判断领取分段晋级奖励）
+	optional uint32 fight_count = 7;		// 攻打次数
+	optional uint32 buy_count = 8;			// 购买次数
+	optional mirror_fight_data form_data = 9;	//防守阵容数据
+	optional uint32 score = 10;				// 今日积分
+	repeated liveness_box score_box = 11;	// 积分奖励状态
+}
+
+// 概况信息（他人的简单数据）
+message offline_arena_general
+{
+	optional EM_SCENEOBJECT_TYPE object_type 	= 1[default = SCENEOBJECT_USER]; // 类型
+	optional string role_uid = 2;			// 玩家UID(如果是机器人 不填)
+	optional string role_name = 3;			// 玩家名字(如果是机器人直接给机器人名字)
+	optional string family_name = 4;		// 玩家家族名字
+	optional uint32 fighting = 5;			// 战力
+	optional uint32 cur_rank = 6;			// 当前排名
+	optional uint32 plugin = 7;				// 模型
+	optional uint32 level = 8;				// 等级
+	optional uint32 fight_against_id = 9;	// 阵容
+	optional uint32 headpic = 10;			// 头像
+}
+
+// 战报信息
+message offline_arena_record
+{
+	optional EM_SCENEOBJECT_TYPE object_type 	= 1[default = SCENEOBJECT_USER]; // 类型
+	optional string role_uid = 2;			// 玩家UID(如果是机器人 不填)
+	optional string role_name = 3;			// 玩家名字(如果是机器人直接给机器人名字)
+	optional uint32 fighting = 4;			// 战力
+	optional uint32 plugin = 5;				// 模型
+	optional uint32 level = 6;				// 等级
+	optional uint32 record_time = 7;		//挑战时间
+	optional uint32 old_rank = 8;			//挑战前排名
+	optional uint32 new_rank = 9;			//挑战后排名
+	optional uint32 is_win = 10;			//0为失败1为胜利
+	optional uint32 side = 11;				//0为攻击1为防御
+	optional uint32 headpic = 12;			//头像
+}
+
+message offline_arena_record_data
+{
+	repeated common.offline_arena_record record_data = 1;
+}
+
+//许愿礼包信息
+message wish_summon_info
+{
+	optional uint32 wish_summon_id	= 1;	//礼包id
+	optional uint32 open_flag		= 2;	//是否已开启标记0，未开启 1 已开启
+	optional uint32 time_left		= 3;	//剩余时间 		
+	optional uint32 buy_count		= 4;	//已购买次数, 协议中代表玩家自己购买次数， centr中代表玩家总购买次数
+}
+
+//分解武将碎片信息
+message hero_chip_info
+{
+	optional string uid  = 1;
+	optional uint32 num = 2;
+}
+
+//玩家购买的礼包信息
+message buy_summon_info
+{
+	optional uint32 id  = 1;
+	optional uint32 num = 2;
+}
+
+enum WISH_SUMMON_TYPE
+{
+	WISH_SUMMON_NONE = 0;
+	WISH_SUMMON_SYS	 = 1;
+	WISH_SUMMON_KING = 2;
+}
+
+
+//快速任务对应信息
+message quick_task_info
+{
+	optional uint32 id		= 1;	//对应活动id
+	optional uint32 num		= 2;	//剩余次数
+	optional uint32 max_num	= 3;	//总次数
+}
+
+//通用的道具-数量数据
+message item_num_info
+{
+	optional uint32 id = 1;		//道具id
+	optional uint32 num = 2;	//道具数量
+}
+
+message item_num_info_list
+{
+	repeated common.item_num_info item_list = 1;	//道具列表
+}
+
+//通用的奖励-状态数据
+message prize_status_info
+{
+	optional uint32 id	   = 1;	//道具id
+	optional uint32 status = 2;	//状态 0未解锁， 1可领取 ， 2已领取
+}
+
+//玩家命力相关信息
+message life_info
+{
+	optional uint32 label  = 1;		//命力称号
+}
+
+//摇钱树存储信息
+message money_tree_data
+{
+	optional uint32 level = 1;	
+	optional uint32 count = 2;
+}
+
+//运营模块数据存储
+message bussiness_act_data
+{
+	optional money_tree_data money_tree_info = 1;		//摇钱树数据
+	optional sevenday_login_save_data sevenday_data = 2;//七日登录数据
+	optional month_card_save_data month_card_data = 3;  //月卡数据
+	optional level_fund_save_info level_fund_data = 4;	//等级基金
+	optional limit_buy_save_data limit_buy_data = 5;	//限购
+	optional exchange_item_save_data exchange_data = 6; //兑换
+	optional statistical_save_data statistical_data = 7;//统计数据	
+	optional sd_target_save_data sevenday_target_data = 8;	//7日目标
+	optional recharge_total_data recharge_total = 9;	//累充奖励
+	optional gold_luckydraw_data gold_luckydraw = 10;	//黄金十连
+}
+
+//七日登录数据
+message sevenday_login_data_info
+{
+	optional uint32 day    = 1;
+	optional uint32 status = 2;
+	optional uint32 day_show_id  = 3;	//每日展示id
+	optional string show_id_list = 4;	//展示列表
+}
+
+message sevenday_login_save_data
+{
+	optional uint32 login_flag = 1;	//登录记录
+	optional uint32 day		= 2;	//签到的日期
+	repeated uint32 days= 3;	//领过奖励的day	
+}
+
+message recharge_total_data
+{
+	repeated uint32 recharge_total_id = 1;		//已经领取的累充ID
+}
+
+message recharge_total_client_data
+{
+	repeated recharge_total_client_single info = 1;
+	optional uint32 recharge_total = 2;			//当前累计充值
+}
+
+message recharge_total_client_single
+{
+	optional uint32 recharge_total_id = 1;		//累充ID(额度)
+	optional uint32 state = 2;					//0为未达到1为达到未领取2为已领取
+	optional string display = 3;				//展示
+}
+
+message gold_luckydraw_data
+{
+	repeated uint32 gold_luckydraw_id = 1;
+}
+
+message gold_luckydraw_client_single
+{
+	optional uint32 gold_luckydraw_id = 1;
+	optional uint32 state = 2;					//0为未达到1为达到未领取2为已领取
+	optional string desc = 3;					//领取时间描述
+	optional string display = 4;				//道具展示
+	optional uint32 day = 5;					//开服天数
+}
+
+message gold_luckydraw_client_data
+{
+	repeated gold_luckydraw_client_single gold_luckydraw_data = 1;
+}
+
+message cur_task_date 
+{
+	repeated task_state tasks = 1;		//当前任务数据
+}
+
+message comp_task_date
+{
+	repeated  uint32  task_list = 1;	//完成任务数据
+}
+
+message task_event_single
+{
+	optional uint32 event_id = 1;
+	optional uint32 expired_time = 2;
+}
+
+message task_event
+{
+	repeated task_event_single event_data = 1;
+}
+
+message head_data
+{
+	repeated uint32 head_list = 1;			//头像列表
+	repeated uint32 frame_list = 2;			//边框列表	
+}
+
+enum HEAD_FRAME_ADD_TYPE
+{
+	HEAD_FRAME_HERO = 1;
+	HEAD_FRAME_ACHIEVE	 = 2;
+	HEAD_FRAME_AWAKE = 3;
+	HEAD_FRAME_UNLOCK_MAIN_HERO = 4;
+}
+
+message month_card_info
+{
+	optional uint32 month_card_id = 1;	//卡id
+	optional uint32 end_time	  = 2;  //结束时间		//0表示从未购买，需要客户端自行与服务端时间比较。
+	optional uint32 buy_prize	  = 3;  //购买奖励状态	//0表示未达成， 1可领取 2已经领取
+	optional uint32 ed_prize	  = 4;  //每日奖励状态	//0表示未达成， 1可领取 2已经领取
+	optional month_card_show_info  show_info = 5;		//展示信息
+	optional uint32 day_left	  = 6;	//与凌晨5点计算剩余的天数
+}
+
+message month_card_show_info
+{
+	optional uint32 max_day = 1;		//最大天数
+	optional string mingshi = 2;		//展示命石头
+	optional string ed_yuanbao = 3;		//展示每日元宝
+	optional string show_gift = 4;		//展示礼包
+	optional uint32 can_buy_day = 5;	//可续费的天数限制
+	optional uint32 cz_id	  = 6;		//充值id
+}
+
+enum PRIZE_STATUS
+{
+	PRIZE_STATUS_NONE = 0;	
+	PRIZE_STATUS_CAN  = 1;	
+	PRIZE_STATUS_HAS  = 2;	
+}
+
+message month_card_save_data
+{
+	repeated month_card_info card_info = 1; //月卡列表
+}
+
+
+enum EX_REASON_TYPE
+{
+	EX_REASON_NONE = 0;
+	EX_REASON_TASK = 1;
+}
+
+//扩展的操作原因结构
+message ex_reason
+{
+	optional uint32 type  = 1;	//类型1表示自动完成任务
+	optional uint32 ex_id = 2;	//任务id
+}
+
+//运营活动id定义
+enum BUSINESS_ACTIVE_TYPE
+{
+	FIRST_CZ = 1;		//首冲
+	SEVEN_DAY_LOGIN = 2;//七日签到
+	LOAD_OF_NMS = 3;	//逆命师之路
+	ED_BUY_LIMIT = 4;	//每日限购
+	LEVEL_FUND	 = 5;	//成长基金
+	WUSHENG_BOX	 = 6;	//武圣宝库
+	MONTH_CARD   = 7;	//月卡
+	EXCHANGE_ITEM= 8;	//兑换
+	RECHARGE_TOTAL = 9; //累充奖励
+	GOLD_LUCKYDRAW = 10; //黄金十连
+	TIME_RANK = 11;		 //个人冲榜
+}
+
+
+//炼丹炉槽位状态
+enum liandan_state
+{
+	liandan_state_locked = 0;	//未解锁
+	liandan_state_free = 1;		//已解锁空闲状态
+	liandan_state_doing = 2;	//炼丹中
+	liandan_state_done = 3;		//炼丹完成
+}
+
+//炼丹炉单个槽位信息
+message liandan_single
+{
+	optional uint32 state = 1;			//liandan_state
+	optional uint32 free_time = 2;		//完成时间(空闲状态为0)
+	optional uint32 liandan_tid = 3;	//合成丹药ID(策划表合成ID)
+	optional uint32 count = 4;			//合成数量
+}
+
+//炼丹炉信息
+message liandan_data
+{
+	repeated liandan_single liandan_info = 1;
+}
+
+
+// 活动商店单一道具信息
+message activity_shop_item_info_single
+{
+	optional uint32 shop_item_id = 1;			// 活动商店物品tid 非item_tid
+	optional uint32 shop_item_price = 2;		// 活动商店物品价格
+	optional uint32 shop_item_num = 3;			// 活动商店物品数量
+}
+
+// 活动商店道具信息
+message activity_shop_item_info
+{
+	repeated activity_shop_item_info_single item_list = 1;
+}
+
+//运营活动信息
+message business_active_info
+{
+	optional uint32 active_id  = 1;	//活动id
+	optional uint32 red_num    = 2;	//红点
+	optional uint32 start_time = 3;	//开始时间
+	optional uint32 end_time   = 4;	//结束时间
+}
+
+
+//等级基金信息
+message level_fund_info
+{
+	optional uint32 id  = 1;				//id
+	optional uint32 level = 2;			//等级
+	optional uint32 prize_state = 3;	//奖励状态
+	optional string des = 4;			//描述
+	optional string show_prize = 5;		//奖励展示
+}
+
+message level_fund_save_info
+{
+	optional uint32 buy_flag = 1;			//购买标记
+	repeated uint32 id = 2;				//id
+}
+
+//装备方案
+message equip_plan_single
+{
+	optional string uid = 1;			//唯一ID
+	optional string name = 2;			//名字
+	optional string weapon = 3;			//武器
+	optional string armor = 4;			//护甲
+	optional string talisman = 5;		//护符
+	optional string hero_uid = 6;		//正在使用本方案的武将唯一ID
+}
+
+
+// 雇佣巡逻数据
+message patrol_hire_data
+{
+	optional uint32 map_id = 1;				//场景ID
+	optional uint32 begin_time = 2;			//开始巡逻时间
+	optional uint32 fast_patrol_count = 3;	//快速巡逻次数
+}
+
+message equip_plan_data
+{
+	repeated equip_plan_single equip_plan_info = 1;
+}
+
+//兑换道具
+message exchange_item_data
+{
+	optional uint32 id = 1;
+	optional uint32 cur_num = 2;
+	optional uint32 max_num = 3;
+	optional string need_item = 4;	//需要的材料
+	optional string make_item = 5;	//制作的道具
+}
+
+message exchange_item_save_info
+{
+	optional uint32 id = 1;
+	optional uint32 cur_num = 2;
+}
+
+//存储结构
+message exchange_item_save_data
+{
+	optional uint32 start_time = 1;
+	repeated exchange_item_save_info info = 2;
+}
+
+
+//七日限购
+message limit_buy_client_data
+{
+	optional uint32 id = 1; 	
+	optional uint32 show_item_id = 2;	//显示道具
+	optional uint32 show_item_num = 3;	//显示数量
+	optional string desc = 4;			//描述
+	optional uint32 buy_money_type = 5;	//购买的货币类型
+	optional uint32 buy_money = 6;		//购买的价格
+	optional uint32 buy_num = 7;		//限购次数
+	optional uint32 src_buy_money = 8;	//原价
+	optional uint32 is_buy_num = 9;	//已购买次数
+}
+
+message limit_buy_save_info
+{
+	optional uint32 id = 1;
+	optional uint32 num = 2;
+}
+
+message limit_buy_save_data
+{
+	optional uint32 day = 1;
+	optional uint32 red = 2;
+	repeated limit_buy_save_info info = 3;
+}
+////////////////////////
+//七日目标/////////////////////
+message sd_target_info
+{
+	optional uint32 index = 1;		//对应的id
+	optional uint32 num   = 2;		//进度
+	optional uint32 max_num = 3;	//总进度
+	optional uint32 status = 4;		//状态 0是未达成 1是可领取 2是已领取
+	optional uint32 target_id = 5;	//成就ID
+}
+
+message sd_target_save_data
+{
+	optional uint32 day = 1;		//天数
+	repeated uint32 info = 2;		//存储结构
+}
+
+message sd_target_red_info
+{
+	optional uint32 day = 1;	//天数
+	optional uint32 red = 2;	//红点 >0 表示有红点
+}
+
+//统计枚举//
+enum  STATISTICAL_OPTION
+{
+	STATISTICAL_OPTION_ADD     = 1;		//增加
+	STATISTICAL_OPTION_CMP_REPLACE = 2;		//替换
+	STATISTICAL_OPTION_REPLACE = 3;		//替换
+}
+
+//统计数据存档
+message statistical_save_info
+{
+	optional uint32 id = 1;		//id;
+	optional uint32 num = 2;	//num;
+}
+
+//统计数据存档结构
+message statistical_save_data
+{
+	repeated statistical_save_info info = 1;
+}
+
+///////////////////////////////////////////////////
+//天下大势一级结构
+message general_event_info
+{
+	optional uint32  id = 1;		//大势id
+	optional uint32  process = 2;	//进度
+	optional uint32  status = 3;	//状态 0未开启， 1开启中 2 已开启
+	optional uint32  time_left = 4;	//倒计时
+	optional string first_name = 5; //优先到达的玩家
+	optional uint32  red_num = 6;	//红点数据
+}
+
+//天下大势二级结构
+message general_event_detail
+{
+	optional uint32 index = 1;		//目标id
+	optional uint32 process = 2;	//进度	
+	optional uint32 status = 3;		//状态 0未达成 1可领取 2已领取
+}
+
+
+//天下大统计数据结构
+message general_event_count_data
+{
+	optional uint32 index   = 1;	// 
+	optional uint32 num		= 2;	//数量
+}
+
+//天下大势数据结构
+message general_event_data
+{
+	optional uint32 id   = 1;			//id
+	optional string name = 2;			//名字
+	optional uint32 start_time = 3;		//开始时间
+	optional uint32 status = 4;			//状态
+	optional uint32 is_speed_time = 5;	//是否开启加速
+}
+
+//天下大势数据存储结构
+message general_event_save_data
+{
+	repeated uint32 red  = 1;
+	repeated uint32 data = 2;	//已领取的奖励数据	
+}
+
+//天下大势状态信息
+enum GENERAL_EVENT_STATUS
+{
+	GENERAL_EVENT_CLOSE = 0;
+	GENERAL_EVENT_WAIT  = 1;
+	GENERAL_EVENT_OPENING = 2;
+	GENERAL_EVENT_DONE   = 3;
+}
+
+//中心服务器存储数据
+message general_info_single
+{
+	optional uint32 id = 1;
+	optional uint32 num = 2;
+}
+
+message general_info_data
+{
+	repeated general_info_single general_info = 1;
+}
+/////////////////////////////////////
+//家族技能
+message family_skill_single
+{
+	optional uint32 skill_id = 1;
+	optional uint32 skill_level = 2;
+}
+
+message family_skill_data
+{
+	repeated family_skill_single skill_data = 1;
+}
+
+
+//天下大势数据存储
+message general_status_save_data
+{
+	repeated general_event_data data_list = 1;	
+}
+
+////////////////////////////
+message gm_msg_to_account
+{
+	optional uint32 user_create_flag = 1;	//设置限制创角开关	
+}
+
+//个人冲榜
+message rank_time_single
+{
+	optional uint32 rank_id = 1;	//排行榜ID
+	optional uint32 start_time = 2; //活动开启时间
+	optional uint32 end_time = 3;   //活动结束时间
+}
+////////////////////////////
+//逆命师数据
+message office_data
+{
+	optional uint32 level = 1;		//等级
+	optional uint32 exp = 2;		//经验
+	optional uint32 award = 3;		//0为未领取1为已领取
+}
+
+message office_task_single
+{
+	optional uint32 task_id = 1;	//任务ID
+	optional uint32 state = 2;		//0为已提交1为进行中（任务进度及完成状况从进行中的任务列表获取）
+}
+
+message office_client_data
+{
+	optional uint32 level = 1;		//等级
+	optional uint32 exp = 2;		//经验
+	optional uint32 award = 3;		//0为未领取1为已领取
+	repeated office_task_single tasks = 4;	//任务列表
+}
+
+///////////////////////////////////////////////
+//录像数据
+message video_hero_base
+{
+	optional uint32 tid = 1;
+	optional uint32 resource_id = 2;
+	optional uint32 lv = 3;
+	optional uint32 start = 4;
+	optional uint32 grade = 5;
+	optional uint32 quality = 6;
+	optional uint32 terry = 7;
+}
+
+message video_arena_ex
+{
+	optional uint32 rank_lv = 1;
+	optional uint32 score = 2;
+}
+
+message video_obj_base
+{
+	optional string uid = 1;
+	optional EM_SCENEOBJECT_TYPE object_type = 2[default = SCENEOBJECT_USER]; // 类型 
+	optional string name = 3;
+	optional uint32 head = 4;
+	optional uint32 fighting = 5;
+	optional uint32 level = 6;
+	optional video_arena_ex cross_arena = 7;
+	repeated video_hero_base heros = 8;
+}
+
+message video_single_base
+{
+	optional string video_uid = 1;
+	optional uint32 version = 2;
+	optional uint32 fight_times = 3;
+	optional uint32 win_camp = 4; 		// 胜利方
+	optional uint32 layer_id = 5;		// 层数
+	optional uint32 cost_time = 6; 		// 耗时
+	repeated video_obj_base objs = 10;
+}

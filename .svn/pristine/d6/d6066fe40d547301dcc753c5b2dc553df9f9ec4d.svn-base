@@ -1,0 +1,234 @@
+#include "treasure_manager.hpp"
+#include "log.hpp"
+#include "log/log_wrapper.hpp"
+#include "role/role_manager.hpp"
+#include "tblh/errcode_enum.hpp"
+#include "tblh/Item.tbls.h"
+#include "role/money_manager.hpp"
+#include "user_troop/user_troop_mgr.hpp"
+#include "tblh/Treasure.tbls.h"
+#include "tblh/TreasureMake.tbls.h"
+#include "tblh/TreasureEvent.tbls.h"
+#include "item/item_manager.hpp"
+#include "item/drop_manager.hpp"
+#include "achieve/achieve_common.hpp"
+
+USING_NS_COMMON;
+
+uint32_t treasure_manager_t::use_item_treasure(role_ptr p_role, item_ptr use_item, proto::common::role_change_data * p_data)
+{
+	if (NULL == p_role)
+	{
+		log_error("item p_role NULL");
+		return errcode_enum::notice_unknown;
+	}
+	if (NULL == use_item)
+	{
+		log_error("item use_item NULL");
+		return errcode_enum::notice_unknown;
+	}
+	uint64_t troop_id = p_role->get_troop_id();
+	if (0 == troop_id)
+	{
+		log_error("item use_item_treasure fail role[%lu] item_uid[%lu] tid[%d], not in troop", p_role->get_uid(), use_item->get_uid(), use_item->get_tid());
+		return errcode_enum::user_troop_err_code_not_in_troop;
+	}
+	troop_ptr p_troop = game_troop_mgr_t::get_troop(troop_id);
+	if (NULL == p_troop)
+	{
+		log_error("item use_item_treasure fail role[%lu] item_uid[%lu] tid[%d], not in troop", p_role->get_uid(), use_item->get_uid(), use_item->get_tid());
+		return errcode_enum::user_troop_err_code_not_in_troop;
+	}
+	if (!p_troop->use_treasure_item(p_role->get_uid(), use_item->get_tid()))
+	{
+		return errcode_enum::notice_unknown;
+	}
+
+	return errcode_enum::error_ok;
+}
+
+uint32_t treasure_manager_t::use_item_note_closed(role_ptr p_role, item_ptr use_item, Item * config, proto::common::role_change_data * p_data)
+{
+	if (NULL == p_role)
+	{
+		log_error("item p_role NULL");
+		return errcode_enum::notice_unknown;
+	}
+	if (NULL == config)
+	{
+		log_error("item config NULL");
+		return errcode_enum::notice_unknown;
+	}
+	if (NULL == use_item)
+	{
+		log_error("item use_item NULL");
+		return errcode_enum::notice_unknown;
+	}
+	std::string creater_name = use_item->get_find_role();
+	uint32_t reply_code = errcode_enum::error_ok;
+	item_manager_t::remove_item(p_role, use_item->get_uid(), 1, log_enum::source_type_role_use_note_closed, 0, p_data,
+		proto::common::package_type_main);
+	Treasure* p_conf = GET_CONF(Treasure, treasure_type_single);
+	if (NULL == p_conf)
+	{
+		log_error("treasure conf error");
+		return errcode_enum::notice_unknown;
+	}
+	uint32_t rand_max = 0;
+	for (auto prob : p_conf->treasure_make_prob())
+	{
+		rand_max += prob;
+	}
+	if (0 == rand_max)
+	{
+		log_error("Treasure[%d] 0 == rand_max", treasure_type_single);
+		return errcode_enum::notice_unknown;
+	}
+	int32_t rand_val = random_util_t::randMin(0, rand_max);
+	if (-1 == rand_val)
+	{
+		log_error("Treasure[%d] rand_max invalid", treasure_type_single);
+		return errcode_enum::notice_unknown;
+	}
+	
+	uint32_t rand_index = 0;
+	for (auto prob : p_conf->treasure_make_prob())
+	{
+		if ((uint32_t)rand_val < prob)
+		{
+			break;
+		}
+		rand_val -= prob;
+		++rand_index;
+	}
+	if (rand_index >= p_conf->treasure_make_id().size())
+	{
+		log_error("treasure conf error");
+		return errcode_enum::notice_unknown;
+	}
+	uint32_t treasure_make_id = p_conf->treasure_make_id().at(rand_index);
+	item_ptr p_new_item = item_manager_t::add_item(p_role, config->param(0), 1, log_enum::source_type_role_use_note_closed,
+		use_item->get_tid(), p_data, proto::common::package_type_main, creater_name, treasure_make_id);
+	if (NULL == p_new_item)
+	{
+		log_error("item new_item NULL");
+		return errcode_enum::notice_unknown;
+	}
+	
+	return reply_code;
+}
+
+uint32_t treasure_manager_t::use_item_note_opened(role_ptr p_role, item_ptr use_item, proto::common::role_change_data * p_data)
+{
+	if (NULL == p_role)
+	{
+		log_error("NULL == p_role");
+		return errcode_enum::notice_role_null;
+	}
+	uint32_t treasure_id = use_item->get_param();
+	auto p_make_conf = GET_CONF(TreasureMake, treasure_id);
+	if (NULL == p_make_conf)
+	{
+		log_error("role[%lu] use_item_note_opened failed, treasure[%d] invalid", p_role->get_uid(), treasure_id);
+		return errcode_enum::notice_unknown;
+	}
+	if (!p_role->is_nearby_point(p_make_conf->pos(), 3))
+	{
+		log_error("role[%lu] use_item_note_opened failed, pos invalid", p_role->get_uid(), treasure_id);
+		return errcode_enum::notice_unknown;
+	}
+	item_manager_t::remove_item(p_role, use_item->get_uid(), 1, log_enum::source_type_role_use_note_opened, 0, p_data,
+		proto::common::package_type_main);
+	uint32_t rand_max = 0;
+	for (auto prob : p_make_conf->event_prob())
+	{
+		rand_max += prob;
+	}
+	if (0 == rand_max)
+	{
+		log_error("TreasureMake[%d] 0 == rand_max", treasure_id);
+		return errcode_enum::notice_unknown;
+	}
+	int32_t rand_val = random_util_t::randMin(0, rand_max);
+	if (-1 == rand_val)
+	{
+		log_error("TreasureMake[%d] rand_max invalid", treasure_id);
+		return errcode_enum::notice_unknown;
+	}
+	
+	uint32_t rand_index = 0;
+	for (auto prob : p_make_conf->event_prob())
+	{
+		if ((uint32_t)rand_val < prob)
+		{
+			break;
+		}
+		rand_val -= prob;
+		++rand_index;
+	}
+	if (rand_index >= p_make_conf->event_id().size())
+	{
+		log_error("p_make_conf[%d] error", treasure_id);
+		return errcode_enum::notice_unknown;
+	}
+	uint32_t treasure_event_id = p_make_conf->event_id().at(rand_index);
+	
+	treasure_manager_t::gather_treasure(p_role, treasure_event_id);
+	return errcode_enum::error_ok;
+}
+
+void treasure_manager_t::gather_treasure(role_ptr p_role, uint32_t event_id, uint32_t item_id /*= 0*/)
+{
+	if (NULL == p_role)
+	{
+		log_error("NULL == p_role");
+		return;
+	}
+	
+	auto p_event_conf = GET_CONF(TreasureEvent, event_id);
+	if (NULL == p_event_conf)
+	{
+		log_error("p_make_conf[%d] error", event_id);
+		return;
+	}
+	uint32_t drop_id = 0;
+	log_enum::logs_source_type_t log_event = log_enum::source_type_none;
+	if (p_event_conf->drop_id().size() == 1)
+	{
+		drop_id = p_event_conf->drop_id().at(0);
+		log_event = log_enum::source_type_role_use_note_opened;
+	}
+	else
+	{
+		log_event = log_enum::source_type_role_troop_treasure;
+		int32_t index = item_id % 10 - 1;
+		if (index < 0 || (int32_t)p_event_conf->drop_id().size() <= index)
+		{
+			log_error("p_make_conf[%d] error, item_id[%d] or drop size error", event_id, item_id);
+			return;
+		}
+		drop_id = p_event_conf->drop_id().at(index);
+	}
+	TREASURE_LOG("role[%lu] gather_treasure event_id[%d] event_type[%d] count[%d]", p_role->get_uid(), event_id, p_event_conf->type(), drop_id);
+	proto::client::gc_treasure_gather_reply reply;
+	reply.set_treasure_event_id(p_event_conf->type());
+	reply.set_reply_code(0);
+	switch (p_event_conf->type())
+	{
+	case treasure_event_copper:
+		drop_manager_t::drop(p_role, drop_id, log_event, proto::common::drop_sys_type_task, event_id, reply.mutable_rcd());
+		break;
+	case treasure_event_item:
+		drop_manager_t::drop(p_role, drop_id, log_event, proto::common::drop_sys_type_task, event_id, reply.mutable_rcd());
+		break;
+	case treasure_event_thief:
+		break;
+	case treasure_event_note:
+		drop_manager_t::drop(p_role, drop_id, log_event, proto::common::drop_sys_type_task, event_id, reply.mutable_rcd());
+		break;
+	default:
+		break;
+	}
+	p_role->send_msg_to_client(op_cmd::gc_treasure_gather_reply, reply);
+	achieve_common_t::notify_progress_state(p_role->get_uid(), proto::common::Achieve_Event_Type::ACHIEVE_TREASURE_ACTIVITY_SPECIAL_EVENT_NUMBER, p_event_conf->type());
+}

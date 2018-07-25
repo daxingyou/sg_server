@@ -1,0 +1,230 @@
+package proto.gm_common;
+
+//玩家基本信息
+message user_base_info
+{ 
+    optional string name                                         = 1;    //玩家昵称
+    optional uint32 level                                        = 2;    //等级
+    optional uint32 exp                                          = 3;    //经验值
+    optional uint32 gold                                         = 4;    //当前金币数
+    optional uint32 free_diamond                                 = 5;    //当前免费元宝数
+    optional uint32 paid_diamond                                 = 6;    //当前付费元宝数
+    optional uint32 ap                                           = 7;    //体力
+    optional uint32 vip_level                                    = 8;    //VIP等级
+    optional uint32 vip_exp                                      = 9;   //VIP经验
+    optional uint32 create_time                                  = 10;   //注册时间
+    optional uint32 last_login_time                              = 11;   //最后一次登录时间
+    optional uint64 user_uid                                     = 12;   //玩家唯一ID
+    optional uint32 skill_point                                  = 13;   //技能点
+    optional uint32 pve_badge                                    = 14;   // pve点数
+    optional uint32 pvp_badge                                    = 15;   //pvp点数
+    optional uint32 fate                                         = 16;   //气运值
+    optional uint32 account_idx                                  = 17;   //玩家渠道账号索引
+}
+
+
+// 玩家充值统计信息
+message recharge_count_info
+{
+    repeated recharge_single recharge_list      = 1;
+}
+message recharge_single
+{
+    optional uint32 rmb                         = 1; //花费RMB
+    optional uint32 paid_diamond                = 2; //获取的付费钻石
+    optional uint32 free_diamond                = 3; //获取的免费钻石
+    optional uint32 recharge_time               = 4; //充值时间
+    optional string order_id                    = 5; //订单号
+    optional string channel                     = 6; //渠道
+}
+
+
+// 玩家消耗消费元宝记录
+message consume_record_data
+{
+    repeated consume_record_single record_list          = 1;
+}
+message consume_record_single
+{
+    optional uint32 diamond_type                    = 1; // 1为免费钻石, 2为付费钻石
+    optional uint32 consume_num                     = 2; //消耗数量
+    optional uint32 consume_time                    = 3; //消耗元宝的时间
+    optional uint32 type                            = 4; //消耗途径, 用于显示全部途径的记录时
+}
+
+
+
+//道具信息
+message item_data
+{
+    repeated item_single item_list                      = 1;
+}
+message item_single
+{
+    optional string uid         = 1; // item uid
+    optional uint32 tid          = 2; // item表id
+    optional uint32 cur_num      = 3; // 数量
+}
+
+
+//英雄信息
+message hero_data
+{
+    repeated hero_single hero_list = 1;
+}
+message hero_single
+{
+    optional string uid                         = 1; // hero uid
+    optional uint32 tid                         = 2; // hero表id
+    optional uint32 level                       = 3; // 等级
+    optional uint32 exp                         = 4; // 经验
+    optional wear_equip_data wear_equip  	    = 5; // 武将的装备
+    optional uint32 hero_fragment_num           = 6; // 武将碎片数量       
+    optional uint32 star_level                  = 7; // 武将星级
+    optional uint32 quality                     = 8; // 武将品质, 读official_title表获取官职显示描述
+    optional skill_data skill            	    = 9; // 武将技能
+}
+
+//技能信息
+message skill_data
+{
+    repeated skill_single skill_list = 1;
+}
+message skill_single
+{
+    optional uint32 tid       = 1; // skill表id
+    optional uint32 level     = 2; // 等级
+    optional uint32 type      = 3; // 1:pve  2:pvp
+}
+
+//已穿装备信息
+message wear_equip_data
+{
+    repeated wear_equip_single wear_equip_list = 1;
+}
+message wear_equip_single
+{
+    optional uint32 tid                 = 1;
+    optional int32 pos                  = 2;
+}
+
+//装备信息
+message equip_data
+{
+    repeated equip_single equip_list = 1;
+}
+message equip_single
+{
+    optional string uid         = 1; // equip uid
+    optional int32 tid          = 2; // equip表id, 根据此ID到策划表中查装备描述
+    optional int32 cur_num      = 3; // 背包中的数量
+}
+
+
+//战役信息
+message campaign_data
+{
+    repeated campaign_single campaign_list     = 1;
+}
+message campaign_single
+{
+    optional uint32 campaign_id                         = 1;//关卡ID
+    optional uint32 pass_times                          = 2;//通关次数
+}
+
+//八卦阵信息
+message matrix_data
+{
+    repeated matrix_single matrix_list  = 1;
+}
+message matrix_single
+{
+    optional uint32 matrix_id                         = 1;//八卦阵ID, ref to matrix.csv(matrixid)
+    optional uint32 pass_times                        = 2;//通关次数
+}
+
+//产出本信息
+message produce_data
+{
+    repeated produce_single produce_list = 1;
+}
+message produce_single
+{
+    optional uint32 produce_id                          = 1;//产出本ID
+    optional uint32 pass_times                          = 2;//通关次数
+}
+
+//封号返回信息
+message ban_reply_single
+{
+    optional uint64 user_uid                        = 1;
+    optional uint32 reply_code                      = 2;
+}
+
+//邮件信息
+//全局邮件
+message global_mail_single
+{
+    optional uint64					uid                 = 1;    // global uid
+    optional uint32                 type                = 2;    // 0:系统公告 1:系统奖励
+    optional string                 title               = 3;    // 标题(20个字节)
+    optional string                 content             = 4;    // 内容(500个字节)
+    optional string                 send_name           = 5;    // 发件人名(20个字节)
+    optional uint32                 send_time           = 6;    // 发送时间(unix时间戳), 必须小于当前时间 
+    optional uint32                 over_time           = 7;    // 结束时间(unix时间戳) , 必须小于当前时间
+    optional uint32                 send_type           = 8;    // 0:仅发送一次 1:每日第一次登陆发送 
+    optional uint32                 send_hour           = 9;    // 每天几点发送 暂时不是实现！
+    optional uint32                 recv_type           = 10;   // 接受类型 0：所有玩家 1：指定玩家
+    repeated string                 recv_did_list       = 11;   // 指定接受玩家 填显示账号 不受任何限制
+    optional uint32                 client_valid_time   = 12;   // 有效期时间 单位为天 默认在客户端存放7天
+    optional string					items				= 13;   // 邮件附件
+    optional gm_common.mail_recv_limit limit            = 14;   // 接受玩家的限制条件
+}
+
+//邮件接受限制
+message mail_recv_limit 
+{
+    optional int32      level       = 1;    // 战队等级
+    optional int32      regist_type = 2;    // 0:注册前后都能收到 1：注册前才能收到(先注册) 2：注册后才能收到(后注册)
+}
+
+
+// 封号信息
+message ban_state_info
+{
+    optional uint64 user_uid                 = 1; // 玩家唯一ID
+    optional string account                  = 2; // 玩家登陆账号
+    optional int32  offset_time              = 3; // -1表示永久封号
+    optional uint32 end_time                 = 4; // 封号截止时间
+}
+
+// 签到记录
+message sign_record_single
+{
+    optional uint32 cur_sign_times          = 1; //当前签到次数
+    optional uint32 sign_time               = 2; //签到时间
+}
+// 抽奖记录
+message draw_record_single
+{
+    optional uint32 draw_type               = 1; //抽奖类型, 从draw.csv中读取描述
+    optional uint32 draw_time               = 2; //抽奖时间
+}
+// 元宝购买记录
+// 用于元宝换金币和购买体力的返回
+message buy_record_single
+{
+    optional uint32 original_diamond_num    = 1; //原先的钻石数量
+    optional uint32 cost_diamond_num        = 2; //消耗的钻石数量
+    optional uint32 cur_diamond_num         = 3; //目前的钻石数量
+    optional uint32 buy_time                = 4; //购买时间
+}
+// 商店记录
+// 获取商店刷新次数用shop_type和refresh_times两个字段
+// 获取商店购买物品用shop_type和buy_nums两个字段
+message shop_record_single
+{
+    optional uint32 shop_type               = 1; //1:普通商店  2:八卦阵商店  3:武林大会商店
+    optional uint32 refresh_times           = 2; //刷新次数
+    optional uint32 buy_times               = 3; //购买物品次数
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+    <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>后台监控</title>
+<style type="text/css">
+/*html,body{height:auto;}
+#suggest, #suggest2 {width:200px;}
+.gray {color:gray;}
+.ac_results {background:#fff;border:1px solid #7f9db9;position: absolute;z-index: 10000;display: none;}
+.ac_results li a {white-space: nowrap;text-decoration:none;display:block;color:#05a;padding:1px 3px;}
+.ac_results li {border:1px solid #fff;}
+.ac_over, .ac_results li a:hover {background:#c8e3fc;}
+.ac_results li a span {float:right;}
+.ac_result_tip {border-bottom:1px dashed #666;padding:3px;}
+body{overflow-y: scroll;}*/
+</style>
+
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 运营工具 <span class="c-gray en">&gt;</span> 基本信息 <a class="btn btn-primary radius r" onclick="removeIframe()"  style="line-height:1.6em;margin:4px;" title="关闭"> <i class="Hui-iconfont">&#xe6a6;</a> <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+                      <form class="layui-form">
+                        <div class="layui-form-item proSelect">
+                          <label class="layui-form-label">渠道</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                            <select name="channel" lay-search>
+                              <option value="1" selected="">峰途</option>
+                            </select>
+                          </div>
+                          <label class="layui-form-label">服务器列表</label>
+                          <div class="layui-input-inline" style="width: 300px;">
+                              <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                                  <option value="0" selected=""></option>
+                              </select>
+                          </div>
+                          </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})" id="logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                                  -
+                                <input type="text" lay-verify="date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})" id="logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;" >
+                            </div>
+                        </div>
+                        
+                        <div class="layui-form-item">
+                            <!-- <label class="layui-form-label">角色名</label>
+                            <div class="layui-input-inline" id="Role_name" style="width: 200px;display:inline;">
+                              <input type="text" name="role_name" lay-verify="role_name" autocomplete="off" placeholder="请输入玩家名" class="layui-input" id="role_name"  layui-disabled="" onchange="Did_Or_Name_Input_Change(0)">
+                            </div> -->
+
+                            <label class="layui-form-label">DID</label>
+                            <div class="layui-input-inline" id="Role_did" style="width: 200px;">
+                              <input type="text" name="role_did" lay-verify="role_did" autocomplete="off" placeholder="请输入玩家DID" class="layui-input" id="role_did" layui-disabled="">
+                            </div>
+
+                            <div class="layui-input-inline"> 
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query">查询</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="record_table_base_info"></table>
+                        <table class="layui-hide" id="record_table_money"></table>
+                      </form>
+</div>
+
+<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+<script type="text/javascript">
+
+//重新渲染表单
+ $(function () {
+    //clear_localStorage();
+    $(document).ready(function () {
+      init_online_check_login_status();
+       var list = reload_select_list();
+        for(var i = 0; i < list.length; i++)
+        {
+          $("#zcySelect").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>");
+        }
+        renderForm();
+    });        
+  });
+
+function page(json){
+    layui.use('table',function(){
+        var table = layui.table;
+
+        table.render({
+            elem:"#record_table_base_info",
+            height: 80,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'server_id', title: '<font size="3" face="楷体">服务器ID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'role_did', title: '<font size="3" face="楷体">角色DID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'role_uid', title: '<font size="3" face="楷体">角色UID</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'role_name', title: '<font size="3" face="楷体">角色名</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'create_time', title: '<font size="3" face="楷体">创建时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                // ,{field: 'last_login_time', title: '<font size="3" face="楷体">最近登录时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'last_logout_time', title: '<font size="3" face="楷体">最近登出时间</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'level', title: '<font size="3" face="楷体">角色等级</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'fighting', title: '<font size="3" face="楷体">战斗力</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'scene_id', title: '<font size="3" face="楷体">所在场景</font>', align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: false, //是否显示分页
+        });
+
+          table.render({
+            elem:"#record_table_money",
+            height: 80,
+            //width:'100%',
+            cols: [[ //标题栏
+                {field: 'total_recharge', title: '<font size="3" face="楷体">充值金额</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'gold', title: '<font size="3" face="楷体">金币</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'silver', title: '<font size="3" face="楷体">银币</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'copper', title: '<font size="3" face="楷体">铜币</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'life_stone', title: '<font size="3" face="楷体">命石</font>', align: 'center',style:'background-color: #f2f2f2;'}
+                ,{field: 'vip_level', title: '<font size="3" face="楷体">VIP等级</font>', align: 'center',style:'background-color: #f2f2f2;'}
+        ]],
+        data:json,
+        page: false, //是否显示分页
+        });
+    });    
+}
+
+
+layui.use(['form', 'layedit','element','table'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,layedit = layui.layedit
+  ,laytab = layui.element
+  ,table = layui.table;
+
+form.verify({
+  zcySelect: function(value){
+      if (value == 0) {
+        return "请选择服务器"
+      }
+    }
+    , date_verify_min: function(value){
+      var time_min = document.getElementById('logmin').value;
+      var time_max = document.getElementById('logmax').value;
+      if(time_max != ''){
+        if (time_min == '') {
+          return '请选择时间';
+        }
+      }
+    }
+    ,date_verify_max: function(value){
+      var time_min = document.getElementById('logmin').value;
+      var time_max = document.getElementById('logmax').value;
+      if(time_min != ''){
+          if(time_max == '') {
+            return '请选择时间';
+          }
+      }
+    }
+  });
+
+
+  form.on('submit(query)', function(data){
+        var server_id_list = $('#zcySelect').val();
+        var send = new Object();
+        send.sid = new Array(server_id_list);
+         if (data.field.role_did != "") {
+          send.id = data.field.role_did;  
+        } else if(data.field.role_name != ""){
+          send.role_name = data.field.role_name;
+        }
+        var time_min = document.getElementById('logmin').value;
+        var time_max = document.getElementById('logmax').value;
+        if (time_min != '' && time_max != '') {
+            send.start_time = get_msec_to_sec(time_min);
+            send.end_time = get_msec_to_sec(time_max);
+        }
+        
+        $.ajax({
+          type: "POST",
+          url: '../php/sg_gm/search_role.php',
+          dataType: "json",
+          data: {
+            data: JSON.stringify(send)
+          },
+          success: function (json) {
+              if (1 == json) {
+                layer.msg("失败", { icon: 5, time: 2000 });
+                page(json);
+              } else {
+                page(data_mod(json,'base_info'));
+                layer.msg("成功", { icon: 6, time: 2000 });
+              }
+              table.render();
+          },
+          error: function (er) {
+              console.log(er);
+              renderForm();
+              layer.msg("错误", { icon: 5, time: 2000 });
+          },
+        });
+        return false;
+    });
+});
+</script> 
+</body>
+</html>

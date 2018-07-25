@@ -1,0 +1,900 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+      <link rel="stylesheet" type="text/css" href="../dep/static/h-ui/css/H-ui.min.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/H-ui.admin.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/Hui-iconfont/1.0.8/iconfont.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/skin/default/skin.css" id="skin" />
+  <link rel="stylesheet" type="text/css" href="../dep/static/h-ui.admin/css/style.css" />
+  <link rel="stylesheet" type="text/css" href="../dep/lib/layui/css/layui.css"/>
+  <script type="text/javascript" src="../dep/lib/jquery/1.9.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui/js/H-ui.min.js"></script> 
+  <script type="text/javascript" src="../dep/static/h-ui.admin/js/H-ui.admin.js"></script>
+  <script type="text/javascript" src="../dep/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+  <script type="text/javascript" src="../dep/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+  <script type="text/javascript" src="../dep/lib/layui/layui.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/server_list_common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/js/common.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/highcharts.js"></script>
+  <script type="text/javascript" src="../dep/lib/hcharts/Highcharts/5.0.6/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="../dep/js/config.js" charset="utf-8"></script>
+    <title>后台监控</title>
+</head>
+
+<body>
+    <nav class="breadcrumb">
+        <a class="btn btn-primary radius r" onclick="removeIframe()" style="line-height:1.6em;margin:4px;" title="关闭">
+            <i class="Hui-iconfont">&#xe6a6;</a>
+        <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:4px" href="javascript:location.replace(location.href);"
+            title="刷新">
+            <i class="Hui-iconfont">&#xe68f;</i>
+        </a>
+    </nav>
+    <div class="page-container">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                <li class="layui-this">新增玩家</li>
+                <li>活跃玩家</li>
+                <li>玩家留存</li>
+                <li>玩家流失</li>
+                <li>在线人数</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 10px;">
+                <div class="layui-tab-item layui-show">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="new_role_date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'new_role_logmax\')||\'%y-%M-%d\'}'})"
+                                    id="new_role_logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                                <input type="text" lay-verify="new_role_date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'new_role_logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                                    id="new_role_logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_new_role">查询</button>
+                            </div>
+
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="new_role_today_query">今日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="new_role_yesterday_query">昨日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="new_role_Threeday_query">三日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="new_role_Sevenday_query">七日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="new_role_Thirtyday_query">三十日</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="new_role_record_table"></table>
+                        <div id="map_show_new" style="min-width:700px;height:400px"></div>
+                    </form>
+                </div>
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="active_role_date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'active_role_logmax\')||\'%y-%M-%d\'}'})"
+                                    id="active_role_logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                                <input type="text" lay-verify="active_role_date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'active_role_logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                                    id="active_role_logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_active_role">查询</button>
+                            </div>
+
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="active_role_today_query">今日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="active_role_yesterday_query">昨日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="active_role_Threeday_query">三日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="active_role_Sevenday_query">七日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="active_role_Thirtyday_query">三十日</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="active_role_record_table"></table>
+                        <div id="map_show_active" style="min-width:700px;height:400px"></div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="retained_role_date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'retained_role_logmax\')||\'%y-%M-%d\'}'})"
+                                    id="retained_role_logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                                <input type="text" lay-verify="retained_role_date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'retained_role_logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                                    id="retained_role_logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_retained_role">查询</button>
+                            </div>
+
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="retained_role_today_query">今日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="retained_role_yesterday_query">昨日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="retained_role_Threeday_query">三日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="retained_role_Sevenday_query">七日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="retained_role_Thirtyday_query">三十日</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="retained_role_record_table"></table>
+                        <div id="map_show_retained" style="min-width:700px;height:400px"></div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="loss_role_date_verify_min" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'loss_role_logmax\')||\'%y-%M-%d\'}'})"
+                                    id="loss_role_logmin" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;"> -
+                                <input type="text" lay-verify="loss_role_date_verify_max" onfocus="WdatePicker({skin:'twoer',dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'loss_role_logmin\')}',maxDate:'#F{\'%y-%M-%d\'}'})"
+                                    id="loss_role_logmax" class="input-text Wdate radius" style="width:180px;border-color:1.5px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_loss_role">查询</button>
+                            </div>
+
+                            <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="loss_role_today_query">今日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="loss_role_yesterday_query">昨日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="loss_role_Threeday_query">三日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="loss_role_Sevenday_query">七日</button>
+                                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="loss_role_Thirtyday_query">三十日</button>
+                            </div>
+                        </div>
+                        <table class="layui-hide" id="loss_role_record_table"></table>
+                        <div id="map_show_loss" style="min-width:700px;height:400px"></div>
+                    </form>
+                </div>
+
+                <div class="layui-tab-item">
+                    <form class="layui-form" id="oper_query_online_num">
+                        <div class="layui-form-item proSelect">
+                            <!-- <label class="layui-form-label">渠道</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="channel_1" lay-search>
+                                    <option value="1" selected="">峰途</option>
+                                </select>
+                            </div> -->
+                            <label class="layui-form-label">服务器列表</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="productList" lay-search lay-verify="zcySelect" id="zcySelect" lay-filter="zcySelect">
+                                    <option value="0" selected=""></option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                    
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">在线人数</label>
+                            <div class="layui-input-inline"  style="width: 300px;">
+                                <input type="text" name="online_number" lay-verify="online_number" autocomplete="off"  class="layui-input"
+                                    id="online_number" value="" disabled="true">
+                            </div>
+                    
+                            <div class="layui-input-inline">
+                                <button class="layui-btn layui-btn-primary layui-btn-radius" lay-submit lay-filter="query_online_num">查询</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   -->
+    <script type="text/javascript">
+
+    function init_time() {
+        var time = new Date().getTime();
+        var time_max = time - get_msec_time(1);
+        var time_min = time - get_msec_time(7);
+        var cur_max = new Date(time_max);
+        var cur_min = new Date(time_min);
+        var time_max = cur_max.getFullYear() + '-' + addzero(cur_max.getMonth() + 1) + '-' + addzero(cur_max.getDate());
+        var time_min = cur_min.getFullYear() + '-' + addzero(cur_min.getMonth() + 1) + '-' + addzero(cur_min.getDate());
+
+        document.getElementById('new_role_logmax').value = time_max;
+        document.getElementById('new_role_logmin').value = time_min;
+
+        document.getElementById('active_role_logmax').value = time_max;
+        document.getElementById('active_role_logmin').value = time_min;
+
+        document.getElementById('retained_role_logmax').value = time_max;
+        document.getElementById('retained_role_logmin').value = time_min;
+
+        document.getElementById('loss_role_logmax').value = time_max;
+        document.getElementById('loss_role_logmin').value = time_min;
+                    
+    }
+        //重新渲染表单
+        $(function () {
+            $(document).ready(function () {
+                init_online_check_login_status();
+                init_time();
+                var list = reload_select_list();
+                for (var i = 0; i < list.length; i++) {
+                    $("#zcySelect").append("<option value='" + list[i].id + "'>" + list[i].name +
+                        "</option>");
+                }
+                renderForm();
+            });
+        });
+
+        function page(json, type) {
+            layui.use('table', function () {
+                var table = layui.table;
+                if ("new_role" == type) {
+                    table.render({
+                        elem: "#new_role_record_table",
+                        height: 355,
+                        width: '1000',
+                        cols: [
+                            [ //标题栏
+                                {
+                                    field: 'time',
+                                    title: '<font size="3" >日期</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, 
+                                {
+                                    field: 'mobile',
+                                    title: '<font size="3" >新增设备数量</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, 
+                                
+                                {
+                                    field: 'account',
+                                    title: '<font size="3" >新增账号数量</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, 
+                                {
+                                    field: 'role',
+                                    title: '<font size="3" >新增角色数量</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }
+                                // {
+                                //     field: 'reg_mobile',
+                                //     title: '<font size="3" >注册设备数量</font>',
+                                //     align: 'center',
+                                //     style: 'background-color: #f2f2f2;'
+                                // }, 
+                                // , 
+                                // {
+                                //     field: 'rate',
+                                //     title: '<font size="3" >设备账号转化率(%)</font>',
+                                //     align: 'center',
+                                //     style: 'background-color: #f2f2f2;'
+                                // }
+                            ]
+                        ],
+                        data: json,
+                        page: true, //是否显示分页
+                        limit: 7 //每页默认显示的数量
+                    });
+                } else if ("active_role" == type) {
+                    table.render({
+                        elem: "#active_role_record_table",
+                        height: 355,
+                        width: '1000',
+                        cols: [
+                            [ //标题栏
+                                {
+                                    field: 'time',
+                                    title: '<font size="3" >日期</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'dau',
+                                    title: '<font size="3" >日活跃数量(dau)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'wau',
+                                    title: '<font size="3" >周活跃数量(wau)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'mau',
+                                    title: '<font size="3" >月活跃数量(mau)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'dm',
+                                    title: '<font size="3" >日活跃占月活跃的百分比(dau/mau)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }
+                            ]
+                        ],
+                        data: json,
+                        page: true, //是否显示分页
+                        limit: 7 //每页默认显示的数量
+                    });
+                } else if ("retained_role" == type) {
+                    table.render({
+                        elem: "#retained_role_record_table",
+                        height: 355,
+                        width: '1000',
+                        cols: [
+                            [ //标题栏
+                                {
+                                    field: 'time',
+                                    title: '<font size="3">日期</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'second_day',
+                                    title: '<font size="3">次日留存(%)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'seventh_day',
+                                    title: '<font size="3">七日留存(%)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'thirtieth_day',
+                                    title: '<font size="3">三十日留存(%)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }
+                            ]
+                        ],
+                        data: json,
+                        page: true, //是否显示分页
+                        limit: 7 //每页默认显示的数量
+                    });
+                } else if ("loss_role" == type) {
+                    table.render({
+                        elem: "#loss_role_record_table",
+                        height: 355,
+                        width: '1000',
+                        cols: [
+                            [ //标题栏
+                                {
+                                    field: 'time',
+                                    title: '<font size="3">日期</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'leave_count',
+                                    title: '<font size="3">流失数(账号)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'leave_rate',
+                                    title: '<font size="3">流失率(%)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }, {
+                                    field: 'return_count',
+                                    title: '<font size="3">回流数(账号)</font>',
+                                    align: 'center',
+                                    style: 'background-color: #f2f2f2;'
+                                }
+                            ]
+                        ],
+                        data: json,
+                        page: true, //是否显示分页
+                        limit: 7 //每页默认显示的数量
+                    });
+                }
+            });
+        }
+
+        layui.use(['form', 'layedit', 'element', 'table'], function () {
+            var form = layui.form,
+                layer = layui.layer,
+                layedit = layui.layedit,
+                laytab = layui.element,
+                table = layui.table;
+
+            form.verify({
+                new_role_date_verify_min: function (value) {
+                    var time_min = $('#new_role_logmin').val();
+                    var time_max = $('#new_role_logmax').val();
+                    if (time_max != "") {
+                        if (time_min == '') {
+                            return '请选择时间';
+                        }    
+                    }
+                    
+                },
+                new_role_date_verify_max: function (value) {
+                    var time_min = $('#new_role_logmin').val();
+                    var time_max = $('#new_role_logmax').val();
+                    if (time_min != "") {
+                        if (time_max == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                active_role_date_verify_min: function (value) {
+                    var time_min = $('#active_role_logmin').val();
+                    var time_max = $('#active_role_logmax').val();
+                    if (time_max != "") {
+                        if (time_min == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                active_role_date_verify_max: function (value) {
+                    var time_min = $('#active_role_logmin').val();
+                    var time_max = $('#active_role_logmax').val();
+                    if (time_min != "") {
+                        if (time_max == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                retained_role_date_verify_min: function (value) {
+                    var time_min = $('#retained_role_logmin').val();
+                    var time_max = $('#retained_role_logmax').val();
+                    if (time_max != "") {
+                        if (time_min == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                retained_role_date_verify_max: function (value) {
+                    var time_min = $('#retained_role_logmin').val();
+                    var time_max = $('#retained_role_logmax').val();
+                    if (time_min != "") {
+                        if (time_max == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                loss_role_date_verify_min: function (value) {
+                    var time_min = $('#loss_role_logmin').val();
+                    var time_max = $('#loss_role_logmax').val();
+                    if (time_max != "") {
+                        if (time_min == '') {
+                            return '请选择时间';
+                        }
+                    }
+                },
+                loss_role_date_verify_max: function (value) {
+                    var time_min = $('#loss_role_logmin').val();
+                    var time_max = $('#loss_role_logmax').val();
+                    if (time_min != "") {
+                        if (time_max == '') {
+                            return '请选择时间';
+                        }    
+                    }
+                },
+                zcySelect: function (value) {
+                    if (value == 0) {
+                        return "请选择服务器"
+                    }
+                },
+            });
+            
+            function query_db(send) {
+                 $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_game_data.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        page(json, send.query_type);
+                        show_map(json, send.query_type);
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+            }
+
+            function click_query_common(params, type) {
+                var time = new Date().getTime();
+                var time_max = time - get_msec_time(1);
+                var time_min = time - get_msec_time(params);
+                if (0 == params) {
+                    time_max = time_min;
+                }
+               
+                var cur_max = new Date(time_max);
+                var cur_min = new Date(time_min);
+                var send = new Object();
+                var time_max = cur_max.getFullYear() + '-' + addzero(cur_max.getMonth() + 1) + '-' + addzero(cur_max.getDate());
+                var time_min = cur_min.getFullYear() + '-' + addzero(cur_min.getMonth() + 1) + '-' + addzero(cur_min.getDate());
+
+                send.time_min = time_min;
+                send.time_max = time_max;
+                send.query_type = type;
+                switch (type) {
+                    case 'new_role':
+                        {
+                            document.getElementById('new_role_logmax').value = time_max;
+                            document.getElementById('new_role_logmin').value = time_min;
+                        }
+                        break;
+                    case 'active_role':
+                        {
+                            document.getElementById('active_role_logmax').value = time_max;
+                            document.getElementById('active_role_logmin').value = time_min;
+                        }
+                        break;
+                    case 'retained_role':
+                        {
+                            document.getElementById('retained_role_logmax').value = time_max;
+                            document.getElementById('retained_role_logmin').value = time_min;
+                        }
+                        break;
+                    case 'loss_role':
+                        {
+                            document.getElementById('loss_role_logmax').value = time_max;
+                            document.getElementById('loss_role_logmin').value = time_min;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                query_db(send);
+            }
+
+            form.on('submit(query_new_role)', function (data) {
+                var send = new Object();
+                var time_min = $('#new_role_logmin').val();
+                var time_max = $('#new_role_logmax').val();
+                send.time_min = time_min;
+                send.time_max = time_max;
+                send.query_type = "new_role";
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_game_data.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        page(json, "new_role");
+                        show_map(json,"new_role");
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+
+            form.on('submit(query_active_role)', function (data) {
+                var send = new Object();
+                var time_min = $('#active_role_logmin').val();
+                var time_max = $('#active_role_logmax').val();
+                send.time_min = time_min;
+                send.time_max = time_max;
+                send.query_type = "active_role";
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_game_data.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        page(json, "active_role");
+                        show_map(json, "active_role");
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+
+            form.on('submit(query_retained_role)', function (data) {
+                var send = new Object();
+                var time_min = $('#retained_role_logmin').val();
+                var time_max = $('#retained_role_logmax').val();
+                send.time_min = time_min;
+                send.time_max = time_max;
+                send.query_type = "retained_role";
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_game_data.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        page(json, "retained_role");
+                        show_map(json, "retained_role");
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+
+            form.on('submit(query_loss_role)', function (data) {
+                var send = new Object();
+                var time_min = $('#loss_role_logmin').val();
+                var time_max = $('#loss_role_logmax').val();
+                send.time_min = time_min;
+                send.time_max = time_max;
+                send.query_type = "loss_role";
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/select_game_data.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        page(json, "loss_role");
+                        show_map(json, "loss_role");
+                        table.render();
+                        layer.msg("成功", {
+                            icon: 6,
+                            time: 2000
+                        });
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+            
+            form.on('submit(new_role_today_query)', function (data) {
+                click_query_common(0, "new_role");
+                return false;
+            });
+
+            form.on('submit(new_role_yesterday_query)', function (data) {
+               click_query_common(1, "new_role");
+                return false;
+            });
+
+            form.on('submit(new_role_Threeday_query)', function (data) {
+                click_query_common(3, "new_role");
+                return false;
+            });
+
+            form.on('submit(new_role_Sevenday_query)', function (data) {
+                click_query_common(7, "new_role");
+                return false;
+            });
+
+            form.on('submit(new_role_Thirtyday_query)', function (data) {
+                click_query_common(30, "new_role");
+                return false;
+            });
+
+            form.on('submit(active_role_today_query)', function (data) {
+                click_query_common(0, "active_role");
+                return false;
+            });
+
+            form.on('submit(active_role_yesterday_query)', function (data) {
+                click_query_common(1, "active_role");
+                return false;
+            });
+
+            form.on('submit(active_role_Threeday_query)', function (data) {
+                click_query_common(3, "active_role");
+                return false;
+            });
+
+            form.on('submit(active_role_Sevenday_query)', function (data) {
+                click_query_common(7, "active_role");
+                return false;
+            });
+
+            form.on('submit(active_role_Thirtyday_query)', function (data) {
+                click_query_common(30, "active_role");
+                return false;
+            });
+            
+            form.on('submit(retained_role_today_query)', function (data) {
+                click_query_common(0, "retained_role");
+                return false;
+            });
+
+            form.on('submit(retained_role_yesterday_query)', function (data) {
+                click_query_common(1, "retained_role");
+                return false;
+            });
+
+            form.on('submit(retained_role_Threeday_query)', function (data) {
+                click_query_common(3, "retained_role");
+                return false;
+            });
+
+            form.on('submit(retained_role_Sevenday_query)', function (data) {
+                click_query_common(7, "retained_role");
+                return false;
+            });
+
+            form.on('submit(retained_role_Thirtyday_query)', function (data) {
+                click_query_common(30, "retained_role");
+                return false;
+            });
+            
+            form.on('submit(loss_role_today_query)', function (data) {
+                click_query_common(0, "loss_role");
+                return false;
+            });
+
+            form.on('submit(loss_role_yesterday_query)', function (data) {
+                click_query_common(1, "loss_role");
+                return false;
+            });
+
+            form.on('submit(loss_role_Threeday_query)', function (data) {
+                click_query_common(3, "loss_role");
+                return false;
+            });
+
+            form.on('submit(loss_role_Sevenday_query)', function (data) {
+                click_query_common(7, "loss_role");
+                return false;
+            });
+
+            form.on('submit(loss_role_Thirtyday_query)', function (data) {
+                click_query_common(30, "loss_role");
+                return false;
+            });
+
+            form.on('submit(query_online_num)', function (data) {
+                console.log(data.field);
+                var storage = window.localStorage;
+                if (storage.account == "" || storage.account == undefined) {
+                    layer.msg("没有登录操作无效", {
+                        icon: 5,
+                        time: 2000
+                    });
+                    return false;
+                }
+                var server_id_list = $('#zcySelect').val();
+                if (server_id_list == 0) {
+                    layer.msg("请从服务器列表选择服务器", {
+                        icon: 5,
+                        time: 2000
+                    });
+                    return false;
+                }
+
+                var send = new Object();
+                 send.sid = new Array(server_id_list);
+                console.log(send);
+                $.ajax({
+                    type: "POST",
+                    url: '../php/sg_gm/get_online_number.php',
+                    dataType: "json",
+                    data: {
+                        data: JSON.stringify(send)
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        // console.log(json.result);
+                        // console.log(json.result[0]);
+                        if (json == undefined || json == null || json == "" || json == false) {
+                            document.getElementById('online_number').value = "0";
+                            renderForm();
+                             layer.msg("查询失败", {
+                                icon: 5,
+                                time: 2000
+                            });
+                        }else {
+                            if (json.result[server_id_list] == -1 || 
+                                json.result[server_id_list] == undefined ||
+                                json.result[server_id_list] == null || 
+                                json.result[server_id_list] == false) {
+                                document.getElementById('online_number').value = "0";
+                                renderForm();
+                                layer.msg("查询失败", {
+                                    icon: 5,
+                                    time: 2000
+                                });
+                                
+                            } else if(json.result[server_id_list] >= 0){
+                                document.getElementById('online_number').value = json.result[server_id_list] + "人";
+                                renderForm();
+                                layer.msg("查询成功", {
+                                    icon: 6,
+                                    time: 2000
+                                });
+                            }
+                            
+                        }
+                        
+                    },
+                    error: function (er) {
+                        console.log(er);
+                        document.getElementById('online_number').value = "0";
+                        renderForm();
+                        layer.msg("错误", {
+                            icon: 5,
+                            time: 2000
+                        });
+                    },
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>

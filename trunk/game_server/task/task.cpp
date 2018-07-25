@@ -1,0 +1,368 @@
+/*
+* =====================================================================================
+*
+*       Filename:  task.cpp
+*
+*    Description:  任务逻辑
+*
+*
+* =====================================================================================
+*/
+#include "task.hpp"
+#include "task_manager.hpp"
+#include "log.hpp"
+#include "role/role_manager.hpp"
+#include <sstream>
+#include "utility.hpp"
+#include "scene/scene.hpp"
+#include "op_cmd.hpp"
+#include "server.pb.h"
+#include "role/role_unify_save.hpp"
+#include "cache_key.hpp"
+#include "hero/hero_manager.hpp"
+#include "item/item_manager.hpp"
+#include "Garrison.pb.h"
+#include "GarrisonCitylist.pb.h"
+#include "tblh/errcode_enum.hpp"
+#include "log/log_wrapper.hpp"
+#include "fight/fight_manager.hpp"
+#include "hero/cultivate_manager.hpp"
+#include "role/money_manager.hpp"
+#include "tblh/Task.tbls.h"
+#include "tblh/HeroGet.tbls.h"
+#include "role/role.hpp"
+#include "task_manager.hpp"
+#include "page/page_manager.hpp"
+
+USING_NS_CONFIG;
+USING_NS_COMMON;
+task_t::task_t(uint64_t uid, uint32_t task_id)
+	: m_tid(task_id)
+	, m_progress("")
+	, m_state(0)
+	, m_accept_time(0)
+	, m_uid(uid)
+{
+
+}
+
+void task_t::load_data(const proto::common::task_state& task)
+{
+	m_uid = task.uid();
+	m_tid = task.id();
+	m_type = task.type();
+	m_progress = task.progress();
+	m_state = task.state();
+	// accept_time = task.accept_time();
+	trans_str_progress_2_map();
+	m_circle_id = task.circle_id();
+	m_circle_count = task.circle_count();
+	m_accept_level = task.accept_level();
+	m_star = task.star();
+	if (task_manager_t::is_circle_task(m_type))
+	{
+		m_max_circle_count = task_manager_t::get_max_circle_count(m_accept_level, m_type, m_circle_id);
+	}
+}
+
+void task_t::peek_data(proto::common::task_state* task)
+{
+	if (NULL != task)
+	{
+		trans_map_progress_2_string();
+		task->set_uid(m_uid);
+		task->set_id(m_tid);
+		task->set_progress(m_progress);
+		// task.set_accept_time(accept_time);
+		task->set_state(m_state);
+		task->set_type(m_type);
+		task->set_circle_id(m_circle_id);
+		task->set_circle_count(m_circle_count);
+		task->set_max_circle_count(m_max_circle_count);
+		task->set_accept_level(m_accept_level);
+		task->set_star(m_star);
+	}
+}
+
+/*
+void task_t::save_self(uint64_t role_uid)
+{
+	return;	//修改存储方式，此处代码先不删除.
+	proto::common::task_state state;
+	peek_data(&state);
+	role_unify_save::add_task(role_uid, m_key, state);
+}
+*/
+
+
+void task_t::trans_map_progress_2_string()
+{
+	std::ostringstream ss;
+	for (auto type_id_cnt : m_progress_map)
+	{
+		ss << std::get<0>(type_id_cnt) << ":" << std::get<1>(type_id_cnt) << ":" << std::get<2>(type_id_cnt) << "$";
+	}
+	m_progress = ss.str().substr(0, ss.str().length() - 1);
+}
+
+void task_t::trans_str_progress_2_map()
+{
+	std::vector<std::string> units;
+	std::string remainder = m_progress;
+	std::string::size_type pos_unit_sep = remainder.find_first_of('$');
+	while (pos_unit_sep != std::string::npos)
+	{
+		std::string unit;
+		unit = remainder.substr(0, pos_unit_sep);
+		units.push_back(unit);
+		remainder = remainder.substr(pos_unit_sep + 1);
+		pos_unit_sep = remainder.find_first_of('$');
+	}
+	if (!remainder.empty())
+	{
+		units.push_back(remainder);
+	}
+    string_util_t::Parse_type_id_cnt_str_to_map(units, m_progress_map);
+}
+
+bool task_t::have_target(task_target_type type, uint32_t target_id)
+{
+	auto p_conf = GET_CONF(Task, m_tid);
+	if (NULL != p_conf)
+	{
+		return p_conf->have_target(type, target_id);
+	}
+	return false;
+}
+
+bool task_t::has_target_progress(task_target_type type, uint32_t target_id)
+{
+	for (auto ptr : m_progress_map)
+	{
+		if (std::get<0>(ptr) == type && std::get<1>(ptr) == target_id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+uint32_t task_t::get_target_progress(task_target_type type, uint32_t target_id)
+{
+	for (auto ptr : m_progress_map)
+	{
+		if (std::get<0>(ptr) == type && std::get<1>(ptr) == target_id)
+		{
+			return std::get<2>(ptr);
+		}
+	}
+	return 0;
+}
+
+void task_t::set_target_progress(task_target_type type, uint32_t target_id, uint32_t cnt)
+{
+	for (auto& ptr : m_progress_map)
+	{
+		if (std::get<0>(ptr) == type && std::get<1>(ptr) == target_id)
+		{
+			std::get<2>(ptr) = cnt;
+		}
+	}
+}
+
+bool task_t::can_finished()
+{
+	//check is task can finished
+	auto p_conf = GET_CONF(Task, m_tid);
+	if (NULL != p_conf)
+	{
+		bool is_can_finished = true;
+		for (auto type : p_conf->complete_cond())
+		{
+			if (get_target_progress(task_target_type(std::get<0>(type)), std::get<1>(type)) < p_conf->get_target_cnt(task_target_type(std::get<0>(type)), std::get<1>(type)))
+			{
+				is_can_finished = false;
+				break;
+			}
+		}
+		return is_can_finished;
+	}
+	return false;
+}
+
+bool task_t::is_target_before_done(task_target_type type, uint32_t target_id)
+{
+	auto p_conf = GET_CONF(Task, m_tid);
+	if (NULL != p_conf)
+	{
+		auto iter = p_conf->complete_cond().begin();
+		for (; iter != p_conf->complete_cond().end(); iter++)
+		{
+			if (std::get<0>(*iter) == type && std::get<1>(*iter) == target_id)
+			{
+				break;
+			}
+		}
+		bool is_done = true;
+		for (auto it = p_conf->complete_cond().begin(); it != iter; it++)
+		{
+			bool is_exist = false;
+			for (auto itr = m_progress_map.begin(); itr != m_progress_map.end(); itr++)
+			{
+				if (std::get<0>(*itr) == std::get<0>(*it) && std::get<1>(*itr) == std::get<1>(*it))
+				{
+					if ((std::get<2>(*itr) < std::get<2>(*it)) && !(std::get<0>(*itr) == type && (std::get<1>(*itr) == target_id || 0 == std::get<1>(*itr))))
+					{
+						is_done = false;
+					}
+					is_exist = true;
+					break;
+				}
+			}
+			if (!is_exist && !(std::get<0>(*it) == type && (std::get<1>(*it) == target_id || 0 == std::get<1>(*it))))
+			{
+				is_done = false;
+			}
+		}
+		return is_done;
+	}
+	return false;
+}
+
+bool task_t::can_advance(task_target_type target_type, uint32_t target_id)
+{
+	if (have_target(target_type, target_id))
+	{
+		auto p_conf = GET_CONF(Task, m_tid);
+		bool can_be_advance = true;
+		if (NULL != p_conf && p_conf->is_ordered())
+		{
+			if (!is_target_before_done(target_type, target_id))
+			{
+				can_be_advance = false;
+			}
+
+
+		}
+		return can_be_advance;
+	}
+	return false;
+}
+
+void task_t::change_state(task_state now_state, uint64_t role_uid)
+{
+	m_state = now_state;
+	if (m_state == TASK_STATE_CAN_FINISH && m_on_seek_help)
+	{
+		m_on_seek_help = false;
+	}
+
+	if (TASK_STATE_CAN_FINISH == m_state || TASK_STATE_FINISH == m_state)
+	{
+		///检测章节是否通关
+		page_manager_t::check_page_task_status(role_uid, m_tid);
+	}
+}
+
+void task_t::seek_help()
+{
+	if (m_state == TASK_STATE_DOING)
+	{
+		for (auto ptr : m_progress_map)
+		{
+			if (std::get<0>(ptr) == TASK_TARGET_TYPE_COMMIT_PROP)
+			{
+				m_on_seek_help = true;
+				break;
+			}
+		}
+	}
+}
+
+uint32_t task_t::get_commit_item_tid()
+{
+	std::vector<std::tuple<uint32_t, uint32_t, uint32_t> >::const_iterator citr = m_progress_map.begin();
+	if (citr != m_progress_map.end()) {
+		return std::get<1>(*citr);
+	}
+	return 0;
+}
+
+uint32_t task_t::get_commit_item_count()
+{
+	std::vector<std::tuple<uint32_t, uint32_t, uint32_t> >::const_iterator citr = m_progress_map.begin();
+	if (citr != m_progress_map.end()) {
+		return std::get<2>(*citr);
+	}
+	return 0;
+}
+
+void task_t::advance(task_target_type target_type, uint32_t target_id, uint32_t cnt, role_ptr p_role, bool is_add)
+{
+	if (NULL == p_role)
+	{
+		log_error("NULL == p_role");
+		return;
+	}
+	auto p_conf = GET_CONF(Task, m_tid);
+	if (NULL != p_conf)
+	{
+//		if (can_advance(target_type, target_id))
+		{
+			for (auto type_id_cnt : p_conf->complete_cond())
+			{
+				if (std::get<0>(type_id_cnt) == target_type && (std::get<1>(type_id_cnt) == target_id || 0 == std::get<1>(type_id_cnt)))
+				{
+					if (std::get<3>(type_id_cnt) != -1 && !p_role->is_nearby(std::get<3>(type_id_cnt), std::get<4>(type_id_cnt), std::get<5>(type_id_cnt)))
+					{
+						log_error("[sjw task] role[%lu] not in specified pos can't do this task %d", p_role->get_uid(), p_conf->id());
+						return;
+					}
+				
+					if (!has_target_progress(task_target_type(std::get<0>(type_id_cnt)), std::get<1>(type_id_cnt)))
+					{
+						m_progress_map.push_back(std::make_tuple(std::get<0>(type_id_cnt), std::get<1>(type_id_cnt), 0));
+					}
+
+					uint32_t progress_cnt = get_target_progress(task_target_type(std::get<0>(type_id_cnt)), std::get<1>(type_id_cnt));
+					if (is_add)
+					{
+						progress_cnt += cnt;
+					}
+					else
+					{
+						progress_cnt = cnt;
+					}
+					if (progress_cnt > std::get<2>(type_id_cnt) && target_type != TASK_TARGET_TYPE_COMMIT_PROP)
+					{
+						progress_cnt = std::get<2>(type_id_cnt);
+					}
+					set_target_progress(target_type, target_id, progress_cnt);
+                    //TASK_LOG("[sjw task] role[%lu] advance task id: %u cnt:%u", role->get_uid(), id, cnt);
+				}
+			}
+
+		}
+	}
+}
+
+//兼容历史代码
+void task_t::save_self(role_ptr p_role)
+{
+	if (NULL == p_role)
+	{
+		log_error(" p_role is NULL ");
+		return;
+	}
+
+	task_mgr_ptr p_task_mgr = p_role->get_task_mgr();
+	if (NULL == p_task_mgr)
+	{
+		log_error( " p_role[%lu]  save task is NULL ", p_role->get_uid() );
+		return;
+	}
+
+	p_task_mgr->save_cur_task_list();
+	p_task_mgr->save_comp_task_list();
+}
+
