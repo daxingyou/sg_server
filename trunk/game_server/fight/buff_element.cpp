@@ -4756,7 +4756,7 @@ uint32_t buff_element_t::sub_max_hp(fight_hero_ptr owner, buff_ptr buff, const b
 		uint32_t n_sub_hp = owner->get_hp() > owner->get_max_hp() ? owner->get_hp() - owner->get_max_hp() : 0;
 		if (n_sub_hp > 0) {
 			owner->sub_hp(n_sub_hp, owner, buff->get_skill());
-			owner->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(n_sub_hp), owner, attacker, attrtype_enum::hp, owner->get_attr(attrtype_enum::hp), buff->get_tid());
+			owner->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(int(n_sub_hp)), owner, attacker, attrtype_enum::hp, owner->get_attr(attrtype_enum::hp), buff->get_tid());
 		}
 		buff->add_trigger_attr(attrtype_enum::max_hp + EXTRA_ATTR_PLUS, result);
 		return buff_notify_valid;
@@ -4846,7 +4846,7 @@ uint32_t buff_element_t::add_max_hp(fight_hero_ptr owner, buff_ptr buff, const b
 		uint32_t old_max_hp = owner->get_attr(attrtype_enum::max_hp);
 
 		owner->m_buff_element_mgr.inc_element_value(attrtype_enum::max_hp + EXTRA_ATTR_PLUS, result, 0);
-		owner->add_combat_act(proto::common::combat_act_type_attr_inc, std::abs(result), owner, attacker, attrtype_enum::max_hp + EXTRA_ATTR_PLUS, owner->get_attr(attrtype_enum::max_hp), buff->get_tid());
+		owner->add_combat_act(proto::common::combat_act_type_attr_inc, std::abs(int(result)), owner, attacker, attrtype_enum::max_hp + EXTRA_ATTR_PLUS, owner->get_attr(attrtype_enum::max_hp), buff->get_tid());
 
 		//ÂúÑª²ÅÄÌÒ»¿Ú
 		if (owner->get_hp() == old_max_hp) {
@@ -4879,7 +4879,7 @@ uint32_t buff_element_t::add_max_hp(fight_hero_ptr owner, buff_ptr buff, const b
 		uint32_t n_sub_hp = owner->get_hp() > owner->get_max_hp() ? owner->get_hp() - owner->get_max_hp() : 0;
 		if ( n_sub_hp > 0 ) {
 			owner->sub_hp( n_sub_hp, owner, buff->get_skill() );
-			owner->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(n_sub_hp), owner, attacker, attrtype_enum::hp, owner->get_attr(attrtype_enum::hp), buff->get_tid());
+			owner->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(int(n_sub_hp)), owner, attacker, attrtype_enum::hp, owner->get_attr(attrtype_enum::hp), buff->get_tid());
 		}
 		buff->clear_trigger_attr();
 	}
@@ -7831,7 +7831,7 @@ uint32_t buff_element_t::buff_layer_change_att(fight_hero_ptr owner, buff_ptr bu
 				continue;
 			}
 			p_hero->m_buff_element_mgr.inc_element_value(dest_attr_id, value,0);
-			p_hero->add_combat_act(proto::common::combat_act_type_attr_inc, std::abs(value), owner, owner, dest_attr_id, owner->get_attr(dest_attr_id), buff->get_tid());
+			p_hero->add_combat_act(proto::common::combat_act_type_attr_inc, std::abs(int(value)), owner, owner, dest_attr_id, owner->get_attr(dest_attr_id), buff->get_tid());
 		}
 		return buff_notify_valid;
 	}
@@ -7853,7 +7853,7 @@ uint32_t buff_element_t::buff_layer_change_att(fight_hero_ptr owner, buff_ptr bu
 				continue;
 			}
 			p_hero->m_buff_element_mgr.dec_element_value(tag_att_id, value);
-			p_hero->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(value), owner, owner, tag_att_id, owner->get_attr(tag_att_id), buff->get_tid());
+			p_hero->add_combat_act(proto::common::combat_act_type_attr_dec, std::abs(int(value)), owner, owner, tag_att_id, owner->get_attr(tag_att_id), buff->get_tid());
 		}
 		return buff_notify_valid;
 	}

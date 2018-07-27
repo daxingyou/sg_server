@@ -374,8 +374,11 @@ CPPFLAGS =
 CXX = gcc
 CXXCPP = gcc -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -std=c++11 $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5)
+CXXFLAGS = -std=c++11 -Wno-error=unused-function \
+	-Wno-error=implicit-fallthrough -Wno-error=int-in-bool-context \
+	-Wno-error=format-security -Wno-error=unused-variable \
+	-Wno-error=bool-compare $(am__append_1) $(am__append_2) \
+	$(am__append_3) $(am__append_4) $(am__append_5)
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -395,8 +398,8 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LD = /usr/bin/x86_64-linux-gnu-ld -m elf_x86_64
-LDFLAGS = -L/usr/local/lib -ldl
+LD = /usr/lib/x86_64-linux-gnu -m elf_x86_64
+LDFLAGS = -L/usr/local/lib,/usr/lib/x86_64-linux-gnu -Wl,--no-as-needed -ldl -lm -lz
 LIBOBJS = 
 LIBS = 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -496,12 +499,12 @@ game_server_LDADD = $(top_srcdir)/common/libcommon.a \
                         $(top_srcdir)/protocpp/libproto.a \
                         -llua \
                         -ltolua++ \
-                        -lluabit \
                         -lprotobuf \
                         -lboost_system  \
                         -lboost_thread \
 						-lboost_regex \
-                        -lboost_locale
+                        -lboost_locale \
+						-lpthread
 
 game_server_SOURCES = $(top_srcdir)/tblh/DropTableConfig.cpp \
 						$(top_srcdir)/tblh/RandomShopConfig.cpp \

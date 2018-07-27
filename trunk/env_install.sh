@@ -10,21 +10,21 @@ sh env_uninstall.sh
 #安装编译环境
 echo -e "==========================================================="
 echo -e "\033[1;36m开始安装编译环境......\033[0m"
-aclocal #1>/dev/null
-libtoolize #1>/dev/null
-autoconf #1>/dev/null
-autoheader #1>/dev/null
-automake --add-missing #1>/dev/null
+aclocal 1>aclocal.txt
+libtoolize 1>libtoolize.txt
+autoconf 1>autoconf.txt
+autoheader 1>autoheader.txt
+automake --add-missing 1>/dev/null
 if [ "$1" = "release" ];then
-    ./configure CXX=gcc --enable-release 1>/dev/null
+    ./configure CXX=gcc LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu LD=/usr/lib/x86_64-linux-gnu --enable-release 1>/dev/null
 elif [ "$1" = "valgrind" ];then
-    ./configure CXX=gcc --enable-valgrind 1>/dev/null
+    ./configure CXX=gcc LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu LD=/usr/lib/x86_64-linux-gnu --enable-valgrind 1>/dev/null
 elif [ "$1" = "online" ];then
-    ./configure CXX=gcc --enable-online 1>/dev/null
+    ./configure CXX=gcc LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu LD=/usr/lib/x86_64-linux-gnu --enable-online 1>/dev/null
 elif [ "$1" = "gprof" ];then
-    ./configure CXX=gcc --enable-gprof 1>/dev/null
+    ./configure CXX=gcc LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu LD=/usr/lib/x86_64-linux-gnu --enable-gprof 1>/dev/null
 else
-    ./configure CXX=gcc --enable-debug #1>/dev/null
+    ./configure CXX=gcc LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu LD=/usr/lib/x86_64-linux-gnu --enable-debug 1>/dev/null
 fi
 
 #####################################################################################################

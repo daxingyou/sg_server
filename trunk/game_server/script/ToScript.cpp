@@ -1,6 +1,6 @@
 /*
 ** Lua binding: ToScript
-** Generated automatically by tolua++-1.0.92 on Tue Jul 24 21:36:42 2018.
+** Generated automatically by tolua++-1.0.92 on Wed Jul 25 20:46:58 2018.
 */
 
 #ifndef __cplusplus
@@ -2629,6 +2629,7 @@ TOLUA_API int tolua_ToScript_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"attack_no_wakeup_rate",attrtype_enum::attack_no_wakeup_rate);
    tolua_constant(tolua_S,"hp",attrtype_enum::hp);
    tolua_constant(tolua_S,"max_hp",attrtype_enum::max_hp);
+   tolua_constant(tolua_S,"max_hp_in_combat",attrtype_enum::max_hp_in_combat);
    tolua_constant(tolua_S,"max_hp_bonus",attrtype_enum::max_hp_bonus);
    tolua_constant(tolua_S,"atk_growth",attrtype_enum::atk_growth);
    tolua_constant(tolua_S,"def_physical_growth",attrtype_enum::def_physical_growth);
@@ -2788,6 +2789,7 @@ TOLUA_API int tolua_ToScript_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"def_break",attrtype_enum::def_break);
    tolua_constant(tolua_S,"immuno_single_attack",attrtype_enum::immuno_single_attack);
    tolua_constant(tolua_S,"damage_absorb_and_boom",attrtype_enum::damage_absorb_and_boom);
+   tolua_constant(tolua_S,"fairyland",attrtype_enum::fairyland);
    tolua_constant(tolua_S,"water_immune",attrtype_enum::water_immune);
    tolua_constant(tolua_S,"fire_immune",attrtype_enum::fire_immune);
    tolua_constant(tolua_S,"wind_immune",attrtype_enum::wind_immune);
@@ -2804,7 +2806,6 @@ TOLUA_API int tolua_ToScript_open (lua_State* tolua_S)
    tolua_constant(tolua_S,"yin_hurt_increase",attrtype_enum::yin_hurt_increase);
    tolua_constant(tolua_S,"yang_hurt_increase",attrtype_enum::yang_hurt_increase);
    tolua_constant(tolua_S,"buff_attacker_be_hurt_count",attrtype_enum::buff_attacker_be_hurt_count);
-   tolua_constant(tolua_S,"EXTRA_ATTR_PLUS",attrtype_enum::EXTRA_ATTR_PLUS);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

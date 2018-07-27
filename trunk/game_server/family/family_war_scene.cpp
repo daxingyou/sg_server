@@ -2596,11 +2596,11 @@ bool family_war_scene_t::family_war_long_info::long_wei(const role_ptr& p_role, 
 			if (NULL == p_fight_role)
 			{
 				p_fight_role = p_area_role;
-				dis = std::abs(p_area_role->get_fighting() - p_role->get_fighting());
+				dis = std::abs(int(p_area_role->get_fighting() - p_role->get_fighting()));
 			}
 			else
 			{
-				uint32_t cur_dis = std::abs(p_area_role->get_fighting() - p_role->get_fighting());
+				uint32_t cur_dis = std::abs(int(p_area_role->get_fighting() - p_role->get_fighting()));
 				if (cur_dis < dis)
 				{
 					p_fight_role = p_area_role;

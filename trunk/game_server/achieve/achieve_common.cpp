@@ -68,7 +68,7 @@ bool achieve_common_t::get_config_id(const uint64_t role_uid,achieve_common_type
 			/*if (tuple_list.second != event_id)
 				continue;*/
 
-			id = std::abs(it.first - it.first % min_level);					///取以1000为单位的整数
+			id = std::abs(int(it.first - it.first % min_level));					///取以1000为单位的整数
 			return achieve_manager_t::is_legal_achieve_id(id);
 		}
 	}break;

@@ -663,7 +663,7 @@ bool achieve_manager_t::get_achieve_id(uint32_t achieve_event_type,uint32_t& ach
 		if (tuple_list.second != event_id)
 			continue;
 
-		achieve_id = std::abs(it.first - it.first % min_level);	//取以1000为单位的整数
+		achieve_id = std::abs(int(it.first - it.first % min_level));	//取以1000为单位的整数
 
 		return is_legal_achieve_id(achieve_id);
 		

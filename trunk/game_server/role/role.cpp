@@ -1737,7 +1737,7 @@ void role_t::set_exp(uint32_t set_val, uint32_t source_typ, uint32_t source_para
 
     uint32_t old_exp = m_exp;
     uint32_t new_exp = set_val;
-    uint32_t up_exp = abs(new_exp - old_exp);
+    uint32_t up_exp = abs(int(new_exp - old_exp));
     m_exp = new_exp;
     save_self();
     if (NULL != p_data)
@@ -1756,7 +1756,7 @@ void role_t::set_level(uint32_t set_val, uint32_t source_type, uint32_t source_p
 
 	uint32_t old_level = m_level;
     uint32_t new_level = set_val;
-    uint32_t up_level = abs(new_level - old_level);
+    uint32_t up_level = abs(int(new_level - old_level));
     m_level = new_level;
     save_self(true);
     if (NULL != p_data)

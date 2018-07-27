@@ -6,9 +6,9 @@ INCLUDES =   -I/usr/local/include/zdb \
             -I$(top_srcdir)/protocpp \
             -I$(top_srcdir)/chat_server
             
-LDFLAGS = -L/usr/local/lib
+LDFLAGS = -L/usr/local/lib 
 
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -Wno-error=unused-function
 if IS_BUILD_DEBUG
     CXXFLAGS += -D_DEBUG -O0
     CXXFLAGS += -ggdb -gdwarf-2

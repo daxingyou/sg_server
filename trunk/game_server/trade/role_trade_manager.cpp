@@ -552,7 +552,7 @@ uint32_t role_trade_manager_t::get_city_trade_shop_info(uint32_t trade_id, role_
 	auto conf = GET_CONF(Comprehensive, comprehensive_common::trade_goods_add_time2);
 	uint32_t buy_num_refresh_time = GET_COMPREHENSIVE_VALUE_1(conf);
 	uint32_t cur_time = common::time_util_t::now_time();
-	uint32_t send_time = std::abs(trade_manager_t::get_buy_num_reset_time() + buy_num_refresh_time * 60 - cur_time);
+	uint32_t send_time = std::abs(int(trade_manager_t::get_buy_num_reset_time() + buy_num_refresh_time * 60 - cur_time));
 	reply.set_item_buy_num_reset_time(send_time);
 
 	/// ÖØÖÃ¹ºÂòÊıÁ¿
@@ -928,7 +928,7 @@ uint32_t role_trade_manager_t::get_all_city_trade_event(proto::client::gc_trade_
 
 	auto conf = GET_CONF(Comprehensive, comprehensive_common::trade_event_time2);
 	uint32_t event_refresh_time = GET_COMPREHENSIVE_VALUE_1(conf);
-	msg_reply.set_event_reset_time(std::abs(trade_manager_t::get_event_reset_time() + event_refresh_time * 60 - common::time_util_t::now_time()));
+	msg_reply.set_event_reset_time(std::abs(int(trade_manager_t::get_event_reset_time() + event_refresh_time * 60 - common::time_util_t::now_time())));
 	return errcode_enum::error_ok;
 }
 

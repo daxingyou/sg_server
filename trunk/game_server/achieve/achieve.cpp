@@ -159,7 +159,7 @@ bool achieve_t::add_level()
 		ACHIEVE_LOG("role_uid[%lu],acheive_id[%d] achieve_level[%d]  already max ",m_role_uid,m_tid,m_level);
 	}
 	//¸Ä±äÖµ
-	const uint32_t up_level = std::abs(m_level - old_level);
+	const uint32_t up_level = std::abs(int(m_level - old_level));
 	ACHIEVE_LOG("role[%lu] up  achieve[%d] level old_level/new_level[%d/%d]", m_role_uid,m_tid,old_level, m_level);
 
 	if (up_level != 0)

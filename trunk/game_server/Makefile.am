@@ -8,9 +8,9 @@ INCLUDES =  -I/usr/local/include/lua \
             -I$(top_srcdir)/tblh \
             -I$(top_srcdir)/game_server 
              
-LDFLAGS =   -L/usr/local/lib -ldl
+LDFLAGS =   -L/usr/local/lib,/usr/lib/x86_64-linux-gnu -Wl,--no-as-needed -ldl -lm -lz
 
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -Wno-error=unused-function -Wno-error=implicit-fallthrough -Wno-error=int-in-bool-context -Wno-error=format-security -Wno-error=unused-variable -Wno-error=bool-compare
 if IS_BUILD_DEBUG
     CXXFLAGS += -D_DEBUG -O0
     CXXFLAGS += -ggdb -gdwarf-2
@@ -53,12 +53,12 @@ game_server_LDADD =    $(top_srcdir)/common/libcommon.a \
                         $(top_srcdir)/protocpp/libproto.a \
                         -llua \
                         -ltolua++ \
-                        -lluabit \
                         -lprotobuf \
                         -lboost_system  \
                         -lboost_thread \
 						-lboost_regex \
-                        -lboost_locale
+                        -lboost_locale \
+						-lpthread
                         
                         
 game_server_SOURCES =   $(top_srcdir)/tblh/DropTableConfig.cpp \

@@ -1,2 +1,5 @@
 *.o
 *.Po
+.svn
+*.Tpo
+.deps

@@ -2565,7 +2565,7 @@ fight_hero_ptr combat_t::summon_hero(proto::common::hero_data* hd)
 	if (NULL == hd)
 	{
 		log_error("hd is null");
-		return false;
+		return NULL;
 	}
 	fight_hero_ptr ret;
 	for (int i = 0; i < hd->hero_list_size(); ++i)

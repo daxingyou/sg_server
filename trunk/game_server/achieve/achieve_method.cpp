@@ -50,7 +50,7 @@ void achieve_method_t::achieve_main_role_level(const uint64_t uid, const proto::
 	}
 		
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	//p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count,old_count,new_count);
@@ -101,7 +101,7 @@ void achieve_method_t::achieve_main_role_level(const uint64_t uid, const proto::
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -130,9 +130,9 @@ void achieve_method_t::achieve_main_role_level(const uint64_t uid, const proto::
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src,achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count), new_count,
@@ -203,7 +203,7 @@ void achieve_method_t::achieve_hero_cultivate(const uint64_t uid, const proto::c
 	}
 
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	///p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count, old_count, new_count);
@@ -254,7 +254,7 @@ void achieve_method_t::achieve_hero_cultivate(const uint64_t uid, const proto::c
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -283,9 +283,9 @@ void achieve_method_t::achieve_hero_cultivate(const uint64_t uid, const proto::c
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src,achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count), new_count,
@@ -367,7 +367,7 @@ void achieve_method_t::achieve_unify_handle(const uint64_t uid, const proto::com
 	uint32_t old_count = p_achieve->get_count();
 	p_achieve->set_count(old_count + num);
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	///p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count, old_count, new_count);
@@ -418,7 +418,7 @@ void achieve_method_t::achieve_unify_handle(const uint64_t uid, const proto::com
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -447,9 +447,9 @@ void achieve_method_t::achieve_unify_handle(const uint64_t uid, const proto::com
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src,achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count),  new_count,
@@ -505,7 +505,7 @@ void achieve_method_t::achieve_total_unify_handle(const uint64_t uid, const prot
 	uint32_t old_count = p_achieve->get_count();
 	p_achieve->set_count(old_count + num);
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	///p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count, old_count, new_count);
@@ -556,7 +556,7 @@ void achieve_method_t::achieve_total_unify_handle(const uint64_t uid, const prot
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -585,9 +585,9 @@ void achieve_method_t::achieve_total_unify_handle(const uint64_t uid, const prot
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src, achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count), new_count,
@@ -647,7 +647,7 @@ void achieve_method_t::achieve_replace_model_handle(const uint64_t uid, const pr
 	}
 
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	///p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count, old_count, new_count);
@@ -698,7 +698,7 @@ void achieve_method_t::achieve_replace_model_handle(const uint64_t uid, const pr
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -727,9 +727,9 @@ void achieve_method_t::achieve_replace_model_handle(const uint64_t uid, const pr
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src, achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count), new_count,
@@ -786,7 +786,7 @@ void achieve_method_t::achieve_direct_replace_model_handle(const uint64_t uid, c
 	p_achieve->set_count(new_value);
 
 	const uint32_t new_count = p_achieve->get_count();
-	const uint32_t add_count = std::abs(new_count - old_count);
+	const uint32_t add_count = std::abs(int(new_count - old_count));
 	///p_achieve->save_self(uid, true);
 	achieve_manager_t::save_all_self(uid);
 	ACHIEVE_LOG("role[%lu] add achieve[%d] addcount[%d] old count/new count[%d/%d]", uid, achieve_id, add_count, old_count, new_count);
@@ -837,7 +837,7 @@ void achieve_method_t::achieve_direct_replace_model_handle(const uint64_t uid, c
 	}
 
 	//可以升级
-	uint32_t loop_num = std::abs(last_level - cur_level);
+	uint32_t loop_num = std::abs(int(last_level - cur_level));
 	ACHIEVE_LOG("role[%lu] achieve[%d] begin up level", uid, achieve_id);
 	bool is_start = true;//用于标记记录日志
 	while (0 < loop_num)
@@ -866,9 +866,9 @@ void achieve_method_t::achieve_direct_replace_model_handle(const uint64_t uid, c
 		const uint32_t new_level = p_achieve->get_level();
 		const uint32_t  new_achieve_level = p_role->get_achieve_level();
 		const uint32_t new_achieve_point = money_manager_t::get_money(p_role, proto::common::MONEY_TYPE::MONEY_TYPE_ACHIEVE_POINT);
-		const uint32_t add_achieve_point = std::abs(new_achieve_point - old_achieve_point);
-		const uint32_t up_achieve_level = std::abs(new_achieve_level - old_achieve_level);
-		const uint32_t up_level = std::abs(new_level - old_level);
+		const uint32_t add_achieve_point = std::abs(int(new_achieve_point - old_achieve_point));
+		const uint32_t up_achieve_level = std::abs(int(new_achieve_level - old_achieve_level));
+		const uint32_t up_level = std::abs(int(new_level - old_level));
 
 		achieve_manager_t::get_source_type_str(src, achieve_id + (new_level == 0 ? 1 : new_level));
 		log_wrapper_t::send_achieve_log(uid, achieve_id, old_level, up_level, new_level, (is_start ? old_count : new_count), new_count,
