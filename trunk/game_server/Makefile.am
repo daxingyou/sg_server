@@ -8,7 +8,7 @@ INCLUDES =  -I/usr/local/include/lua \
             -I$(top_srcdir)/tblh \
             -I$(top_srcdir)/game_server 
              
-LDFLAGS =   -L/usr/local/lib,/usr/lib/x86_64-linux-gnu -Wl,--no-as-needed -ldl -lm -lz
+LDFLAGS =   -L/usr/local/lib,/usr/lib/x86_64-linux-gnu -Wl,--no-as-needed -ldl -lm -lz -lstdc++
 
 CXXFLAGS = -std=c++11 -Wno-error=unused-function -Wno-error=implicit-fallthrough -Wno-error=int-in-bool-context -Wno-error=format-security -Wno-error=unused-variable -Wno-error=bool-compare
 if IS_BUILD_DEBUG
