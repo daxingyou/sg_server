@@ -2,6 +2,7 @@ INCLUDES=   -I$(top_srcdir)/network \
             -I$(top_srcdir)/common \
             -I$(top_srcdir)/protocpp
 
+CXXFLAGS = -std=c++11 -Wno-error=unused-function -Wno-error=implicit-fallthrough -Wno-error=int-in-bool-context -Wno-error=format-security -Wno-error=unused-variable -Wno-error=bool-compare -DPROTOBUF_INLINE_NOT_IN_HEADERS=0 
 CXXFLAGS = -std=c++11 -DPROTOBUF_INLINE_NOT_IN_HEADERS=0 -Wno-unused
 if IS_BUILD_DEBUG
     CXXFLAGS += -D_DEBUG -O0
