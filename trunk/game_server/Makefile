@@ -504,7 +504,8 @@ game_server_LDADD = $(top_srcdir)/common/libcommon.a \
                         -lboost_thread \
 						-lboost_regex \
                         -lboost_locale \
-						-lpthread
+						-lpthread \
+						-lluabit
 
 game_server_SOURCES = $(top_srcdir)/tblh/DropTableConfig.cpp \
 						$(top_srcdir)/tblh/RandomShopConfig.cpp \
