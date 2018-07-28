@@ -16,4 +16,4 @@
 *.log
 /trunk/transfer_server_1
 /trunk/transfer_server_2
-
+/trunk/center_server/center_server
