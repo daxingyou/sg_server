@@ -4,6 +4,7 @@
 *.Tpo
 .deps
 *.a
+*.so
 /trunk/game_server/game_server
 /trunk/cross_server
 /trunk/game_server_1
