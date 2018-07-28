@@ -19,3 +19,10 @@
 /trunk/center_server/center_server
 /trunk/db_server/db_server
 /trunk/gate_server/gate_server
+/trunk/autom4te.cache
+boost_1_55_0
+lua-5.1.5
+LuaBitOp-1.0.2
+protobuf-2.5.0
+toluapp
+/trunk/log_server/log_server

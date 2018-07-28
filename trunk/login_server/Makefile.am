@@ -9,7 +9,7 @@ INCLUDES =  -I/usr/local/include/zdb \
                        
 LDFLAGS =   -L/usr/local/lib
 
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -Wno-error=unused-function
 if IS_BUILD_DEBUG
     CXXFLAGS += -D_DEBUG -O0
     CXXFLAGS += -ggdb -gdwarf-2
@@ -51,7 +51,9 @@ login_server_LDADD =    $(top_srcdir)/common/libcommon.a \
                         -lprotobuf \
                         -lzdb \
                         -lboost_system \
-                        -lboost_thread
+                        -lboost_thread \
+						-lstdc++ \
+						-lz
 
 login_server_SOURCES =  main/main.cpp \
                         main/login_server.cpp \

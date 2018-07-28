@@ -221,8 +221,9 @@ CPPFLAGS =
 CXX = gcc
 CXXCPP = gcc -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -std=c++11 $(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5)
+CXXFLAGS = -std=c++11 -Wno-error=unused-function $(am__append_1) \
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5)
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -344,7 +345,9 @@ login_server_LDADD = $(top_srcdir)/common/libcommon.a \
                         -lprotobuf \
                         -lzdb \
                         -lboost_system \
-                        -lboost_thread
+                        -lboost_thread \
+						-lstdc++ \
+						-lz
 
 login_server_SOURCES = main/main.cpp \
                         main/login_server.cpp \
