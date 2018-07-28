@@ -48,7 +48,9 @@ chat_server_LDADD = $(top_srcdir)/common/libcommon.a \
                     $(top_srcdir)/protocpp/libproto.a \
                     -lprotobuf \
                     -lboost_system \
-                    -lboost_thread
+                    -lboost_thread \
+					-lz \
+					-lstdc++
 
 chat_server_SOURCES =   main/main.cpp \
                         main/chat_server.cpp \
@@ -72,6 +74,6 @@ chat_server_SOURCES =   main/main.cpp \
                         center/center_msg_handler.cpp \
                         config/config_manager.cpp \
 						hero_strategy/hero_strategy_manager.cpp \
-						video/video_connector.cpp
+						video/video_connector.cpp 
 
 chat_serverdir=$(prefix)/conf/

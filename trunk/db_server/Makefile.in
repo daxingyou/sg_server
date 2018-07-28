@@ -375,7 +375,9 @@ db_server_LDADD = $(top_srcdir)/common/libcommon.a \
                     -lboost_system \
                     -lboost_thread \
                     -lboost_regex \
-					-lboost_locale
+					-lboost_locale \
+					-lz \
+					-lstdc++
 
 db_server_SOURCES = center/center_msg_handler.cpp \
                     center/center_listener.cpp \
